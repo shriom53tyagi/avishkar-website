@@ -1,22 +1,36 @@
 import { Hero } from "@/components/sections/Hero";
-import { Problems } from "@/components/sections/Problems";
+import { WhyDifferent } from "@/components/sections/WhyDifferent";
+import { RevenueMetrics } from "@/components/sections/RevenueMetrics";
 import { AuditEngine } from "@/components/sections/AuditEngine";
 import { Agents } from "@/components/sections/Agents";
-import { InsideSystem } from "@/components/sections/InsideSystem";
+import { WhyDeploymentsWork } from "@/components/sections/WhyDeploymentsWork";
 import { Results } from "@/components/sections/Results";
-import { Process } from "@/components/sections/Process";
+import { Security } from "@/components/sections/Security";
+import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 
+/**
+ * Home page — streamlined per the cleanup brief:
+ *   Hero → Why Different → Hidden Revenue (KPIs + leaks) → Operational Audit →
+ *   Agent Solutions (4) → Why Our Deployments Work → Outcomes → Security → CTA
+ */
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <Problems />
+      <WhyDifferent />
+      {/* Merged: Revenue Recovery + Where Revenue Leaks */}
+      <RevenueMetrics />
+      {/* Operational Intelligence Audit concept */}
       <AuditEngine />
+      {/* Agent solutions — 4 consolidated categories */}
       <Agents />
-      <InsideSystem />
+      {/* Replaces the longer "Inside Your System" */}
+      <WhyDeploymentsWork />
+      {/* Outcomes, Not Adjectives */}
       <Results />
-      <Process />
+      <Security />
+      <FAQ />
       <FinalCTA />
     </>
   );

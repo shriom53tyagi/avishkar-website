@@ -40,10 +40,10 @@ export function FinalCTA() {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mt-6 max-w-4xl text-balance font-display text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[72px]"
         >
-          <span className="text-gradient">Your healthcare operations</span>
-          <span className="text-gradient block">already generate data.</span>
+          <span className="text-gradient">Your operations already</span>
+          <span className="text-gradient block">generate the data.</span>
           <span className="mt-2 block text-gradient-cyan">
-            Now let AI turn it into revenue.
+            Let&apos;s turn it into recovered revenue.
           </span>
         </motion.h2>
 
@@ -64,11 +64,11 @@ export function FinalCTA() {
           transition={{ duration: 0.9, delay: 0.2 }}
           className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <Button href="#contact" variant="primary" showArrow>
-            Schedule AI Audit
+          <Button href="/contact" variant="primary" showArrow>
+            Book an Operational Audit
           </Button>
-          <Button href="#agents" variant="secondary">
-            Talk to a builder
+          <Button href="/contact" variant="secondary">
+            Talk to the team
           </Button>
         </motion.div>
 

@@ -1,34 +1,51 @@
+import Link from "next/link";
+import { Linkedin, Twitter, Github, Youtube } from "lucide-react";
 import { Logo } from "./Logo";
+import { VisitorCounter } from "./VisitorCounter";
+import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/lib/data";
 
+/**
+ * Footer columns. Anchor targets use the `/#id` form so they resolve to the
+ * correct home-page section even when the user is on a sub-page (/contact,
+ * /careers). Contact and Careers are now their own routes.
+ */
 const COLS: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Product",
     links: [
-      { label: "AI Audit", href: "#engine" },
-      { label: "Agents", href: "#agents" },
-      { label: "Inside Your System", href: "#system" },
-      { label: "Results", href: "#results" },
+      { label: "Why Avishkar", href: "/#why" },
+      { label: "Operational Audit", href: "/#engine" },
+      { label: "Agents", href: "/#agents" },
+      { label: "Results", href: "/#results" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Research", href: "#" },
-      { label: "Security", href: "#" },
-      { label: "Careers", href: "#" },
+      { label: "Revenue Recovery", href: "/#revenue" },
+      { label: "How We Deploy", href: "/#deployments" },
+      { label: "Security", href: "/#security" },
+      { label: "Careers", href: "/careers" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "Audit Sample", href: "#" },
-      { label: "Compliance", href: "#" },
-      { label: "Integrations", href: "#" },
-      { label: "Contact", href: "#contact" },
+      { label: "Operational Audit", href: "/#engine" },
+      { label: "Compliance", href: "/#security" },
+      { label: "Results", href: "/#results" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
+
+/** Map social icon keys → lucide components (X reuses the Twitter glyph). */
+const SOCIAL_ICONS = {
+  linkedin: Linkedin,
+  x: Twitter,
+  github: Github,
+  youtube: Youtube,
+} as const;
 
 export function Footer() {
   return (
@@ -38,11 +55,12 @@ export function Footer() {
         <div className="space-y-5">
           <Logo />
           <p className="max-w-sm text-sm text-white/55">
-            Avishkar builds the operating layer for healthcare's next decade — auditing systems with
-            AI, identifying revenue leaks, and deploying agentic automation inside your environment.
+            Avishkar is an operational intelligence and revenue recovery company for healthcare. We
+            audit your operations, quantify hidden revenue leakage, and deploy AI agents only where
+            measurable ROI exists.
           </p>
           <div className="flex flex-wrap gap-2">
-            {["HIPAA-aligned", "SOC2 in progress", "BAA available"].map((t) => (
+            {["HIPAA-aligned", "SOC 2 in progress", "BAA available"].map((t) => (
               <span
                 key={t}
                 className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55"
@@ -51,7 +69,30 @@ export function Footer() {
               </span>
             ))}
           </div>
+
+          {/* Social links */}
+          <div className="flex items-center gap-2.5">
+            {SOCIAL_LINKS.map((s) => {
+              const Icon = SOCIAL_ICONS[s.icon as keyof typeof SOCIAL_ICONS];
+              return (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/60 transition-colors hover:border-white/25 hover:text-white"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Live, server-persisted visitor counter */}
+          <VisitorCounter className="mt-1" />
         </div>
+
         {COLS.map((c) => (
           <div key={c.title}>
             <div className="mb-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
@@ -60,14 +101,25 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               {c.links.map((l) => (
                 <li key={l.label}>
-                  <a
+                  <Link
                     href={l.href}
                     className="text-white/70 transition-colors hover:text-white"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
+              {/* Direct email for the relevant columns */}
+              {c.title === "Resources" && (
+                <li>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="text-white/70 transition-colors hover:text-white"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         ))}

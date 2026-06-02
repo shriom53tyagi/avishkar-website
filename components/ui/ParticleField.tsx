@@ -34,8 +34,30 @@ export function ParticleField({
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
+      // getBoundingClientRect can report 0 on first paint (before layout settles)
+      // or while the element is briefly collapsed — which left the canvas stuck
+      // at the intrinsic HTML default of 300×150. Fall back through offset size,
+      // the parent box, and finally the viewport so the canvas always fills its
+      // container responsively.
+      const parent = canvas.parentElement;
+      w =
+        rect.width ||
+        canvas.offsetWidth ||
+        parent?.clientWidth ||
+        (typeof window !== "undefined" ? window.innerWidth : 0);
+      h =
+        rect.height ||
+        canvas.offsetHeight ||
+        parent?.clientHeight ||
+        (typeof window !== "undefined" ? window.innerHeight : 0);
+
+      // Bail out if we still couldn't measure — try again next frame rather than
+      // baking in the 300×150 default.
+      if (w === 0 || h === 0) {
+        raf = requestAnimationFrame(resize);
+        return;
+      }
+
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -130,5 +152,14 @@ export function ParticleField({
     };
   }, [color, density, interactive]);
 
-  return <canvas ref={canvasRef} aria-hidden className={className} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden
+      // `block h-full w-full` guarantees the canvas's CSS box fills its container
+      // regardless of its intrinsic attribute size; the className from the caller
+      // (positioning, opacity) is appended after.
+      className={`block h-full w-full ${className ?? ""}`}
+    />
+  );
 }
