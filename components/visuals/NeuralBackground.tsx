@@ -26,8 +26,15 @@ export function NeuralBackground({ className }: Props) {
 
     const build = () => {
       const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
+      const parent = canvas.parentElement;
+      // Fall back through offset/parent/viewport size if the rect is collapsed on
+      // first paint, so the canvas never falls back to the 300×150 default.
+      w = rect.width || canvas.offsetWidth || parent?.clientWidth || 0;
+      h = rect.height || canvas.offsetHeight || parent?.clientHeight || 0;
+      if (w === 0 || h === 0) {
+        raf = requestAnimationFrame(build);
+        return;
+      }
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -119,5 +126,11 @@ export function NeuralBackground({ className }: Props) {
     };
   }, []);
 
-  return <canvas ref={ref} aria-hidden className={className} />;
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden
+      className={`block h-full w-full ${className ?? ""}`}
+    />
+  );
 }

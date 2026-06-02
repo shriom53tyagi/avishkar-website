@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
@@ -38,21 +39,21 @@ export function Navbar() {
           <Logo />
           <nav className="hidden items-center gap-1 md:flex">
             {NAV_LINKS.map((l) => (
-              <a
+              <Link
                 key={l.href}
                 href={l.href}
                 className="rounded-full px-3.5 py-1.5 text-[13px] text-white/65 transition-colors hover:text-white"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="hidden items-center gap-2 md:flex">
-            <Button href="#contact" variant="ghost">
+            <Button href="/contact" variant="ghost">
               Contact
             </Button>
-            <Button href="#audit" variant="primary" showArrow>
-              Book AI Audit
+            <Button href="/contact" variant="primary" showArrow>
+              Book an Operational Audit
             </Button>
           </div>
           <button
@@ -88,22 +89,22 @@ export function Navbar() {
             </div>
             <div className="mt-4 grid gap-1">
               {NAV_LINKS.map((l) => (
-                <a
+                <Link
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
                   className="rounded-xl px-3 py-3 text-[15px] text-white/80 hover:bg-white/5 hover:text-white"
                 >
                   {l.label}
-                </a>
+                </Link>
               ))}
             </div>
             <div className="mt-3 flex flex-col gap-2">
-              <Button href="#audit" variant="primary" showArrow>
-                Book AI Audit
+              <Button href="/contact" variant="primary" showArrow>
+                Book an Operational Audit
               </Button>
-              <Button href="#agents" variant="secondary">
-                See Agent Demo
+              <Button href="/careers" variant="secondary">
+                Careers
               </Button>
             </div>
           </motion.div>

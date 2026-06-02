@@ -11,3 +11,6 @@ build
 dist
 coverage
 next-env.d.ts
+
+# runtime visitor counter store
+/data/visitors.json

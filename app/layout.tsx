@@ -5,6 +5,7 @@ import { CursorGlow } from "@/components/ui/CursorGlow";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { ChatWidget } from "@/components/ui/ChatWidget";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools that
@@ -153,32 +154,39 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://avishkar.ai"),
   title: {
-    default: "Avishkar — AI Audit & Agentic Automation for Healthcare",
-    template: "%s · Avishkar",
+    default: "Avishkar",
+    template: "%s · Avishkar AI",
   },
   description:
-    "Avishkar audits healthcare operations with AI, surfaces revenue leaks and inefficiencies, and deploys agentic systems built specifically for your environment.",
+    "Avishkar AI is a healthcare operational intelligence platform. We start with an structured operational audit, quantify hidden revenue loss across your EMR, billing, scheduling and call centers, then deploy AI agents only where they deliver measurable ROI.",
   keywords: [
+    "healthcare operational intelligence",
+    "AI operational audit",
+    "revenue cycle automation",
+    "hidden revenue recovery",
     "AI for healthcare",
     "agentic automation",
-    "AI audit",
-    "voice AI receptionist",
     "EMR automation",
     "clinical documentation AI",
-    "revenue cycle automation",
   ],
+  
   openGraph: {
-    title: "Avishkar — AI Audit & Agentic Automation for Healthcare",
+    title: "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.",
     description:
-      "We audit healthcare operations with AI. We build agents that fix them.",
+      "An structured operational audit for hospitals and clinics that surfaces hidden revenue loss and deploys AI agents only where they pay off.",
     type: "website",
     url: "https://avishkar.ai",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Avishkar — Healthcare's Operating System for AI Agents",
+    title: "Avishkar AI — Healthcare Operational Intelligence",
     description:
-      "We audit. We identify revenue leaks. We deploy agentic AI inside your healthcare systems.",
+      "Find the Leak. Quantify the Impact. Deploy the Fix. structured operational audits for healthcare.",
+  },
+   icons: {
+    icon: "/logo.png",         // the tab icon (your logo)
+    shortcut: "/logo.png",     // address bar shortcut
+    apple: "/logo.png",        // iOS home screen icon
   },
 };
 
@@ -209,6 +217,7 @@ export default function RootLayout({
         <Navbar />
         <main className="relative">{children}</main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );

@@ -42,14 +42,14 @@ export function AuditEngine() {
 
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeading
-          eyebrow="The audit engine"
+          eyebrow="Operational Intelligence Audit"
           title={
             <>
-              We don't deliver decks.{" "}
+              We don&apos;t deliver decks.{" "}
               <span className="text-gradient-cyan">We deliver a live model</span> of your operations.
             </>
           }
-          description="The Avishkar audit engine connects to your systems, reconstructs how your organization actually runs, and quantifies every dollar leaking through it — before we propose a single line of automation."
+          description="A fixed-scope engagement designed to uncover hidden revenue leakage, workflow inefficiencies, and automation opportunities across your healthcare organization. We connect to your systems, reconstruct how the organization actually runs, and quantify every dollar leaking through it — before we propose a single line of automation."
         />
 
         <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.05fr]">

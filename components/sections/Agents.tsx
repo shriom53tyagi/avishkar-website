@@ -3,13 +3,9 @@
 import { motion } from "framer-motion";
 import {
   CalendarClock,
-  PhoneCall,
+  Receipt,
   ClipboardList,
   Repeat2,
-  Receipt,
-  FileSignature,
-  Building2,
-  ShieldCheck,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { GridBackground } from "@/components/ui/GridBackground";
@@ -20,14 +16,10 @@ import { AGENTS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const ICON_MAP: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  "Appointment Agent": CalendarClock,
-  "Voice AI Receptionist": PhoneCall,
-  "EMR Automation Agent": ClipboardList,
-  "Patient Follow-up Agent": Repeat2,
-  "Billing Workflow Agent": Receipt,
-  "Clinical Documentation Agent": FileSignature,
-  "Internal Operations Agent": Building2,
-  "Insurance Verification Agent": ShieldCheck,
+  "Patient Access Agent": CalendarClock,
+  "Revenue Recovery Agent": Receipt,
+  "Clinical Operations Agent": ClipboardList,
+  "Patient Engagement Agent": Repeat2,
 };
 
 export function Agents() {
@@ -37,14 +29,14 @@ export function Agents() {
 
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeading
-          eyebrow="Agentic solutions"
+          eyebrow="Agent solutions"
           title={
             <>
-              A roster of agents,{" "}
+              Four agents,{" "}
               <span className="text-gradient-cyan">tailored to your environment.</span>
             </>
           }
-          description="Each Avishkar agent is a production system — not a chatbot. They run inside your stack, talk to your tools, escalate to your team, and learn from real outcomes."
+          description="We deploy across four operational domains — and only where the audit proves measurable ROI. Each agent is a production system that runs inside your stack, talks to your tools, and escalates to your team."
         />
 
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">

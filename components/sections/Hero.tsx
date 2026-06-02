@@ -3,16 +3,22 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { GridBackground } from "@/components/ui/GridBackground";
 import { ParticleField } from "@/components/ui/ParticleField";
+import { NeuralBackground } from "@/components/visuals/NeuralBackground";
 import { HeroDashboard } from "@/components/visuals/HeroDashboard";
-import { TICKER } from "@/lib/data";
+import { TICKER, TRUST_LOGOS } from "@/lib/data";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pb-12 pt-32 sm:pt-36 md:pb-20 md:pt-44">
-      <GridBackground />
-      <ParticleField className="pointer-events-none absolute inset-0 -z-10 opacity-70" />
+    <section className="relative isolate overflow-hidden pb-12 pt-32 sm:pt-36 md:pb-20 md:pt-44">
+      {/* Neural network backdrop — matched to the final CTA treatment so the
+          hero and closing section bookend the page with the same visual. */}
+      <div className="absolute inset-0 -z-10">
+        <NeuralBackground className="absolute inset-0 h-full w-full opacity-70" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_40%,transparent_0%,rgba(4,5,10,0.85)_75%,#04050A_100%)]" />
+        <div className="absolute inset-0 bg-grid opacity-[0.25] mix-blend-overlay" />
+      </div>
+      <ParticleField className="pointer-events-none absolute inset-0 -z-10 opacity-40" />
 
       <div className="mx-auto max-w-7xl px-6">
         {/* Top eyebrow */}
@@ -27,7 +33,7 @@ export function Hero() {
             <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
           </span>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/65">
-            Avishkar v2 · agentic OS for healthcare
+            Operational intelligence for healthcare
           </span>
         </motion.div>
 
@@ -39,9 +45,8 @@ export function Hero() {
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-balance text-[42px] font-medium leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px]"
           >
-            <span className="text-gradient block">Your healthcare system</span>
-            <span className="text-gradient block">has hidden revenue.</span>
-            <span className="mt-2 block text-gradient-cyan">AI agents can find it.</span>
+            <span className="text-gradient block">Stop losing revenue to</span>
+            <span className="mt-2 block text-gradient-cyan">operational blind spots.</span>
           </motion.h1>
 
           <motion.p
@@ -50,9 +55,18 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] leading-relaxed text-white/60 md:text-base"
           >
-            Avishkar audits hospitals and clinics with AI, surfaces the workflows quietly leaking
-            revenue, and deploys agentic systems engineered for your environment — your EMR, your
-            phones, your team. Not consulting. Real, running infrastructure.
+            Avishkar audits your healthcare operations, identifies hidden sources of revenue
+            leakage, and deploys targeted AI agents to recover lost value, reduce administrative
+            burden, and improve financial performance.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-4 font-mono text-[12px] uppercase tracking-[0.2em] text-cyan-300/80"
+          >
+            Find the Leak · Quantify the Impact · Deploy the Fix
           </motion.p>
 
           <motion.div
@@ -61,15 +75,15 @@ export function Hero() {
             transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
-            <Button href="#audit" variant="primary" showArrow>
-              Book AI Audit
+            <Button href="/contact" variant="primary" showArrow>
+              Book an Operational Audit
             </Button>
             <Button
-              href="#agents"
+              href="#revenue"
               variant="secondary"
               icon={<Sparkles className="h-4 w-4 text-cyan-300" />}
             >
-              See Agent Demo
+              See Sample Leakage Report
             </Button>
           </motion.div>
 
@@ -102,11 +116,11 @@ export function Hero() {
           <div className="text-center font-mono text-[11px] uppercase tracking-[0.18em] text-white/35">
             Built with operators from
           </div>
-          <div className="mt-5 grid grid-cols-2 items-center gap-x-10 gap-y-6 opacity-70 sm:grid-cols-3 md:grid-cols-6">
-            {["Mayo", "Stanford Health", "Apollo", "Cleveland", "Kaiser", "MedStar"].map((b) => (
+          <div className="mt-5 grid grid-cols-2 items-center gap-x-10 gap-y-6 sm:grid-cols-3 md:grid-cols-6">
+            {TRUST_LOGOS.map((b) => (
               <div
                 key={b}
-                className="text-center font-display text-[15px] tracking-tight text-white/50"
+                className="text-center font-display text-[15px] tracking-tight text-white/40 grayscale transition-all duration-300 hover:text-white/70 hover:grayscale-0"
               >
                 {b}
               </div>
