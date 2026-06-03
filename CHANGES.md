@@ -14,13 +14,13 @@ and the established `"use client"` + Framer Motion patterns.
   client). Strict system prompt with embedded company facts: answers only about
   Avishkar AI (product, audit, pricing, security/compliance, contact, careers),
   politely refuses off-domain questions, never invents facts, and defers to
-  `info@avishakar.com` when unsure. Sanitizes/clamps history; wrapped in try/catch
+  `info@avhishkar.app` when unsure. Sanitizes/clamps history; wrapped in try/catch
   with graceful fallback replies. Model overridable via `ANTHROPIC_MODEL`.
 - **`app/api/voice-note/route.ts`** — Receives the recorded audio as
   `multipart/form-data` (field `audio`, plus optional `name`/`email`). Validates
   size/emptiness, reads the bytes, and contains a clearly marked `TODO` block
   showing exactly where to save to object storage or forward as an email
-  attachment to `info@avishakar.com`. Currently logs metadata and acknowledges.
+  attachment to `info@avhishkar.app`. Currently logs metadata and acknowledges.
 - **`app/api/visitors/route.ts`** — `GET` returns the count; `POST` increments it.
   Persists to `data/visitors.json` (created at runtime), with an in-memory fallback
   for read-only/serverless filesystems.
@@ -39,7 +39,7 @@ and the established `"use client"` + Framer Motion patterns.
   visitors route. Reduced-motion fallback snaps to the value.
 - **`components/sections/Contact.tsx`** — New section providing the previously-missing
   `#contact` target plus `#careers` and `#security` anchors. Includes the voice note,
-  a working `mailto:info@avishakar.com` for resumes (Careers), and a Security &
+  a working `mailto:info@avhishkar.app` for resumes (Careers), and a Security &
   Compliance grid.
 
 ### Config / docs
@@ -62,7 +62,7 @@ and the established `"use client"` + Framer Motion patterns.
 - **`.gitignore`** — ignore the runtime `data/visitors.json`.
 
 ## Notes
-- `info@avishakar.com` is used verbatim throughout (matching the brief's spelling).
+- `info@avhishkar.app` is used verbatim throughout (matching the brief's spelling).
 - Verified: `tsc --noEmit` passes; `next build` compiles all routes and the page
   (all three API routes register as dynamic server functions); visitor-counter
   persistence and chat history sanitization were tested end-to-end.
@@ -81,7 +81,7 @@ Applied the conversion/positioning brief and the requested structural changes.
   Audit" email CTA, the Apple-style voice note, and a "what to expect" strip.
 - **`app/careers/page.tsx`** — dedicated `/careers` page: values, open-role cards
   (each a working `mailto:` apply link), and a general-application CTA to
-  `info@avishakar.com`.
+  `info@avhishkar.app`.
 - The combined `components/sections/Contact.tsx` section was removed; its pieces
   now live on the two pages above + the new `Security` section.
 

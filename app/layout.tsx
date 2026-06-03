@@ -6,6 +6,8 @@ import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { ChatWidget } from "@/components/ui/ChatWidget";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { organizationSchema } from "@/lib/schema";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools that
@@ -150,45 +152,49 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
   display: "swap",
 });
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://avishkar.ai"),
   title: {
-    default: "Avishkar",
+    default: "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.",
     template: "%s · Avishkar AI",
   },
   description:
-    "Avishkar AI is a healthcare operational intelligence platform. We start with an structured operational audit, quantify hidden revenue loss across your EMR, billing, scheduling and call centers, then deploy AI agents only where they deliver measurable ROI.",
+    "Avishkar AI is a healthcare operational intelligence platform. We start with a structured operational audit, quantify hidden revenue loss across your EMR, billing, scheduling and call centers, then deploy AI agents only where they deliver measurable ROI.",
   keywords: [
     "healthcare operational intelligence",
-    "AI operational audit",
-    "revenue cycle automation",
+    "healthcare operational audit",
+    "revenue leakage healthcare",
     "hidden revenue recovery",
-    "AI for healthcare",
-    "agentic automation",
+    "AI denial management",
+    "patient no-show reduction",
     "EMR automation",
-    "clinical documentation AI",
+    "HIPAA compliant healthcare AI",
+    "clinical documentation automation",
   ],
-  
   openGraph: {
     title: "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.",
     description:
-      "An structured operational audit for hospitals and clinics that surfaces hidden revenue loss and deploys AI agents only where they pay off.",
+      "A structured operational audit for hospitals and clinics that surfaces hidden revenue loss and deploys AI agents only where they pay off.",
     type: "website",
     url: "https://avishkar.ai",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Avishkar AI — Healthcare Operational Intelligence",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Avishkar AI — Healthcare Operational Intelligence",
     description:
-      "Find the Leak. Quantify the Impact. Deploy the Fix. structured operational audits for healthcare.",
-  },
-   icons: {
-    icon: "/logo.png",         // the tab icon (your logo)
-    shortcut: "/logo.png",     // address bar shortcut
-    apple: "/logo.png",        // iOS home screen icon
+      "Find the Leak. Quantify the Impact. Deploy the Fix. Structured operational audits for healthcare.",
+    images: ["/og-image.png"],
   },
 };
+
 
 export const viewport: Viewport = {
   themeColor: "#04050A",
@@ -212,6 +218,7 @@ export default function RootLayout({
         className="relative min-h-screen font-sans antialiased"
         suppressHydrationWarning
       >
+       <JsonLd data={organizationSchema} />
         <CursorGlow />
         <ScrollProgress />
         <Navbar />

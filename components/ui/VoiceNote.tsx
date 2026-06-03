@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Mic, Square, Play, Pause, RotateCcw, Send, Check, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CONTACT_EMAIL } from "@/lib/data";
 
 /**
  * Apple-style voice note recorder, behaving like the iPhone voice-memo UX:
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils";
  *
  * On send, the audio is POSTed as multipart/form-data to `/api/voice-note`,
  * which acknowledges receipt (see that route for where it would be stored or
- * forwarded to info@avishakar.com).
+ * forwarded to info@avhishkar.app).
  *
  * SSR-safe: all browser APIs are touched only inside effects/handlers, and the
  * live bars fall back to a static state under `prefers-reduced-motion`.
@@ -102,7 +103,7 @@ export function VoiceNote() {
 
     // Feature-detect first so we fail gracefully on unsupported browsers.
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
-      setError("Recording isn't supported in this browser. Please email info@avishakar.com.");
+      setError(`Recording isn't supported in this browser. Please email ${CONTACT_EMAIL}.`);
       setPhase("error");
       return;
     }
@@ -169,7 +170,7 @@ export function VoiceNote() {
       } else if (name === "NotFoundError") {
         setError("No microphone was found. Connect one and try again.");
       } else {
-        setError("We couldn't start recording. Please try again, or email info@avishakar.com.");
+        setError(`We couldn't start recording. Please try again, or email ${CONTACT_EMAIL}.`);
       }
       setPhase("error");
       cleanupLive();
@@ -243,7 +244,7 @@ export function VoiceNote() {
         setPhase("recorded");
       }
     } catch {
-      setError("Network error while sending. Please try again, or email info@avishakar.com.");
+      setError(`Network error while sending. Please try again, or email ${CONTACT_EMAIL}.`);
       setPhase("recorded");
     }
   }
@@ -260,7 +261,7 @@ export function VoiceNote() {
         <div className="text-sm font-medium text-white">Voice note sent</div>
         <p className="max-w-xs text-[13px] text-white/55">
           Thanks — the team will pick it up at{" "}
-          <span className="text-white/80">info@avishakar.com</span> and get back to you.
+          <span className="text-white/80">{CONTACT_EMAIL}</span> and get back to you.
         </p>
         <button
           type="button"

@@ -1,5 +1,5 @@
 /** Single source of truth for the public contact address (note the spelling). */
-export const CONTACT_EMAIL = "info@avishakar.com";
+export const CONTACT_EMAIL = "info@avhishkar.app";
 
 /** Product tagline, used across hero, CTA and metadata. */
 export const TAGLINE = "Find the Leak. Quantify the Impact. Deploy the Fix.";

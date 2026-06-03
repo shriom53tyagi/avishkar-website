@@ -7,11 +7,16 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Book an Operational Audit",
   description:
-    "Book an Operational Intelligence Audit call, leave a voice note, or email the Avishkar team directly.",
+    "Book a free Operational Intelligence Audit for your hospital or clinic. Identify hidden revenue leakage, get a quantified recovery plan, and deploy AI agents only where ROI is proven.",
+  openGraph: {
+    title: "Book an Operational Audit — Avishkar AI",
+    description:
+      "A fixed-scope audit that quantifies hidden revenue loss across your EMR, billing, scheduling and call centers. HIPAA-aligned, read-only, BAA available.",
+    url: "https://avishkar.ai/contact",
+  },
 };
-
 export default function ContactPage() {
   return (
     <>
