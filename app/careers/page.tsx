@@ -7,7 +7,13 @@ import { CONTACT_EMAIL, OPEN_ROLES } from "@/lib/data";
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "Join Avishkar — a team of engineers and healthcare operators building the operational intelligence layer for hospitals and clinics.",
+    "Join Avishkar AI — we're building the operational intelligence layer for healthcare. Engineers and healthcare operators recovering hidden revenue for hospitals and clinics.",
+  openGraph: {
+    title: "Careers at Avishkar AI",
+    description:
+      "Work on hard problems at the intersection of AI and healthcare operations. We audit, quantify, and deploy — in that order.",
+    url: "https://avishkar.ai/careers",
+  },
 };
 
 const VALUES = [

@@ -8,6 +8,8 @@ import { Results } from "@/components/sections/Results";
 import { Security } from "@/components/sections/Security";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { faqSchema } from "@/lib/schema";
 
 /**
  * Home page — streamlined per the cleanup brief:
@@ -17,6 +19,7 @@ import { FinalCTA } from "@/components/sections/FinalCTA";
 export default function HomePage() {
   return (
     <>
+    <JsonLd data={faqSchema} />
       <Hero />
       <WhyDifferent />
       {/* Merged: Revenue Recovery + Where Revenue Leaks */}
