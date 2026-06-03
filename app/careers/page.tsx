@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: "Careers at Avishkar AI",
     description:
       "Work on hard problems at the intersection of AI and healthcare operations. We audit, quantify, and deploy — in that order.",
-    url: "https://avishkar.ai/careers",
+    url: "https://avishkar.app/careers",
   },
 };
 

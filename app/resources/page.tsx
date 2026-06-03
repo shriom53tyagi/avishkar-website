@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Healthcare Operations Resources — Avishkar AI",
     description:
       "Benchmarks, guides and calculators covering healthcare revenue leakage, claim denials and patient no-shows.",
-    url: "https://avishkar.ai/resources",
+    url: "https://avishkar.app/resources",
   },
 };
 

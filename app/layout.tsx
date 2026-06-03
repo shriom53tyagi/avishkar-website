@@ -153,7 +153,7 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 export const metadata: Metadata = {
-  metadataBase: new URL("https://avishkar.ai"),
+  metadataBase: new URL("https://avishkar.app"),
   title: {
     default: "Avishkar AI ",
     template: "%s · Avishkar AI",
@@ -180,7 +180,7 @@ export const metadata: Metadata = {
     description:
       "A structured operational audit for hospitals and clinics that surfaces hidden revenue loss and deploys AI agents only where they pay off.",
     type: "website",
-    url: "https://avishkar.ai",
+    url: "https://avishkar.app",
     images: [
       {
         url: "/og-image.png",

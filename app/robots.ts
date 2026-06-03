@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 // Your production domain — the ONE place it's defined.
 // Change this when you know your final domain, and robots + sitemap both update.
-const SITE_URL = "https://avishkar.ai";
+const SITE_URL = "https://avishkar.app";
 
 /**
  * Generates /robots.txt
