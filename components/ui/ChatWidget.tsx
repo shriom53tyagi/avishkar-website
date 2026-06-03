@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CONTACT_EMAIL } from "@/lib/data";
 import { VoiceNote } from "@/components/ui/VoiceNote";
 
 /**
@@ -30,8 +31,6 @@ import { VoiceNote } from "@/components/ui/VoiceNote";
 
 type Msg = { role: "user" | "assistant"; content: string };
 type Mode = "menu" | "query" | "roi" | "talk";
-
-const CONTACT_EMAIL = "info@avishakar.com";
 
 const GREETING: Msg = {
   role: "assistant",

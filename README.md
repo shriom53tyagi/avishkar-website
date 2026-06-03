@@ -43,12 +43,12 @@ AI agents only where they deliver measurable ROI.
   questions about Avishkar AI only. All LLM calls run **server-side** through
   `app/api/chat/route.ts`; the API key is read from `ANTHROPIC_API_KEY` and is
   never exposed to the browser. A strict system prompt keeps it on-topic, refuses
-  off-domain questions, and defers to `info@avishakar.com` when it doesn't know.
+  off-domain questions, and defers to `info@avhishkar.app` when it doesn't know.
 - **Apple-style voice note** (Contact section) — tap to record with a live
   waveform, timer, playback and re-record, built on the `MediaRecorder` API with
   graceful mic-permission handling. On send it POSTs the audio to
   `app/api/voice-note/route.ts`, which is where you wire up storage or forwarding
-  to `info@avishakar.com` (see the marked `TODO` block in that file).
+  to `info@avhishkar.app` (see the marked `TODO` block in that file).
 - **Interactive visitor counter** (footer) — rolls up on load, reacts to
   hover/click, and is persisted server-side via `app/api/visitors/route.ts`
   (a small JSON file under `data/`, with an in-memory fallback).
@@ -67,7 +67,7 @@ cp .env.example .env.local
 | `ANTHROPIC_MODEL`   | No       | Override the chat model (defaults to a fast, low-cost Claude model).|
 
 > The chatbot still loads without a key — it simply replies asking the user to
-> email `info@avishakar.com` instead of erroring.
+> email `info@avhishkar.app` instead of erroring.
 
 ## Run locally
 

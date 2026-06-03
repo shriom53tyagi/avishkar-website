@@ -16,7 +16,7 @@ import type { SentMessageInfo } from "nodemailer";
  *   SES_AWS_SECRET_ACCESS_KEY  IAM secret
  *   SES_AWS_REGION             SES region (e.g. us-west-1)
  *   SES_FROM_EMAIL             Verified sender address in SES (plain email only, no display name)
- *   SES_TO_EMAIL               Recipient (defaults to info@avishakar.com)
+ *   SES_TO_EMAIL               Recipient (defaults to info@avhishkar.app)
  *
  * To change who sends / receives, update SES_FROM_EMAIL and SES_TO_EMAIL in
  * your .env.local file. Both addresses must be verified identities in SES
@@ -32,9 +32,37 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Change these two in .env.local to control who sends and who receives.
-const TO_EMAIL   = process.env.SES_TO_EMAIL   || "info@avishakar.com";
-const FROM_EMAIL = process.env.SES_FROM_EMAIL || "info@avishakar.com";
+const TO_EMAIL   = process.env.SES_TO_EMAIL   || "info@avhishkar.app";
+const FROM_EMAIL = process.env.SES_FROM_EMAIL || "info@avhishkar.app";
 const MAX_BYTES  = 10 * 1024 * 1024; // 10 MB
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const MAX_VOICE_NOTE_REQUESTS_PER_WINDOW = 5;
+
+type RateLimitEntry = { count: number; reset: number };
+const rateLimitStore = new Map<string, RateLimitEntry>();
+
+function getClientIp(req: NextRequest) {
+  const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0].trim();
+  return forwarded || req.headers.get("x-real-ip") || "anonymous";
+}
+
+function checkRateLimit(req: NextRequest, maxRequests: number, windowMs: number) {
+  const now = Date.now();
+  const key = `${req.nextUrl.pathname}:${getClientIp(req)}`;
+  const entry = rateLimitStore.get(key);
+
+  if (!entry || entry.reset <= now) {
+    rateLimitStore.set(key, { count: 1, reset: now + windowMs });
+    return { ok: true, remaining: maxRequests - 1, reset: now + windowMs };
+  }
+
+  if (entry.count >= maxRequests) {
+    return { ok: false, remaining: 0, reset: entry.reset };
+  }
+
+  entry.count += 1;
+  return { ok: true, remaining: maxRequests - entry.count, reset: entry.reset };
+}
 
 // ── SES client factory ────────────────────────────────────────────────────────
 function makeSESClient() {
@@ -76,7 +104,7 @@ async function sendVoiceNoteEmail({
     transporter.sendMail(
       {
         // IMPORTANT: FROM_EMAIL must be a plain email address with no display
-        // name (e.g. info@avishakar.com NOT "Avishkar" <info@avishakar.com>).
+        // name (e.g. info@avhishkar.app NOT "Avishkar" <info@avhishkar.app>).
         // SES verifies the From: header against your verified identities and
         // rejects it if a display name is included while in sandbox mode.
         from:    FROM_EMAIL,
@@ -129,6 +157,25 @@ async function sendVoiceNoteEmail({
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
+    const rate = checkRateLimit(req, MAX_VOICE_NOTE_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS);
+    if (!rate.ok) {
+      const retryIn = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Too many voice note submissions from your network. Please wait ${retryIn} seconds and try again or email ${TO_EMAIL}.`,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(retryIn),
+            "X-RateLimit-Limit": String(MAX_VOICE_NOTE_REQUESTS_PER_WINDOW),
+            "X-RateLimit-Remaining": String(rate.remaining),
+          },
+        }
+      );
+    }
+
     const form        = await req.formData();
     const audio       = form.get("audio");
     const senderName  = ((form.get("name")  as string | null) ?? "").trim().slice(0, 200);
