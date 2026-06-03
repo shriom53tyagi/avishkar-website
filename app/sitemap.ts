@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 // Same single source of truth — keep this identical to robots.ts.
-const SITE_URL = "https://avishkar.ai";
+const SITE_URL = "https://avishkar.app";
 
 /**
  * Generates /sitemap.xml

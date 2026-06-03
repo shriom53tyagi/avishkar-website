@@ -10,7 +10,7 @@ import { CONTACT_EMAIL, TAGLINE, FAQS, SOCIAL_LINKS } from "@/lib/data";
  * SITE_URL: keep this in sync with robots.ts and sitemap.ts.
  * When your domain is final, update all three files.
  */
-const SITE_URL = "https://avishkar.ai";
+const SITE_URL = "https://avishkar.app";
 
 /**
  * Organization schema — sitewide identity.

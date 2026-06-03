@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Book an Operational Audit — Avishkar AI",
     description:
       "A fixed-scope audit that quantifies hidden revenue loss across your EMR, billing, scheduling and call centers. HIPAA-aligned, read-only, BAA available.",
-    url: "https://avishkar.ai/contact",
+    url: "https://avishkar.app/contact",
   },
 };
 export default function ContactPage() {

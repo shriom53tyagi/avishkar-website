@@ -37,7 +37,7 @@ export async function generateMetadata({
     openGraph: {
       title: resource.metaTitle,
       description: resource.metaDescription,
-      url: `https://avishkar.ai/resources/${resource.slug}`,
+      url: `https://avishkar.app/resources/${resource.slug}`,
       type: "article",
       publishedTime: resource.publishedAt,
     },
