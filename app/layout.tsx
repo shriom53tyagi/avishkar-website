@@ -155,8 +155,12 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://avishkar.ai"),
   title: {
-    default: "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.",
+    default: "Avishkar AI ",
     template: "%s · Avishkar AI",
+  },
+  icons: {
+    icon: '/logo.png',          // Points to public/icon.png
+    apple: '/logo.png',    
   },
   description:
     "Avishkar AI is a healthcare operational intelligence platform. We start with a structured operational audit, quantify hidden revenue loss across your EMR, billing, scheduling and call centers, then deploy AI agents only where they deliver measurable ROI.",
