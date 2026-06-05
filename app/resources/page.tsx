@@ -25,9 +25,9 @@ const CATEGORY_ICONS = {
 } as const;
 
 const CATEGORY_COLORS = {
-  data: "border-cyan-400/20 bg-cyan-400/[0.06] text-cyan-300",
-  guide: "border-violet-400/20 bg-violet-400/[0.06] text-violet-300",
-  pillar: "border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-300",
+  data: "border-cyan-200 bg-cyan-50 text-cyan-700",
+  guide: "border-violet-200 bg-violet-50 text-violet-700",
+  pillar: "border-emerald-200 bg-emerald-50 text-emerald-700",
 } as const;
 
 export default function ResourcesPage() {
@@ -89,18 +89,18 @@ export default function ResourcesPage() {
                         <Icon className="h-3 w-3" />
                         {CATEGORY_LABELS[r.category]}
                       </span>
-                      <span className="text-[11px] text-white/35">{r.readingTime}</span>
+                      <span className="text-[11px] text-slate-400">{r.readingTime}</span>
                     </div>
 
-                    <h2 className="mb-2 flex-1 text-[15px] font-medium leading-snug text-white group-hover:text-cyan-200 transition-colors">
+                    <h2 className="mb-2 flex-1 text-[15px] font-medium leading-snug text-slate-900 group-hover:text-blue-600 transition-colors">
                       {r.title}
                     </h2>
 
-                    <p className="mb-4 text-[13px] leading-relaxed text-white/50 line-clamp-3">
+                    <p className="mb-4 text-[13px] leading-relaxed text-slate-500 line-clamp-3">
                       {r.metaDescription}
                     </p>
 
-                    <div className="flex items-center gap-1.5 text-[12px] font-medium text-white/45 group-hover:text-cyan-300 transition-colors">
+                    <div className="flex items-center gap-1.5 text-[12px] font-medium text-slate-400 group-hover:text-blue-600 transition-colors">
                       Read guide
                       <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                     </div>
@@ -116,13 +116,13 @@ export default function ResourcesPage() {
               <h3 className="font-display text-2xl font-medium tracking-tight text-gradient">
                 Ready to quantify your own leakage?
               </h3>
-              <p className="mx-auto mt-3 max-w-lg text-[15px] text-white/55">
+              <p className="mx-auto mt-3 max-w-lg text-[15px] text-slate-500">
                 The benchmarks above describe typical organizations. An Operational Intelligence Audit
                 gives you the exact numbers from your own systems.
               </p>
               <Link
                 href="/contact"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_10px_40px_-10px_rgba(34,211,238,0.6)] transition-transform hover:-translate-y-px"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_12px_rgba(23,70,219,0.30),0_16px_48px_-8px_rgba(23,70,219,0.42)] transition-transform hover:-translate-y-px hover:bg-blue-700"
               >
                 Book a free operational audit
                 <ArrowRight className="h-4 w-4" />

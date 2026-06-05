@@ -12,8 +12,8 @@ export function FinalCTA() {
     >
       <div className="absolute inset-0 -z-10">
         <NeuralBackground className="absolute inset-0 h-full w-full opacity-70" />
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_50%,transparent_0%,rgba(4,5,10,0.85)_75%,#04050A_100%)]" />
-        <div className="absolute inset-0 bg-grid opacity-[0.25] mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_50%,transparent_0%,rgba(236,242,250,0.88)_75%,#ECF2FA_100%)]" />
+        <div className="absolute inset-0 bg-grid opacity-[0.25] mix-blend-multiply" />
       </div>
 
       <div className="mx-auto max-w-5xl px-6 text-center">
@@ -22,13 +22,13 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 backdrop-blur"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900/[0.03] px-3 py-1 backdrop-blur"
         >
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inset-0 rounded-full bg-cyan-400" />
             <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400/60" />
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/65">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-600">
             now booking · Q3 audit cohort
           </span>
         </motion.span>
@@ -52,7 +52,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.1 }}
-          className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] text-white/60"
+          className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] text-slate-500"
         >
           A 21-day audit. A quantified leakage map. A custom agent roadmap. Then we build.
         </motion.p>
@@ -77,14 +77,14 @@ export function FinalCTA() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.4 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-white/40"
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400"
         >
           <span>HIPAA-aligned</span>
-          <span className="h-1 w-1 rounded-full bg-white/15" />
+          <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>BAA available</span>
-          <span className="h-1 w-1 rounded-full bg-white/15" />
+          <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>21-day audit</span>
-          <span className="h-1 w-1 rounded-full bg-white/15" />
+          <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>Read-only by default</span>
         </motion.div>
       </div>

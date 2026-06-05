@@ -11,7 +11,7 @@ interface Props {
 
 export function ParticleField({
   density = 60,
-  color = "rgba(255,255,255,0.55)",
+  color = "rgba(23,70,219,0.40)",
   className,
   interactive = true,
 }: Props) {
@@ -34,11 +34,6 @@ export function ParticleField({
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      // getBoundingClientRect can report 0 on first paint (before layout settles)
-      // or while the element is briefly collapsed — which left the canvas stuck
-      // at the intrinsic HTML default of 300×150. Fall back through offset size,
-      // the parent box, and finally the viewport so the canvas always fills its
-      // container responsively.
       const parent = canvas.parentElement;
       w =
         rect.width ||
@@ -51,8 +46,6 @@ export function ParticleField({
         parent?.clientHeight ||
         (typeof window !== "undefined" ? window.innerHeight : 0);
 
-      // Bail out if we still couldn't measure — try again next frame rather than
-      // baking in the 300×150 default.
       if (w === 0 || h === 0) {
         raf = requestAnimationFrame(resize);
         return;
@@ -119,11 +112,11 @@ export function ParticleField({
           const dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
           if (d2 < 6500) {
-            const alpha = (1 - d2 / 6500) * 0.18;
+            const alpha = (1 - d2 / 6500) * 0.15;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(34,211,238,${alpha})`;
+            ctx.strokeStyle = `rgba(23,70,219,${alpha})`;
             ctx.lineWidth = 0.7;
             ctx.stroke();
           }
@@ -156,9 +149,6 @@ export function ParticleField({
     <canvas
       ref={canvasRef}
       aria-hidden
-      // `block h-full w-full` guarantees the canvas's CSS box fills its container
-      // regardless of its intrinsic attribute size; the className from the caller
-      // (positioning, opacity) is appended after.
       className={`block h-full w-full ${className ?? ""}`}
     />
   );

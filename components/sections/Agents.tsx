@@ -47,25 +47,25 @@ export function Agents() {
                 <motion.div
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.4 }}
-                  className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 transition-colors hover:border-cyan-400/20"
+                  className="group relative h-full overflow-hidden rounded-2xl border border-slate-900/[0.08] bg-gradient-to-b from-slate-50 to-white p-5 transition-colors hover:border-cyan-200"
                 >
                   <div className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_0%,rgba(34,211,238,0.10),transparent_70%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_0%,rgba(23,70,219,0.10),transparent_70%)]" />
                   </div>
 
                   <div className="flex items-start justify-between">
                     <div className="relative">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/[0.06] text-cyan-300">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-200 bg-cyan-50 text-cyan-700">
                         <Icon className="h-4 w-4" />
                       </div>
-                      <span className="pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-cyan-400/15 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
+                      <span className="pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-blue-50 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
                     </div>
                     <span
                       className={cn(
                         "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em]",
                         a.status === "live"
-                          ? "border-emerald-400/25 bg-emerald-400/[0.06] text-emerald-300"
-                          : "border-violet-400/25 bg-violet-400/[0.06] text-violet-300"
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          : "border-violet-200 bg-violet-50 text-violet-700"
                       )}
                     >
                       {a.status}
@@ -73,19 +73,19 @@ export function Agents() {
                   </div>
 
                   <div className="mt-5">
-                    <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
                       {a.tag}
                     </div>
-                    <h3 className="mt-1 font-display text-[17px] font-medium tracking-tight text-white">
+                    <h3 className="mt-1 font-display text-[17px] font-medium tracking-tight text-slate-900">
                       {a.name}
                     </h3>
-                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-relaxed text-white/55">
+                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-relaxed text-slate-500">
                       {a.desc}
                     </p>
                   </div>
 
                   {/* live wave */}
-                  <div className="mt-4 h-8 overflow-hidden rounded-md bg-white/[0.02]">
+                  <div className="mt-4 h-8 overflow-hidden rounded-md bg-slate-50">
                     <Wave seed={i} />
                   </div>
 
@@ -93,16 +93,16 @@ export function Agents() {
                     {a.metrics.map((m) => (
                       <span
                         key={m}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/65"
+                        className="rounded-full border border-slate-900/[0.08] bg-slate-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500"
                       >
                         {m}
                       </span>
                     ))}
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-white/[0.05] pt-3">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-900/[0.05] pt-3">
                     <StatusDot tone="live" label="Active" />
-                    <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
                       v{(2 + (i % 3) * 0.1).toFixed(1)}.{i + 4}
                     </div>
                   </div>
@@ -122,9 +122,9 @@ function Wave({ seed }: { seed: number }) {
     <svg viewBox="0 0 200 32" preserveAspectRatio="none" className="h-full w-full">
       <defs>
         <linearGradient id={`wg-${seed}`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="rgba(34,211,238,0)" />
-          <stop offset="50%" stopColor="rgba(34,211,238,0.7)" />
-          <stop offset="100%" stopColor="rgba(167,139,250,0.0)" />
+          <stop offset="0%" stopColor="rgba(23,70,219,0)" />
+          <stop offset="50%" stopColor="rgba(23,70,219,0.65)" />
+          <stop offset="100%" stopColor="rgba(109,40,217,0.0)" />
         </linearGradient>
       </defs>
       <path

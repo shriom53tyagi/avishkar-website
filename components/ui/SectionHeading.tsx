@@ -25,7 +25,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/60">
+        <span className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inset-0 rounded-full bg-cyan-400" />
             <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400/60" />
@@ -39,7 +39,7 @@ export function SectionHeading({
       {description && (
         <p
           className={cn(
-            "text-pretty text-[15px] leading-relaxed text-white/55 md:text-base",
+            "text-pretty text-[15px] leading-relaxed text-slate-500 md:text-base",
             align === "center" ? "max-w-2xl" : "max-w-2xl"
           )}
         >

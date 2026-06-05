@@ -58,11 +58,11 @@ export function AuditEngine() {
             <div className="surface relative overflow-hidden rounded-2xl p-5">
               {/* scanning beam */}
               <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
-                <div className="absolute inset-x-0 h-32 animate-scan-y bg-[linear-gradient(180deg,transparent,rgba(34,211,238,0.10),transparent)]" />
+                <div className="absolute inset-x-0 h-32 animate-scan-y bg-[linear-gradient(180deg,transparent,rgba(23,70,219,0.10),transparent)]" />
               </div>
 
               <div className="mb-4 flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
                   audit.pipeline / step-flow
                 </span>
                 <StatusDot tone="live" label="scanning" />
@@ -70,7 +70,7 @@ export function AuditEngine() {
 
               <ol className="relative space-y-3 pl-8">
                 {/* connecting line */}
-                <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-cyan-400/60 via-white/10 to-violet-400/40" />
+                <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-cyan-400/60 via-slate-900/10 to-violet-400/40" />
                 {AUDIT_STEPS.map((s, i) => {
                   const Icon = ICONS[i] ?? Workflow;
                   return (
@@ -80,25 +80,25 @@ export function AuditEngine() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-10% 0px" }}
                       transition={{ duration: 0.5, delay: 0.05 * i }}
-                      className="group relative rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 transition-colors hover:border-cyan-400/20 hover:bg-cyan-400/[0.03]"
+                      className="group relative rounded-xl border border-slate-900/[0.08] bg-slate-50/50 p-3.5 transition-colors hover:border-cyan-200 hover:bg-cyan-50/50"
                     >
-                      <span className="absolute -left-8 top-3 flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-ink-900 text-cyan-300 shadow-[0_0_0_4px_var(--bg)]">
+                      <span className="absolute -left-8 top-3 flex h-7 w-7 items-center justify-center rounded-full border border-slate-900/10 bg-white text-cyan-600 shadow-[0_0_0_4px_var(--bg)]">
                         <Icon className="h-3.5 w-3.5" />
                       </span>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
                             STEP {s.id}
                           </span>
-                          <h3 className="text-[15px] font-medium tracking-tight text-white">
+                          <h3 className="text-[15px] font-medium tracking-tight text-slate-900">
                             {s.label}
                           </h3>
                         </div>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-400/85">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-700">
                           OK
                         </span>
                       </div>
-                      <p className="mt-1 text-sm leading-relaxed text-white/55">{s.detail}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-500">{s.detail}</p>
                     </motion.li>
                   );
                 })}
@@ -120,12 +120,12 @@ export function AuditEngine() {
               ].map((s) => (
                 <span
                   key={s}
-                  className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55"
+                  className="rounded-full border border-slate-900/[0.08] bg-slate-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500"
                 >
                   {s}
                 </span>
               ))}
-              <span className="rounded-full border border-cyan-400/20 bg-cyan-400/[0.06] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-300">
+              <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-700">
                 + 80 more
               </span>
             </div>
@@ -188,13 +188,13 @@ function Terminal() {
 
   return (
     <div className="surface relative overflow-hidden rounded-2xl">
-      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-slate-900/[0.08] px-4 py-2.5">
         <div className="flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-rose-400/70" />
           <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
         </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
           ~/avishkar/audit.run
         </span>
         <span />
@@ -206,7 +206,7 @@ function Terminal() {
               <Line line={line} />
             </div>
           ))}
-          <span className="inline-block h-3 w-1.5 align-middle bg-cyan-400 animate-blink" />
+          <span className="inline-block h-3 w-1.5 align-middle bg-cyan-600 animate-blink" />
         </pre>
       </div>
     </div>
@@ -215,14 +215,14 @@ function Terminal() {
 
 function Line({ line }: { line: string }) {
   if (line.startsWith("✔"))
-    return <span className="text-emerald-400/90">{line}</span>;
+    return <span className="text-emerald-700">{line}</span>;
   if (line.startsWith("⚠"))
-    return <span className="text-amber-300/90">{line}</span>;
+    return <span className="text-amber-700">{line}</span>;
   if (line.startsWith("↻"))
-    return <span className="text-cyan-300/90">{line}</span>;
+    return <span className="text-cyan-700">{line}</span>;
   if (line.startsWith("›"))
-    return <span className="text-white/85">{line}</span>;
-  return <span className="text-white/65">{line}</span>;
+    return <span className="text-slate-700">{line}</span>;
+  return <span className="text-slate-500">{line}</span>;
 }
 
 function RevenueLeakCard() {
@@ -239,15 +239,15 @@ function RevenueLeakCard() {
     <div className="surface relative overflow-hidden rounded-2xl p-5">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
             leakage map
           </span>
-          <div className="mt-1 font-display text-2xl font-medium tracking-tight text-white">
+          <div className="mt-1 font-display text-2xl font-medium tracking-tight text-slate-900">
             ${(total / 1_000_000).toFixed(2)}M
-            <span className="ml-2 text-sm font-normal text-emerald-400/90">/ yr recovery</span>
+            <span className="ml-2 text-sm font-normal text-emerald-700">/ yr recovery</span>
           </div>
         </div>
-        <span className="rounded-full border border-emerald-400/25 bg-emerald-400/[0.06] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-300">
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-700">
           7 priorities
         </span>
       </div>
@@ -256,10 +256,10 @@ function RevenueLeakCard() {
         {leaks.map((l, i) => (
           <div key={l.name} className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-white/75">{l.name}</span>
-              <span className="font-mono text-white/55">${l.value.toLocaleString()}</span>
+              <span className="text-slate-600">{l.name}</span>
+              <span className="font-mono text-slate-500">${l.value.toLocaleString()}</span>
             </div>
-            <div className="relative h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
+            <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-900/[0.05]">
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${l.pct}%` }}

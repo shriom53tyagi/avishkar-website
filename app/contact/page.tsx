@@ -34,31 +34,30 @@ export default function ContactPage() {
       <section className="relative pb-24 pt-8 sm:pb-32">
         <div className="mx-auto max-w-7xl px-6 space-y-6">
 
-          {/* ── Row 1: Calendar + Voice note ─────────────────────────── */}
+          {/* Row 1: Calendar + Voice note */}
           <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
 
-            {/* Calendar booking — primary CTA */}
+            {/* Calendar booking */}
             <Reveal>
               <div className="surface h-full rounded-2xl p-6 sm:p-8">
                 <div className="mb-5 flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-                    <CalendarDays className="h-5 w-5 text-cyan-300" />
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
+                    <CalendarDays className="h-5 w-5 text-cyan-700" />
                   </span>
                   <div>
                     <h2 className="font-display text-2xl font-medium tracking-tight text-gradient">
                       Book a discovery call
                     </h2>
-                    <p className="text-[13px] text-white/45">
+                    <p className="text-[13px] text-slate-400">
                       30 min · Operational audit scoping
                     </p>
                   </div>
                 </div>
-                <p className="mb-6 max-w-lg text-[15px] leading-relaxed text-white/55">
+                <p className="mb-6 max-w-lg text-[15px] leading-relaxed text-slate-500">
                   Pick a time directly in the calendar below. We&apos;ll scope a
                   fixed, read-only audit, walk through a sample leakage report,
                   and show you the numbers before anything gets automated.
                 </p>
-                {/* Calendly inline embed — set NEXT_PUBLIC_CALENDLY_URL in .env.local */}
                 <CalendarEmbed />
               </div>
             </Reveal>
@@ -68,7 +67,7 @@ export default function ContactPage() {
               {/* Voice note */}
               <Reveal delay={0.08}>
                 <div className="flex flex-col">
-                  <div className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-white/45">
+                  <div className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">
                     <span className="relative inline-flex h-1.5 w-1.5">
                       <span className="absolute inset-0 rounded-full bg-cyan-400" />
                       <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400/60" />
@@ -83,16 +82,16 @@ export default function ContactPage() {
               <Reveal delay={0.14}>
                 <div className="surface rounded-2xl p-5">
                   <div className="flex items-start gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-                      <Mail className="h-4 w-4 text-cyan-300" />
+                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
+                      <Mail className="h-4 w-4 text-cyan-700" />
                     </span>
                     <div>
-                      <div className="text-sm font-medium text-white">Prefer email?</div>
-                      <p className="mt-0.5 text-[13px] text-white/50">
+                      <div className="text-sm font-medium text-slate-900">Prefer email?</div>
+                      <p className="mt-0.5 text-[13px] text-slate-500">
                         Reach us directly at{" "}
                         <a
                           href={`mailto:${CONTACT_EMAIL}?subject=Operational%20Audit%20Inquiry`}
-                          className="text-cyan-300 underline-offset-4 hover:underline"
+                          className="text-cyan-700 underline-offset-4 hover:underline"
                         >
                           {CONTACT_EMAIL}
                         </a>
@@ -104,7 +103,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* ── Row 2: What to expect strip ──────────────────────────── */}
+          {/* Row 2: What to expect strip */}
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               {
@@ -125,11 +124,11 @@ export default function ContactPage() {
             ].map((c, i) => (
               <Reveal key={c.title} delay={0.15 + i * 0.05}>
                 <div className="surface h-full rounded-2xl p-5">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-                    <c.icon className="h-4 w-4 text-cyan-300" />
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
+                    <c.icon className="h-4 w-4 text-cyan-700" />
                   </span>
-                  <div className="mt-4 text-sm font-medium text-white">{c.title}</div>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-white/50">{c.note}</p>
+                  <div className="mt-4 text-sm font-medium text-slate-900">{c.title}</div>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{c.note}</p>
                 </div>
               </Reveal>
             ))}

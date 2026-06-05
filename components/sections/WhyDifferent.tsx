@@ -7,10 +7,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { WHY_DIFFERENT } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-/**
- * Why Avishkar Is Different — frames the core positioning: most healthcare AI
- * starts with automation; Avishkar starts with diagnosis. Side-by-side compare.
- */
 export function WhyDifferent() {
   const { traditional, avishkar } = WHY_DIFFERENT;
 
@@ -32,13 +28,13 @@ export function WhyDifferent() {
 
         {/* Narrative */}
         <Reveal>
-          <div className="mx-auto mt-12 max-w-3xl space-y-4 text-center text-[15px] leading-relaxed text-white/60">
+          <div className="mx-auto mt-12 max-w-3xl space-y-4 text-center text-[15px] leading-relaxed text-slate-500">
             <p>
               Before deploying a single agent, we map how patients, staff, systems, and workflows
               actually interact. We identify where value is being lost, quantify the financial
               impact, and prioritize opportunities by ROI.
             </p>
-            <p className="text-white/80">
+            <p className="text-slate-700">
               Only then do we deploy targeted AI agents.
             </p>
           </div>
@@ -48,15 +44,15 @@ export function WhyDifferent() {
         <div className="mt-14 grid gap-4 md:grid-cols-2">
           {/* Traditional */}
           <Reveal>
-            <div className="h-full rounded-2xl border border-white/[0.06] bg-white/[0.015] p-7">
-              <div className="mb-5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-white/45">
+            <div className="h-full rounded-2xl border border-slate-900/[0.08] bg-slate-50/60 p-7">
+              <div className="mb-5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">
                 {traditional.label}
               </div>
               <ul className="space-y-3.5">
                 {traditional.points.map((p) => (
-                  <li key={p} className="flex items-center gap-3 text-[15px] text-white/50">
-                    <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
-                      <X className="h-3 w-3 text-white/40" />
+                  <li key={p} className="flex items-center gap-3 text-[15px] text-slate-500">
+                    <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-900/10 bg-white">
+                      <X className="h-3 w-3 text-slate-400" />
                     </span>
                     {p}
                   </li>
@@ -70,18 +66,18 @@ export function WhyDifferent() {
             <div
               className={cn(
                 "relative h-full overflow-hidden rounded-2xl p-7",
-                "surface border-cyan-400/20"
+                "surface border-cyan-200"
               )}
             >
-              <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-gradient-to-br from-cyan-400/15 to-transparent blur-2xl" />
-              <div className="mb-5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-200/80">
+              <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-gradient-to-br from-cyan-50 to-transparent blur-2xl" />
+              <div className="mb-5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-700">
                 {avishkar.label}
               </div>
               <ul className="space-y-3.5">
                 {avishkar.points.map((p) => (
-                  <li key={p} className="flex items-center gap-3 text-[15px] text-white/85">
-                    <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10">
-                      <Check className="h-3 w-3 text-emerald-400" />
+                  <li key={p} className="flex items-center gap-3 text-[15px] text-slate-700">
+                    <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50">
+                      <Check className="h-3 w-3 text-emerald-700" />
                     </span>
                     {p}
                   </li>
