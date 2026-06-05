@@ -34,17 +34,17 @@ export default async function Image({
   const categoryLabel = CATEGORY_LABELS[resource.category];
   const accentColor =
     resource.category === "data"
-      ? "#22D3EE"
+      ? "#1570EF"
       : resource.category === "guide"
-      ? "#A78BFA"
-      : "#34D399";
+      ? "#6D5BD0"
+      : "#059669";
 
   return new ImageResponse(
     <div
       style={{
         width: "1200px",
         height: "630px",
-        background: "#04050A",
+        background: "#FBFCFD",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -63,7 +63,7 @@ export default async function Image({
           width: "400px",
           height: "400px",
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${accentColor}22 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${accentColor}12 0%, transparent 70%)`,
           display: "flex",
         }}
       />
@@ -75,16 +75,16 @@ export default async function Image({
             width: "32px",
             height: "32px",
             borderRadius: "8px",
-            background: "linear-gradient(135deg, #22D3EE, #A78BFA)",
+            background: "linear-gradient(135deg, #1570EF, #6D5BD0)",
             display: "flex",
           }}
         />
-        <span style={{ color: "white", fontSize: "18px", fontWeight: "600" }}>
+        <span style={{ color: "#0F172A", fontSize: "18px", fontWeight: "600" }}>
           Avishkar
         </span>
         <span
           style={{
-            color: "rgba(255,255,255,0.4)",
+            color: "#94A3B8",
             fontSize: "11px",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
@@ -94,7 +94,7 @@ export default async function Image({
         </span>
         <span
           style={{
-            color: "rgba(255,255,255,0.3)",
+            color: "#CBD5E1",
             fontSize: "14px",
             marginLeft: "8px",
           }}
@@ -110,8 +110,8 @@ export default async function Image({
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: `${accentColor}18`,
-            border: `1px solid ${accentColor}44`,
+            background: "#EFF6FF",
+            border: "1px solid #DBEAFE",
             borderRadius: "100px",
             padding: "6px 14px",
             width: "fit-content",
@@ -136,7 +136,7 @@ export default async function Image({
             fontWeight: "700",
             letterSpacing: "-1.5px",
             lineHeight: "1.1",
-            color: "white",
+            color: "#0F172A",
           }}
         >
           {resource.headline}
@@ -145,10 +145,10 @@ export default async function Image({
 
       {/* Bottom */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px" }}>
+        <span style={{ color: "#94A3B8", fontSize: "14px" }}>
           avishkar.ai/resources/{resource.slug}
         </span>
-        <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px" }}>
+        <span style={{ color: "#94A3B8", fontSize: "14px" }}>
           {resource.readingTime}
         </span>
       </div>

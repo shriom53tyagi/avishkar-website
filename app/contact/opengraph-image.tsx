@@ -11,7 +11,7 @@ export default function Image() {
       style={{
         width: "1200px",
         height: "630px",
-        background: "#04050A",
+        background: "#FBFCFD",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -30,7 +30,7 @@ export default function Image() {
           width: "450px",
           height: "450px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(52,211,153,0.15) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(5,150,105,0.07) 0%, transparent 70%)",
           display: "flex",
         }}
       />
@@ -42,14 +42,14 @@ export default function Image() {
             width: "36px",
             height: "36px",
             borderRadius: "9px",
-            background: "linear-gradient(135deg, #22D3EE, #A78BFA)",
+            background: "linear-gradient(135deg, #1570EF, #6D5BD0)",
             display: "flex",
           }}
         />
-        <span style={{ color: "white", fontSize: "20px", fontWeight: "600" }}>
+        <span style={{ color: "#0F172A", fontSize: "20px", fontWeight: "600" }}>
           Avishkar
         </span>
-        <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px", letterSpacing: "0.12em", textTransform: "uppercase" }}>
+        <span style={{ color: "#94A3B8", fontSize: "12px", letterSpacing: "0.12em", textTransform: "uppercase" }}>
           /AI
         </span>
       </div>
@@ -58,7 +58,7 @@ export default function Image() {
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         <span
           style={{
-            color: "#22D3EE",
+            color: "#1570EF",
             fontSize: "14px",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
@@ -73,17 +73,17 @@ export default function Image() {
             fontWeight: "700",
             letterSpacing: "-2px",
             lineHeight: "1.1",
-            color: "white",
+            color: "#0F172A",
             display: "flex",
             flexDirection: "column",
           }}
         >
           <span>Book an</span>
-          <span style={{ background: "linear-gradient(90deg, #22D3EE, #34D399)", backgroundClip: "text", color: "transparent" }}>
+          <span style={{ background: "linear-gradient(90deg, #1570EF, #059669)", backgroundClip: "text", color: "transparent" }}>
             Operational Audit
           </span>
         </div>
-        <div style={{ fontSize: "22px", color: "rgba(255,255,255,0.55)", maxWidth: "660px", lineHeight: "1.5" }}>
+        <div style={{ fontSize: "22px", color: "#475569", maxWidth: "660px", lineHeight: "1.5" }}>
           A fixed-scope audit. A quantified leakage map. A recovery plan — before any automation is proposed.
         </div>
       </div>
@@ -94,11 +94,11 @@ export default function Image() {
           <div
             key={t}
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: "#EFF6FF",
+              border: "1px solid #DBEAFE",
               borderRadius: "100px",
               padding: "8px 16px",
-              color: "rgba(255,255,255,0.6)",
+              color: "#475569",
               fontSize: "13px",
               display: "flex",
             }}

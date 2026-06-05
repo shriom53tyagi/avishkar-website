@@ -6,23 +6,10 @@ import { Mic, Square, Play, Pause, RotateCcw, Send, Check, AlertCircle } from "l
 import { cn } from "@/lib/utils";
 import { CONTACT_EMAIL } from "@/lib/data";
 
-/**
- * Apple-style voice note recorder, behaving like the iPhone voice-memo UX:
- * tap to record → live animated waveform + timer → stop → playback / re-record /
- * send. Uses the MediaRecorder API with graceful mic-permission handling.
- *
- * On send, the audio is POSTed as multipart/form-data to `/api/voice-note`,
- * which acknowledges receipt (see that route for where it would be stored or
- * forwarded to info@avhishkar.app).
- *
- * SSR-safe: all browser APIs are touched only inside effects/handlers, and the
- * live bars fall back to a static state under `prefers-reduced-motion`.
- */
-
 type Phase = "idle" | "recording" | "recorded" | "sending" | "sent" | "error";
 
 const BAR_COUNT = 40;
-const MAX_SECONDS = 120; // auto-stop after 2 minutes
+const MAX_SECONDS = 120;
 
 export function VoiceNote() {
   const reduce = useReducedMotion();
@@ -33,11 +20,9 @@ export function VoiceNote() {
   const [levels, setLevels] = useState<number[]>(() => new Array(BAR_COUNT).fill(0.06));
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Optional contact fields so the team can reply.
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  // Refs for the live recording machinery.
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -50,7 +35,6 @@ export function VoiceNote() {
   const audioBlobRef = useRef<Blob | null>(null);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
 
-  /** Tear down all live audio resources (stream, context, timers, raf). */
   const cleanupLive = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (timerRef.current) clearInterval(timerRef.current);
@@ -66,7 +50,6 @@ export function VoiceNote() {
     }
   }, []);
 
-  // Clean up everything on unmount + revoke any object URL.
   useEffect(() => {
     return () => {
       cleanupLive();
@@ -75,7 +58,6 @@ export function VoiceNote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** Drive the live waveform from the analyser node. */
   const runMeter = useCallback(() => {
     const analyser = analyserRef.current;
     if (!analyser) return;
@@ -83,13 +65,12 @@ export function VoiceNote() {
 
     const draw = () => {
       analyser.getByteFrequencyData(data);
-      // Reduce the spectrum to BAR_COUNT bars by averaging buckets.
       const bucket = Math.floor(data.length / BAR_COUNT);
       const next: number[] = [];
       for (let i = 0; i < BAR_COUNT; i++) {
         let sum = 0;
         for (let j = 0; j < bucket; j++) sum += data[i * bucket + j];
-        const avg = sum / bucket / 255; // 0..1
+        const avg = sum / bucket / 255;
         next.push(Math.max(0.06, Math.min(1, avg * 1.4)));
       }
       setLevels(next);
@@ -101,7 +82,6 @@ export function VoiceNote() {
   async function startRecording() {
     setError(null);
 
-    // Feature-detect first so we fail gracefully on unsupported browsers.
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       setError(`Recording isn't supported in this browser. Please email ${CONTACT_EMAIL}.`);
       setPhase("error");
@@ -112,7 +92,6 @@ export function VoiceNote() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      // Set up analyser for the live waveform.
       const AudioCtx =
         window.AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
@@ -124,7 +103,6 @@ export function VoiceNote() {
       source.connect(analyser);
       analyserRef.current = analyser;
 
-      // Pick a widely supported container.
       const mime = MediaRecorder.isTypeSupported("audio/webm")
         ? "audio/webm"
         : MediaRecorder.isTypeSupported("audio/mp4")
@@ -155,7 +133,6 @@ export function VoiceNote() {
       setPhase("recording");
       if (!reduce) runMeter();
 
-      // Timer + auto-stop guard.
       timerRef.current = setInterval(() => {
         setSeconds((s) => {
           if (s + 1 >= MAX_SECONDS) stopRecording();
@@ -163,7 +140,6 @@ export function VoiceNote() {
         });
       }, 1000);
     } catch (err) {
-      // Permission denied / no device / other constraints.
       const name = (err as DOMException)?.name;
       if (name === "NotAllowedError" || name === "SecurityError") {
         setError("Microphone access was blocked. Enable it in your browser settings to record.");
@@ -211,7 +187,6 @@ export function VoiceNote() {
   async function sendNote() {
     if (!audioBlobRef.current) return;
 
-    // Client-side required field validation
     if (!name.trim()) {
       setError("Please enter your name before sending.");
       return;
@@ -220,7 +195,6 @@ export function VoiceNote() {
       setError("Please enter your email so we can follow up.");
       return;
     }
-    // Basic email format check
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("Please enter a valid email address.");
       return;
@@ -251,22 +225,21 @@ export function VoiceNote() {
 
   const mmss = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
 
-  // ---- Sent confirmation state -------------------------------------------
   if (phase === "sent") {
     return (
       <div className="surface flex flex-col items-center gap-3 rounded-2xl px-6 py-8 text-center">
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-400/10">
-          <Check className="h-5 w-5 text-emerald-400" />
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50">
+          <Check className="h-5 w-5 text-emerald-700" />
         </span>
-        <div className="text-sm font-medium text-white">Voice note sent</div>
-        <p className="max-w-xs text-[13px] text-white/55">
+        <div className="text-sm font-medium text-slate-900">Voice note sent</div>
+        <p className="max-w-xs text-[13px] text-slate-500">
           Thanks — the team will pick it up at{" "}
-          <span className="text-white/80">{CONTACT_EMAIL}</span> and get back to you.
+          <span className="text-slate-700">{CONTACT_EMAIL}</span> and get back to you.
         </p>
         <button
           type="button"
           onClick={reset}
-          className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-[12px] text-white/70 transition-colors hover:text-white"
+          className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-slate-900/10 bg-slate-50 px-3.5 py-1.5 text-[12px] text-slate-600 transition-colors hover:text-slate-900"
         >
           <RotateCcw className="h-3.5 w-3.5" /> Record another
         </button>
@@ -277,7 +250,7 @@ export function VoiceNote() {
   return (
     <div className="surface rounded-2xl p-5 sm:p-6">
       {/* Waveform + timer panel */}
-      <div className="rounded-xl border border-white/[0.06] bg-ink-900/50 px-4 py-5">
+      <div className="rounded-xl border border-slate-900/[0.08] bg-slate-50 px-4 py-5">
         <div className="flex h-16 items-center justify-center gap-[3px]">
           {levels.map((lvl, i) => {
             const active = phase === "recording";
@@ -286,7 +259,7 @@ export function VoiceNote() {
                 key={i}
                 className={cn(
                   "w-[3px] rounded-full",
-                  active ? "bg-cyan-400" : phase === "recorded" ? "bg-white/35" : "bg-white/15"
+                  active ? "bg-blue-500" : phase === "recorded" ? "bg-slate-300" : "bg-slate-200"
                 )}
                 animate={{ height: `${Math.max(6, lvl * 56)}px` }}
                 transition={{ duration: reduce ? 0 : 0.08, ease: "linear" }}
@@ -296,12 +269,12 @@ export function VoiceNote() {
           })}
         </div>
 
-        <div className="mt-3 text-center font-mono text-[13px] tabular-nums tracking-[0.16em] text-white/70">
+        <div className="mt-3 text-center font-mono text-[13px] tabular-nums tracking-[0.16em] text-slate-600">
           {mmss}
           {phase === "recording" && (
-            <span className="ml-2 inline-flex items-center gap-1.5 align-middle text-rose-400">
+            <span className="ml-2 inline-flex items-center gap-1.5 align-middle text-rose-600">
               <span className="relative inline-flex h-1.5 w-1.5">
-                <span className="absolute inset-0 rounded-full bg-rose-400" />
+                <span className="absolute inset-0 rounded-full bg-rose-500" />
                 <span className="absolute inset-0 animate-ping rounded-full bg-rose-400/60" />
               </span>
               <span className="text-[10px] uppercase tracking-[0.18em]">rec</span>
@@ -322,8 +295,8 @@ export function VoiceNote() {
 
       {/* Error line */}
       {error && (
-        <div className="mt-4 flex items-start gap-2 rounded-lg border border-rose-400/20 bg-rose-400/5 px-3 py-2 text-[12.5px] text-rose-200/90">
-          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-400" />
+        <div className="mt-4 flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[12.5px] text-rose-600">
+          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-500" />
           <span>{error}</span>
         </div>
       )}
@@ -336,7 +309,7 @@ export function VoiceNote() {
             <button
               type="button"
               onClick={startRecording}
-              className="group inline-flex items-center gap-2.5 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_10px_40px_-10px_rgba(34,211,238,0.6)] transition-transform hover:-translate-y-px"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_12px_rgba(23,70,219,0.30),0_16px_48px_-8px_rgba(23,70,219,0.42)] transition-transform hover:-translate-y-px hover:bg-blue-700"
             >
               <Mic className="h-4 w-4" />
               {phase === "error" ? "Try again" : "Tap to record"}
@@ -348,7 +321,7 @@ export function VoiceNote() {
               type="button"
               onClick={stopRecording}
               aria-label="Stop recording"
-              className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-rose-400/40 bg-rose-400/10 text-rose-300 transition-transform hover:scale-105"
+              className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-600 transition-transform hover:scale-105"
             >
               <Square className="h-5 w-5 fill-current" />
             </button>
@@ -360,7 +333,7 @@ export function VoiceNote() {
                 type="button"
                 onClick={togglePlayback}
                 aria-label={isPlaying ? "Pause" : "Play"}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-white transition-colors hover:border-white/30"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-900/15 bg-slate-50 text-slate-700 transition-colors hover:border-slate-900/30"
               >
                 {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-px" />}
               </button>
@@ -368,7 +341,7 @@ export function VoiceNote() {
                 type="button"
                 onClick={reset}
                 aria-label="Re-record"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-white/80 transition-colors hover:border-white/30 hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-900/15 bg-slate-50 text-slate-600 transition-colors hover:border-slate-900/30 hover:text-slate-900"
               >
                 <RotateCcw className="h-4 w-4" />
               </button>
@@ -376,29 +349,29 @@ export function VoiceNote() {
           )}
         </div>
 
-        {/* Required contact fields + send (shown once recording is done) */}
+        {/* Required contact fields + send */}
         {(phase === "recorded" || phase === "sending") && (
-          <div className="w-full space-y-3 border-t border-white/[0.06] pt-4">
-            <p className="text-[12px] text-white/40">
+          <div className="w-full space-y-3 border-t border-slate-900/[0.08] pt-4">
+            <p className="text-[12px] text-slate-400">
               Required so we can follow up with you.{" "}
-              <span className="text-rose-400">*</span>
+              <span className="text-rose-500">*</span>
             </p>
             <div className="grid gap-2.5 sm:grid-cols-2">
               <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/50">
-                  Name <span className="text-rose-400">*</span>
+                <label className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                  Name <span className="text-rose-500">*</span>
                 </label>
                 <input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your full name"
                   required
-                  className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-[13px] text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none"
+                  className="rounded-lg border border-slate-900/10 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/50">
-                  Email <span className="text-rose-400">*</span>
+                <label className="font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                  Email <span className="text-rose-500">*</span>
                 </label>
                 <input
                   value={email}
@@ -406,7 +379,7 @@ export function VoiceNote() {
                   type="email"
                   placeholder="you@hospital.com"
                   required
-                  className="rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-[13px] text-white placeholder:text-white/30 focus:border-white/25 focus:outline-none"
+                  className="rounded-lg border border-slate-900/10 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none"
                 />
               </div>
             </div>
@@ -417,12 +390,12 @@ export function VoiceNote() {
               className={cn(
                 "inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-transform",
                 phase === "sending" || !name.trim() || !email.trim()
-                  ? "cursor-not-allowed bg-white/15 text-white/40"
-                  : "bg-white text-ink-950 shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_10px_40px_-10px_rgba(34,211,238,0.6)] hover:-translate-y-px"
+                  ? "cursor-not-allowed bg-slate-100 text-slate-400"
+                  : "bg-blue-600 text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_12px_rgba(23,70,219,0.30),0_16px_48px_-8px_rgba(23,70,219,0.42)] hover:-translate-y-px hover:bg-blue-700"
               )}
             >
               {phase === "sending" ? (
-                "Sending…"
+                "Sending..."
               ) : (
                 <>
                   <Send className="h-4 w-4" /> Send voice note
@@ -433,7 +406,7 @@ export function VoiceNote() {
         )}
 
         {phase === "idle" && (
-          <p className="text-center text-[12px] text-white/40">
+          <p className="text-center text-[12px] text-slate-400">
             Prefer to talk? Leave us a quick voice note — like a voicemail.
           </p>
         )}

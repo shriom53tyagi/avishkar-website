@@ -1,17 +1,5 @@
 import { ImageResponse } from "next/og";
 
-/**
- * Homepage Open Graph image — auto-registered at /opengraph-image
- *
- * Next.js reads this file and:
- *  1. Serves the PNG at /opengraph-image
- *  2. Automatically injects <meta property="og:image"> into the homepage
- *     so you don't need to set it manually in layout.tsx metadata.
- *
- * Satori (the renderer) supports a subset of CSS — use style={{}} objects,
- * not Tailwind classes. Flexbox works; grid does not.
- */
-
 export const runtime = "edge";
 export const alt = "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.";
 export const size = { width: 1200, height: 630 };
@@ -23,7 +11,7 @@ export default function Image() {
       style={{
         width: "1200px",
         height: "630px",
-        background: "#04050A",
+        background: "#FBFCFD",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -33,7 +21,7 @@ export default function Image() {
         overflow: "hidden",
       }}
     >
-      {/* Cyan glow top-left */}
+      {/* Blue glow top-left */}
       <div
         style={{
           position: "absolute",
@@ -43,7 +31,7 @@ export default function Image() {
           height: "500px",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(34,211,238,0.18) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(21,112,239,0.07) 0%, transparent 70%)",
           display: "flex",
         }}
       />
@@ -57,7 +45,7 @@ export default function Image() {
           height: "400px",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(109,91,208,0.06) 0%, transparent 70%)",
           display: "flex",
         }}
       />
@@ -77,7 +65,7 @@ export default function Image() {
               width: "40px",
               height: "40px",
               borderRadius: "10px",
-              background: "linear-gradient(135deg, #22D3EE, #A78BFA)",
+              background: "linear-gradient(135deg, #1570EF, #6D5BD0)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -96,7 +84,7 @@ export default function Image() {
           </div>
           <span
             style={{
-              color: "white",
+              color: "#0F172A",
               fontSize: "22px",
               fontWeight: "600",
               letterSpacing: "-0.5px",
@@ -106,7 +94,7 @@ export default function Image() {
           </span>
           <span
             style={{
-              color: "rgba(255,255,255,0.4)",
+              color: "#94A3B8",
               fontSize: "13px",
               fontWeight: "400",
               letterSpacing: "0.1em",
@@ -124,8 +112,8 @@ export default function Image() {
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "#EFF6FF",
+            border: "1px solid #DBEAFE",
             borderRadius: "100px",
             padding: "8px 16px",
           }}
@@ -135,13 +123,13 @@ export default function Image() {
               width: "8px",
               height: "8px",
               borderRadius: "50%",
-              background: "#34D399",
+              background: "#059669",
               display: "flex",
             }}
           />
           <span
             style={{
-              color: "rgba(255,255,255,0.6)",
+              color: "#475569",
               fontSize: "13px",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
@@ -160,7 +148,7 @@ export default function Image() {
             fontWeight: "700",
             lineHeight: "1.1",
             letterSpacing: "-2px",
-            color: "white",
+            color: "#0F172A",
             display: "flex",
             flexDirection: "column",
             gap: "4px",
@@ -169,7 +157,7 @@ export default function Image() {
           <span>Stop losing revenue to</span>
           <span
             style={{
-              background: "linear-gradient(90deg, #22D3EE, #A78BFA)",
+              background: "linear-gradient(90deg, #1570EF, #6D5BD0)",
               backgroundClip: "text",
               color: "transparent",
             }}
@@ -180,7 +168,7 @@ export default function Image() {
         <div
           style={{
             fontSize: "22px",
-            color: "rgba(255,255,255,0.55)",
+            color: "#475569",
             lineHeight: "1.5",
             maxWidth: "700px",
           }}
@@ -217,16 +205,16 @@ export default function Image() {
                 {i > 0 && (
                   <span
                     style={{
-                      color: "rgba(255,255,255,0.2)",
+                      color: "#CBD5E1",
                       fontSize: "14px",
                     }}
                   >
-                    ·
+                    {"·"}
                   </span>
                 )}
                 <span
                   style={{
-                    color: "#22D3EE",
+                    color: "#1570EF",
                     fontSize: "14px",
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
@@ -246,16 +234,16 @@ export default function Image() {
             display: "flex",
             alignItems: "center",
             gap: "10px",
-            background: "rgba(34,211,238,0.08)",
-            border: "1px solid rgba(34,211,238,0.2)",
+            background: "#EFF6FF",
+            border: "1px solid #DBEAFE",
             borderRadius: "12px",
             padding: "10px 18px",
           }}
         >
-          <span style={{ color: "#22D3EE", fontSize: "24px", fontWeight: "700" }}>
+          <span style={{ color: "#1570EF", fontSize: "24px", fontWeight: "700" }}>
             $4.2M+
           </span>
-          <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px" }}>
+          <span style={{ color: "#475569", fontSize: "14px" }}>
             avg recovery identified
           </span>
         </div>

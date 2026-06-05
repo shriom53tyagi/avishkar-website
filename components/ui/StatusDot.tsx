@@ -10,7 +10,7 @@ const toneMap = {
   live: "text-emerald-400",
   warn: "text-amber-400",
   danger: "text-rose-400",
-  muted: "text-white/40",
+  muted: "text-slate-400",
 } as const;
 
 export function StatusDot({ tone = "live", className, label }: Props) {
@@ -20,7 +20,7 @@ export function StatusDot({ tone = "live", className, label }: Props) {
         <span className="absolute inset-0 rounded-full bg-current" />
       </span>
       {label && (
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/55">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
           {label}
         </span>
       )}

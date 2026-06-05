@@ -4,10 +4,6 @@ import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { GridBackground } from "@/components/ui/GridBackground";
 
-/**
- * Shared hero/header for standalone pages (Contact, Careers). Accounts for the
- * fixed navbar with generous top padding and reuses the site's grid backdrop.
- */
 export function PageHeader({
   eyebrow,
   title,
@@ -25,7 +21,7 @@ export function PageHeader({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/60"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500"
         >
           <span className="relative inline-flex h-1.5 w-1.5">
             <span className="absolute inset-0 rounded-full bg-cyan-400" />
@@ -48,7 +44,7 @@ export function PageHeader({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] leading-relaxed text-white/60 md:text-base"
+            className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] leading-relaxed text-slate-500 md:text-base"
           >
             {description}
           </motion.p>

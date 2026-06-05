@@ -31,21 +31,22 @@ export function Button({
 
   const variants: Record<Variant, string> = {
     primary: cn(
-      "text-ink-950 bg-white",
-      "shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_10px_40px_-10px_rgba(34,211,238,0.6)]",
-      "hover:translate-y-[-1px] hover:shadow-[0_0_0_1px_rgba(34,211,238,0.7),0_18px_60px_-12px_rgba(34,211,238,0.8)]"
+      "text-white bg-blue-600",
+      "shadow-[0_1px_2px_rgba(23,70,219,0.25),0_4px_12px_rgba(23,70,219,0.30),0_12px_40px_-8px_rgba(23,70,219,0.40)]",
+      "hover:translate-y-[-2px] hover:bg-blue-500 hover:shadow-[0_2px_4px_rgba(23,70,219,0.30),0_8px_24px_rgba(23,70,219,0.40),0_20px_56px_-8px_rgba(23,70,219,0.50)]",
+      "active:translate-y-0"
     ),
     secondary: cn(
-      "text-white glass-strong hover:bg-white/[0.06]",
+      "text-slate-700 glass-strong hover:text-slate-900",
       "hover:translate-y-[-1px]"
     ),
-    ghost: "text-white/70 hover:text-white hover:bg-white/5",
+    ghost: "text-slate-600 hover:text-slate-900 hover:bg-slate-900/5",
   };
 
   const inner = (
     <span className={cn(base, variants[variant], className)}>
       {variant === "primary" && (
-        <span className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-[conic-gradient(from_0deg,rgba(34,211,238,0.0)_0deg,rgba(34,211,238,0.7)_60deg,rgba(167,139,250,0.7)_180deg,rgba(34,211,238,0.0)_300deg)] opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-60" />
+        <span className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-[conic-gradient(from_0deg,rgba(23,70,219,0.0)_0deg,rgba(23,70,219,0.7)_60deg,rgba(109,40,217,0.7)_180deg,rgba(23,70,219,0.0)_300deg)] opacity-0 blur-lg transition-opacity duration-500 group-hover:opacity-60" />
       )}
       {icon}
       <span className="relative">{children}</span>

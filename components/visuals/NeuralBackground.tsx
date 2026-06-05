@@ -27,8 +27,6 @@ export function NeuralBackground({ className }: Props) {
     const build = () => {
       const rect = canvas.getBoundingClientRect();
       const parent = canvas.parentElement;
-      // Fall back through offset/parent/viewport size if the rect is collapsed on
-      // first paint, so the canvas never falls back to the 300×150 default.
       w = rect.width || canvas.offsetWidth || parent?.clientWidth || 0;
       h = rect.height || canvas.offsetHeight || parent?.clientHeight || 0;
       if (w === 0 || h === 0) {
@@ -54,26 +52,26 @@ export function NeuralBackground({ className }: Props) {
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h);
 
-      // edges
+      // edges — rich indigo
       for (let li = 0; li < layers.length - 1; li++) {
         const a = nodes.filter((n) => n.layer === li);
         const b = nodes.filter((n) => n.layer === li + 1);
         for (const n of a) {
           for (const m of b) {
             const phase = (t / 2400 + (n.y + m.y) * 0.002) % 1;
-            const alpha = 0.06 + Math.sin(phase * Math.PI * 2) * 0.05 + 0.05;
+            const alpha = 0.07 + Math.sin(phase * Math.PI * 2) * 0.06 + 0.05;
             ctx.beginPath();
             ctx.moveTo(n.x, n.y);
             ctx.lineTo(m.x, m.y);
-            ctx.strokeStyle = `rgba(120,180,255,${alpha.toFixed(3)})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = `rgba(23,70,219,${alpha.toFixed(3)})`;
+            ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
       }
 
-      // pulse particles along random edges
-      const pulseCount = 28;
+      // pulse particles — sky blue
+      const pulseCount = 30;
       for (let i = 0; i < pulseCount; i++) {
         const seed = i * 97;
         const li = Math.floor(((t / 1500 + seed * 0.7) % layers.length) | 0);
@@ -87,29 +85,39 @@ export function NeuralBackground({ className }: Props) {
         const x = aN.x + (bN.x - aN.x) * p;
         const y = aN.y + (bN.y - aN.y) * p;
         ctx.beginPath();
-        ctx.arc(x, y, 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(125,211,252,0.85)";
+        ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(2,132,199,0.90)";
         ctx.fill();
-        // glow
-        const grd = ctx.createRadialGradient(x, y, 0, x, y, 8);
-        grd.addColorStop(0, "rgba(125,211,252,0.35)");
-        grd.addColorStop(1, "rgba(125,211,252,0)");
+        // glow halo
+        const grd = ctx.createRadialGradient(x, y, 0, x, y, 10);
+        grd.addColorStop(0, "rgba(2,132,199,0.40)");
+        grd.addColorStop(1, "rgba(2,132,199,0)");
         ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.arc(x, y, 10, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // nodes
+      // nodes — rich indigo core, sky-blue ring
       for (const n of nodes) {
+        // outer glow
+        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 12);
+        grd.addColorStop(0, "rgba(23,70,219,0.12)");
+        grd.addColorStop(1, "rgba(23,70,219,0)");
+        ctx.fillStyle = grd;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 2.2, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
         ctx.fill();
+        // core dot
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 5, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(34,211,238,0.25)";
-        ctx.lineWidth = 0.8;
+        ctx.arc(n.x, n.y, 2.4, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(23,70,219,0.80)";
+        ctx.fill();
+        // ring
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 5.5, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(2,132,199,0.28)";
+        ctx.lineWidth = 0.9;
         ctx.stroke();
       }
 

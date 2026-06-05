@@ -10,11 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { FAQS, CONTACT_EMAIL } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-/**
- * FAQ — accordion of common questions. One item open at a time. The chevron/plus
- * rotates and the answer expands; honors prefers-reduced-motion via Framer's
- * global reduced-motion handling already wired in globals.css.
- */
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
@@ -42,8 +37,8 @@ export function FAQ() {
                   className={cn(
                     "overflow-hidden rounded-2xl border transition-colors",
                     isOpen
-                      ? "border-cyan-400/20 bg-white/[0.03]"
-                      : "border-white/[0.06] bg-white/[0.015] hover:border-white/15"
+                      ? "border-cyan-200 bg-cyan-50/30"
+                      : "border-slate-900/[0.08] bg-slate-50/50 hover:border-slate-900/15"
                   )}
                 >
                   <button
@@ -52,15 +47,15 @@ export function FAQ() {
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                   >
-                    <span className="text-[15px] font-medium text-white">{item.q}</span>
+                    <span className="text-[15px] font-medium text-slate-900">{item.q}</span>
                     <motion.span
                       animate={{ rotate: isOpen ? 45 : 0 }}
                       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                       className={cn(
                         "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border",
                         isOpen
-                          ? "border-cyan-400/30 text-cyan-300"
-                          : "border-white/10 text-white/50"
+                          ? "border-cyan-200 text-cyan-700"
+                          : "border-slate-900/10 text-slate-500"
                       )}
                     >
                       <Plus className="h-4 w-4" />
@@ -75,7 +70,7 @@ export function FAQ() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                       >
-                        <p className="px-5 pb-5 text-[14px] leading-relaxed text-white/60">
+                        <p className="px-5 pb-5 text-[14px] leading-relaxed text-slate-500">
                           {item.a}
                         </p>
                       </motion.div>
@@ -91,12 +86,12 @@ export function FAQ() {
         <Reveal delay={0.1}>
           <div className="surface mt-8 flex flex-col items-center gap-4 rounded-2xl p-6 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>
-              <div className="text-[15px] font-medium text-white">Still have questions?</div>
-              <p className="mt-1 text-[13.5px] text-white/55">
+              <div className="text-[15px] font-medium text-slate-900">Still have questions?</div>
+              <p className="mt-1 text-[13.5px] text-slate-500">
                 Talk to the team or email{" "}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="text-cyan-300 underline-offset-2 hover:underline"
+                  className="text-cyan-700 underline-offset-2 hover:underline"
                 >
                   {CONTACT_EMAIL}
                 </a>

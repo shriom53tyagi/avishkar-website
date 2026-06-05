@@ -34,10 +34,6 @@ const VALUES = [
   },
 ];
 
-/**
- * Standalone Careers page (`/careers`). Lists open roles and provides a working
- * `mailto:` for resumes, per the brief.
- */
 export default function CareersPage() {
   return (
     <>
@@ -59,11 +55,11 @@ export default function CareersPage() {
             {VALUES.map((v, i) => (
               <Reveal key={v.title} delay={i * 0.05}>
                 <div className="surface h-full rounded-2xl p-6">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
-                    <v.icon className="h-4.5 w-4.5 text-cyan-300" />
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
+                    <v.icon className="h-4.5 w-4.5 text-cyan-700" />
                   </span>
-                  <div className="mt-4 text-sm font-medium text-white">{v.title}</div>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/55">{v.note}</p>
+                  <div className="mt-4 text-sm font-medium text-slate-900">{v.title}</div>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-slate-500">{v.note}</p>
                 </div>
               </Reveal>
             ))}
@@ -90,19 +86,19 @@ export default function CareersPage() {
                 >
                   <div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span className="text-base font-medium text-white">{role.title}</span>
-                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">
+                      <span className="text-base font-medium text-slate-900">{role.title}</span>
+                      <span className="rounded-full border border-slate-900/10 bg-slate-50 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500">
                         {role.team}
                       </span>
                     </div>
-                    <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-white/55">
+                    <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-slate-500">
                       {role.blurb}
                     </p>
-                    <div className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-white/40">
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-slate-400">
                       <MapPin className="h-3.5 w-3.5" /> {role.location}
                     </div>
                   </div>
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2 text-[13px] font-medium text-white transition-colors group-hover:border-white/30">
+                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-900/15 bg-slate-50 px-4 py-2 text-[13px] font-medium text-slate-700 transition-colors group-hover:border-slate-900/30 group-hover:text-slate-900">
                     Apply
                     <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </span>
@@ -118,14 +114,14 @@ export default function CareersPage() {
                 <h3 className="font-display text-xl font-medium tracking-tight text-gradient">
                   Don&apos;t see your role?
                 </h3>
-                <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-white/55">
+                <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-slate-500">
                   We&apos;re always glad to meet exceptional people. Send your resume and a note
                   about how you&apos;d move the needle.
                 </p>
               </div>
               <a
                 href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Avishkar AI — Resume")}`}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink-950 shadow-[0_0_0_1px_rgba(255,255,255,0.5),0_10px_40px_-10px_rgba(34,211,238,0.6)] transition-transform hover:-translate-y-px"
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_12px_rgba(23,70,219,0.30),0_16px_48px_-8px_rgba(23,70,219,0.42)] transition-transform hover:-translate-y-px hover:bg-blue-700"
               >
                 <Mail className="h-4 w-4" />
                 Send your resume to {CONTACT_EMAIL}

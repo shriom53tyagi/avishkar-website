@@ -32,7 +32,7 @@ export function Navbar() {
           className={cn(
             "mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-500",
             scrolled
-              ? "border border-white/[0.08] bg-ink-900/70 backdrop-blur-xl shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9)]"
+              ? "border border-slate-900/[0.08] bg-white/80 backdrop-blur-xl shadow-[0_10px_40px_-20px_rgba(15,23,42,0.12)]"
               : "border border-transparent"
           )}
         >
@@ -42,7 +42,7 @@ export function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3.5 py-1.5 text-[13px] text-white/65 transition-colors hover:text-white"
+                className="rounded-full px-3.5 py-1.5 text-[13px] text-slate-600 transition-colors hover:text-slate-900"
               >
                 {l.label}
               </Link>
@@ -59,7 +59,7 @@ export function Navbar() {
           <button
             aria-label="Open menu"
             onClick={() => setOpen(true)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80 md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-900/10 text-slate-700 md:hidden"
           >
             <Menu className="h-4 w-4" />
           </button>
@@ -69,20 +69,20 @@ export function Navbar() {
       {open && (
         <div className="fixed inset-0 z-[60] md:hidden">
           <div
-            className="absolute inset-0 bg-ink-950/80 backdrop-blur-md"
+            className="absolute inset-0 bg-white/80 backdrop-blur-md"
             onClick={() => setOpen(false)}
           />
           <motion.div
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="relative mx-3 mt-3 rounded-2xl border border-white/10 bg-ink-900/95 p-4 shadow-2xl"
+            className="relative mx-3 mt-3 rounded-2xl border border-slate-900/10 bg-white/95 p-4 shadow-2xl"
           >
             <div className="flex items-center justify-between">
               <Logo />
               <button
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/80"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-900/10 text-slate-700"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -93,7 +93,7 @@ export function Navbar() {
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-xl px-3 py-3 text-[15px] text-white/80 hover:bg-white/5 hover:text-white"
+                  className="rounded-xl px-3 py-3 text-[15px] text-slate-700 hover:bg-slate-900/5 hover:text-slate-900"
                 >
                   {l.label}
                 </Link>

@@ -20,33 +20,38 @@ const config: Config = {
           600: "#1B2034",
           500: "#262C44",
         },
+        blue: {
+          500: "#1746DB",
+          600: "#1440C8",
+          700: "#1034A8",
+        },
         cyan: {
-          400: "#22D3EE",
-          500: "#06D6E0",
-          600: "#0BBBC9",
+          400: "#0284C7",
+          500: "#0369A1",
+          600: "#0C4A6E",
         },
         teal: {
-          400: "#2DD4BF",
+          400: "#0D9488",
         },
         violet: {
-          400: "#A78BFA",
-          500: "#8B5CF6",
+          400: "#7C3AED",
+          500: "#6D28D9",
         },
         emerald: {
-          400: "#34D399",
-          500: "#10B981",
+          400: "#059669",
+          500: "#047857",
         },
       },
       backgroundImage: {
         "grid-fade":
-          "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34,211,238,0.10), transparent 70%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(167,139,250,0.08), transparent 70%)",
+          "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(23,70,219,0.12), transparent 70%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(109,40,217,0.09), transparent 70%)",
         "noise":
           "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07 0 0 0 0 0.09 0 0 0 0 0.13 0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")",
       },
       boxShadow: {
-        glow: "0 0 0 1px rgba(34,211,238,0.20), 0 8px 30px -8px rgba(34,211,238,0.35)",
+        glow: "0 0 0 1px rgba(23,70,219,0.18), 0 4px 20px -4px rgba(23,70,219,0.30), 0 12px 48px -8px rgba(23,70,219,0.22)",
         panel:
-          "inset 0 1px 0 rgba(255,255,255,0.04), 0 1px 0 rgba(0,0,0,0.6), 0 30px 80px -40px rgba(0,0,0,0.9)",
+          "0 0 0 1px rgba(255,255,255,0.7), 0 2px 4px rgba(10,30,80,0.04), 0 12px 32px -8px rgba(10,30,80,0.10)",
       },
       animation: {
         "grid-pan": "grid-pan 30s linear infinite",
