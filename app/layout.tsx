@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { ChatWidget } from "@/components/ui/ChatWidget";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationSchema } from "@/lib/schema";
+import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools that
@@ -229,6 +230,7 @@ export default function RootLayout({
         <main className="relative">{children}</main>
         <Footer />
         <ChatWidget />
+        <CookieConsentLoader />
       </body>
     </html>
   );

@@ -32,6 +32,13 @@ const COLS: { title: string; links: { label: string; href: string }[] }[] = [
       { label: "Contact", href: "/contact" },
     ],
   },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
 ];
 
 const SOCIAL_ICONS = {
@@ -45,7 +52,7 @@ export function Footer() {
   return (
     <footer className="relative mt-24 border-t border-slate-900/[0.08]">
       <div aria-hidden className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-slate-900/10 to-transparent" />
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1fr_0.7fr]">
         <div className="space-y-5">
           <Logo />
           <p className="max-w-sm text-sm text-slate-500">

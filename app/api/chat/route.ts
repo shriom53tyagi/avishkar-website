@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getRateLimiter, getClientIp } from "@/lib/ratelimit";
 
 /**
  * Domain-locked Avishkar AI assistant — powered by Groq (open-source LLM).
@@ -20,34 +21,6 @@ export const dynamic = "force-dynamic";
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL        = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const CONTACT_EMAIL = "info@avhishkar.app";
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const MAX_CHAT_REQUESTS_PER_WINDOW = 20;
-
-type RateLimitEntry = { count: number; reset: number };
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-function getClientIp(req: NextRequest) {
-  const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0].trim();
-  return forwarded || req.headers.get("x-real-ip") || "anonymous";
-}
-
-function checkRateLimit(req: NextRequest, maxRequests: number, windowMs: number) {
-  const now = Date.now();
-  const key = `${req.nextUrl.pathname}:${getClientIp(req)}`;
-  const entry = rateLimitStore.get(key);
-
-  if (!entry || entry.reset <= now) {
-    rateLimitStore.set(key, { count: 1, reset: now + windowMs });
-    return { ok: true, remaining: maxRequests - 1, reset: now + windowMs };
-  }
-
-  if (entry.count >= maxRequests) {
-    return { ok: false, remaining: 0, reset: entry.reset };
-  }
-
-  entry.count += 1;
-  return { ok: true, remaining: maxRequests - entry.count, reset: entry.reset };
-}
 
 // ── Company facts ────────────────────────────────────────────────────────────
 // The model is ONLY allowed to answer from this block. If it is not here,
@@ -191,22 +164,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const rate = checkRateLimit(req, MAX_CHAT_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS);
-    if (!rate.ok) {
-      const retryIn = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
-      return NextResponse.json(
-        {
-          reply: `The chat service is receiving too many requests from your network. Please wait ${retryIn} seconds and try again, or email ${CONTACT_EMAIL}.`,
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": String(retryIn),
-            "X-RateLimit-Limit": String(MAX_CHAT_REQUESTS_PER_WINDOW),
-            "X-RateLimit-Remaining": String(rate.remaining),
-          },
-        }
-      );
+    const limiter = getRateLimiter("chat", 10, "60 s");
+    if (limiter) {
+      const ip = getClientIp(req);
+      const result = await limiter.limit(ip);
+      if (!result.success) {
+        return NextResponse.json(
+          { ok: false, error: "Too many requests. Please wait a moment." },
+          { status: 429 }
+        );
+      }
     }
 
     const body     = (await req.json()) as { messages?: ClientMessage[] };
