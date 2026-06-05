@@ -15,24 +15,22 @@ export function NeuralBackground({ className }: Props) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0;
     let h = 0;
     let raf = 0;
+    let idleHandle: ReturnType<typeof setTimeout> | null = null;
 
     type Node = { x: number; y: number; layer: number; idx: number };
     let nodes: Node[] = [];
     const layers = [5, 7, 9, 7, 5];
 
     const build = () => {
-      const rect = canvas.getBoundingClientRect();
       const parent = canvas.parentElement;
-      w = rect.width || canvas.offsetWidth || parent?.clientWidth || 0;
-      h = rect.height || canvas.offsetHeight || parent?.clientHeight || 0;
-      if (w === 0 || h === 0) {
-        raf = requestAnimationFrame(build);
-        return;
-      }
+      w = parent?.clientWidth || canvas.offsetWidth || 0;
+      h = parent?.clientHeight || canvas.offsetHeight || 0;
+      if (w === 0 || h === 0) return;
       canvas.width = Math.floor(w * dpr);
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -49,10 +47,10 @@ export function NeuralBackground({ className }: Props) {
       });
     };
 
-    const draw = (t: number) => {
+    const drawFrame = (t: number) => {
       ctx.clearRect(0, 0, w, h);
 
-      // edges — rich indigo
+      // edges - rich indigo
       for (let li = 0; li < layers.length - 1; li++) {
         const a = nodes.filter((n) => n.layer === li);
         const b = nodes.filter((n) => n.layer === li + 1);
@@ -70,7 +68,7 @@ export function NeuralBackground({ className }: Props) {
         }
       }
 
-      // pulse particles — sky blue
+      // pulse particles - sky blue
       const pulseCount = 30;
       for (let i = 0; i < pulseCount; i++) {
         const seed = i * 97;
@@ -88,7 +86,6 @@ export function NeuralBackground({ className }: Props) {
         ctx.arc(x, y, 1.8, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(2,132,199,0.90)";
         ctx.fill();
-        // glow halo
         const grd = ctx.createRadialGradient(x, y, 0, x, y, 10);
         grd.addColorStop(0, "rgba(2,132,199,0.40)");
         grd.addColorStop(1, "rgba(2,132,199,0)");
@@ -98,9 +95,8 @@ export function NeuralBackground({ className }: Props) {
         ctx.fill();
       }
 
-      // nodes — rich indigo core, sky-blue ring
+      // nodes - rich indigo core, sky-blue ring
       for (const n of nodes) {
-        // outer glow
         const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 12);
         grd.addColorStop(0, "rgba(23,70,219,0.12)");
         grd.addColorStop(1, "rgba(23,70,219,0)");
@@ -108,12 +104,10 @@ export function NeuralBackground({ className }: Props) {
         ctx.beginPath();
         ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
         ctx.fill();
-        // core dot
         ctx.beginPath();
         ctx.arc(n.x, n.y, 2.4, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(23,70,219,0.80)";
         ctx.fill();
-        // ring
         ctx.beginPath();
         ctx.arc(n.x, n.y, 5.5, 0, Math.PI * 2);
         ctx.strokeStyle = "rgba(2,132,199,0.28)";
@@ -121,15 +115,45 @@ export function NeuralBackground({ className }: Props) {
         ctx.stroke();
       }
 
-      raf = requestAnimationFrame(draw);
+      raf = requestAnimationFrame(drawFrame);
     };
 
-    const ro = new ResizeObserver(build);
+    const startAnimation = () => {
+      build();
+      if (reducedMotion) {
+        drawFrame(0);
+        return;
+      }
+      raf = requestAnimationFrame(drawFrame);
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      } else if (raf === 0 && !reducedMotion) {
+        raf = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    // Defer startup until the browser is idle (Safari fallback: 200ms timeout)
+    if (typeof window.requestIdleCallback === "function") {
+      (window as Window & typeof globalThis & { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(startAnimation);
+    } else {
+      idleHandle = setTimeout(startAnimation, 200);
+    }
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    const ro = new ResizeObserver(() => {
+      build();
+    });
     ro.observe(canvas);
-    build();
-    raf = requestAnimationFrame(draw);
+
     return () => {
       cancelAnimationFrame(raf);
+      if (idleHandle !== null) clearTimeout(idleHandle);
+      document.removeEventListener("visibilitychange", handleVisibility);
       ro.disconnect();
     };
   }, []);

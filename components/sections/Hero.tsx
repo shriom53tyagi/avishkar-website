@@ -38,15 +38,12 @@ export function Hero() {
 
         {/* Headline */}
         <div className="mx-auto mt-8 max-w-5xl text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          <h1
             className="font-display text-balance text-[42px] font-medium leading-[1.02] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px]"
           >
             <span className="text-gradient block">Stop losing revenue to</span>
             <span className="mt-2 block text-gradient-cyan">operational blind spots.</span>
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
