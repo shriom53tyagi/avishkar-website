@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SESClient, SendRawEmailCommand } from "@aws-sdk/client-ses";
 import nodemailer from "nodemailer";
 import type { SentMessageInfo } from "nodemailer";
+import { getRateLimiter, getClientIp } from "@/lib/ratelimit";
 
 /**
  * Voice-note delivery via Amazon SES.
@@ -17,52 +18,17 @@ import type { SentMessageInfo } from "nodemailer";
  *   SES_AWS_REGION             SES region (e.g. us-west-1)
  *   SES_FROM_EMAIL             Verified sender address in SES (plain email only, no display name)
  *   SES_TO_EMAIL               Recipient (defaults to info@avhishkar.app)
- *
- * To change who sends / receives, update SES_FROM_EMAIL and SES_TO_EMAIL in
- * your .env.local file. Both addresses must be verified identities in SES
- * while your account is in sandbox mode.
- *
- * SES setup checklist:
- *   1. Verify your domain (or individual addresses) in the SES console.
- *   2. If in sandbox mode, both FROM and TO must be verified.
- *   3. To send to any address, request "Production access" in SES console.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Change these two in .env.local to control who sends and who receives.
 const TO_EMAIL   = process.env.SES_TO_EMAIL   || "info@avhishkar.app";
 const FROM_EMAIL = process.env.SES_FROM_EMAIL || "info@avhishkar.app";
 const MAX_BYTES  = 10 * 1024 * 1024; // 10 MB
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const MAX_VOICE_NOTE_REQUESTS_PER_WINDOW = 5;
 
-type RateLimitEntry = { count: number; reset: number };
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-function getClientIp(req: NextRequest) {
-  const forwarded = req.headers.get("x-forwarded-for")?.split(",")[0].trim();
-  return forwarded || req.headers.get("x-real-ip") || "anonymous";
-}
-
-function checkRateLimit(req: NextRequest, maxRequests: number, windowMs: number) {
-  const now = Date.now();
-  const key = `${req.nextUrl.pathname}:${getClientIp(req)}`;
-  const entry = rateLimitStore.get(key);
-
-  if (!entry || entry.reset <= now) {
-    rateLimitStore.set(key, { count: 1, reset: now + windowMs });
-    return { ok: true, remaining: maxRequests - 1, reset: now + windowMs };
-  }
-
-  if (entry.count >= maxRequests) {
-    return { ok: false, remaining: 0, reset: entry.reset };
-  }
-
-  entry.count += 1;
-  return { ok: true, remaining: maxRequests - entry.count, reset: entry.reset };
-}
+const sanitize = (s: string) =>
+  s.replace(/[\r\n\t]/g, " ").replace(/[^\x20-\x7E]/g, "").trim();
 
 // ── SES client factory ────────────────────────────────────────────────────────
 function makeSESClient() {
@@ -103,10 +69,6 @@ async function sendVoiceNoteEmail({
   const info: SentMessageInfo = await new Promise((resolve, reject) => {
     transporter.sendMail(
       {
-        // IMPORTANT: FROM_EMAIL must be a plain email address with no display
-        // name (e.g. info@avhishkar.app NOT "Avishkar" <info@avhishkar.app>).
-        // SES verifies the From: header against your verified identities and
-        // rejects it if a display name is included while in sandbox mode.
         from:    FROM_EMAIL,
         to:      TO_EMAIL,
         replyTo: replyTo,
@@ -134,7 +96,6 @@ async function sendVoiceNoteEmail({
     );
   });
 
-  // Extract raw MIME bytes from nodemailer stream.
   const rawBuffer: Buffer = await new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     (info.message as NodeJS.ReadableStream)
@@ -143,7 +104,6 @@ async function sendVoiceNoteEmail({
       .on("error", reject);
   });
 
-  // Send via SES.
   const client  = makeSESClient();
   const command = new SendRawEmailCommand({
     RawMessage:   { Data: rawBuffer },
@@ -157,29 +117,27 @@ async function sendVoiceNoteEmail({
 // ── Route handler ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
-    const rate = checkRateLimit(req, MAX_VOICE_NOTE_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS);
-    if (!rate.ok) {
-      const retryIn = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
-      return NextResponse.json(
-        {
-          ok: false,
-          error: `Too many voice note submissions from your network. Please wait ${retryIn} seconds and try again or email ${TO_EMAIL}.`,
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": String(retryIn),
-            "X-RateLimit-Limit": String(MAX_VOICE_NOTE_REQUESTS_PER_WINDOW),
-            "X-RateLimit-Remaining": String(rate.remaining),
-          },
-        }
-      );
+    // Upstash rate limit: 3 requests per hour per IP
+    const limiter = getRateLimiter("voice-note", 3, "3600 s");
+    if (limiter) {
+      const ip = getClientIp(req);
+      const result = await limiter.limit(ip);
+      if (!result.success) {
+        return NextResponse.json(
+          { ok: false, error: "Voice note limit reached. Try again in an hour." },
+          { status: 429 }
+        );
+      }
     }
 
-    const form        = await req.formData();
-    const audio       = form.get("audio");
-    const senderName  = ((form.get("name")  as string | null) ?? "").trim().slice(0, 200);
-    const senderEmail = ((form.get("email") as string | null) ?? "").trim().slice(0, 200);
+    const form = await req.formData();
+    const audio = form.get("audio");
+
+    // Sanitize and cap input fields
+    const rawName  = (form.get("name")  as string | null) ?? "";
+    const rawEmail = (form.get("email") as string | null) ?? "";
+    const senderName  = sanitize(rawName).slice(0, 200);
+    const senderEmail = sanitize(rawEmail).slice(0, 200);
 
     // Validation
     if (!(audio instanceof Blob)) {
@@ -207,7 +165,6 @@ export async function POST(req: NextRequest) {
     const audioBuffer = Buffer.from(await audio.arrayBuffer());
     const audioMime   = audio.type || "audio/webm";
 
-    // Check credentials before attempting to send.
     if (
       !process.env.SES_AWS_REGION ||
       !process.env.SES_AWS_ACCESS_KEY_ID ||
@@ -229,7 +186,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Send via SES.
     await sendVoiceNoteEmail({ audioBuffer, audioMime, senderName, senderEmail });
 
     console.log(

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CalendarDays, ExternalLink } from "lucide-react";
+import { hasConsent } from "@/components/ui/CookieConsent";
 
 /*
  * Calendly inline embed widget.
@@ -51,9 +52,14 @@ function loadCss(href: string) {
 
 export function CalendarEmbed() {
   const ref = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<"loading" | "ready" | "error">("loading");
+  const [state, setState] = useState<"loading" | "ready" | "error" | "no-consent">("loading");
 
   useEffect(() => {
+    if (!hasConsent()) {
+      setState("no-consent");
+      return;
+    }
+
     if (!CALENDLY_URL) {
       setState("error");
       return;
@@ -79,6 +85,31 @@ export function CalendarEmbed() {
       cancelled = true;
     };
   }, []);
+
+  if (state === "no-consent") {
+    return (
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-900/[0.08] bg-slate-50 px-6 py-12 text-center">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
+          <CalendarDays className="h-6 w-6 text-cyan-700" />
+        </span>
+        <div>
+          <div className="text-sm font-medium text-slate-900">Booking calendar requires cookies</div>
+          <p className="mt-1 max-w-xs text-[13px] text-slate-500">
+            Please accept cookies to enable the booking calendar.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            localStorage.removeItem("cookie_consent");
+            window.location.reload();
+          }}
+          className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-900/20 hover:text-slate-900"
+        >
+          Update preferences
+        </button>
+      </div>
+    );
+  }
 
   if (state === "error") {
     return (
