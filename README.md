@@ -111,7 +111,7 @@ next.config.ts
 
 ## Notes
 
-- Honors `prefers-reduced-motion` and avoids overwhelming animations.
+- Honors `prefers-reduced-motion` and avoids overwhelming animations
 - All visuals are hand-built (SVG / canvas) — no stock imagery.
 - Mock data lives in `lib/data.ts` — swap with real metrics when ready.
 
