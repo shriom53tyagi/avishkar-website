@@ -198,6 +198,11 @@ export const metadata: Metadata = {
       "Find the Leak. Quantify the Impact. Deploy the Fix. Structured operational audits for healthcare.",
     images: ["/og-image.png"],
   },
+  verification: {
+    other: {
+      "msvalidate.01": "5D876744A3628BBB9AE59B8781B3B409",
+    },
+  },
 };
 
 
