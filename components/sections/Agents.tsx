@@ -1,26 +1,70 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   CalendarClock,
   Receipt,
   ClipboardList,
   Repeat2,
+  ShieldCheck,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { GridBackground } from "@/components/ui/GridBackground";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
-import { StatusDot } from "@/components/ui/StatusDot";
-import { AGENTS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const ICON_MAP: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  "Patient Access Agent": CalendarClock,
-  "Revenue Recovery Agent": Receipt,
-  "Clinical Operations Agent": ClipboardList,
-  "Patient Engagement Agent": Repeat2,
-};
+interface AgentCard {
+  name: string;
+  subtitle: string;
+  body: string;
+  metric: string;
+  border: string;
+  metricColor: string;
+  footnote: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+}
+
+const AGENT_CARDS: AgentCard[] = [
+  {
+    name: "Patient Access Agent",
+    subtitle: "Scheduling + Voice AI",
+    body: "Automated multi-touch confirmation (SMS + Voice AI) with intelligent overbooking and same-day slot recovery. Answers the phone in your clinic's voice, 24/7. Routes to human staff when clinical judgment is needed.",
+    metric: "38% fewer no-shows",
+    border: "border-l-blue-600",
+    metricColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    footnote: "Deployed only after the audit quantifies no-show leakage.",
+    icon: CalendarClock,
+  },
+  {
+    name: "Revenue Recovery Agent",
+    subtitle: "Billing + Insurance Verification",
+    body: "Real-time 271/270 eligibility verification at scheduling. E/M code distribution analysis against specialty benchmarks. Predictive denial scoring per claim before submission. Automated appeal workflows sorted by total financial impact.",
+    metric: "−61% denial rate",
+    border: "border-l-emerald-600",
+    metricColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    footnote: "Deployed only after the audit quantifies denial and coding leakage.",
+    icon: Receipt,
+  },
+  {
+    name: "Clinical Operations Agent",
+    subtitle: "EMR Automation + Documentation",
+    body: "Ambient clinical documentation — NLP extraction from visit context, auto-populated into EMR-native note templates, reviewed by clinician before sign-off. Reads, writes, and reconciles EMR fields across systems.",
+    metric: "74% less admin work",
+    border: "border-l-emerald-600",
+    metricColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    footnote: "Deployed only after the audit quantifies documentation burden.",
+    icon: ClipboardList,
+  },
+  {
+    name: "Patient Engagement Agent",
+    subtitle: "Follow-Up + Care Plans",
+    body: "Pre-visit prep, post-visit care plans, and proactive follow-up across SMS, voice, and patient portal — intensity scaled automatically by patient risk stratification and engagement response patterns.",
+    metric: "22% adherence lift",
+    border: "border-l-blue-400",
+    metricColor: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    footnote: "Deployed only after the audit quantifies engagement gaps.",
+    icon: Repeat2,
+  },
+] as const;
 
 export function Agents() {
   return (
@@ -28,132 +72,87 @@ export function Agents() {
       <GridBackground variant="dots" />
 
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHeading
-          eyebrow="Agent solutions"
-          title={
-            <>
-              Four agents,{" "}
-              <span className="text-gradient-cyan">tailored to your environment.</span>
-            </>
-          }
-          description="We deploy across four operational domains — and only where the audit proves measurable ROI. Each agent is a production system that runs inside your stack, talks to your tools, and escalates to your team."
-        />
+        {/* Header */}
+        <div className="max-w-2xl">
+          <Reveal>
+            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-blue-700">
+              The Agents
+            </span>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="mt-3 text-[32px] font-semibold leading-[1.15] tracking-[-0.5px] text-gradient sm:text-4xl">
+              Four modules. Deployed only where the audit proves ROI.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="mt-4 text-[15px] leading-relaxed text-slate-500">
+              Each agent is built for your specific environment — your EMR, your payer mix, your workflows.
+            </p>
+          </Reveal>
+        </div>
 
-        <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {AGENTS.map((a, i) => {
-            const Icon = ICON_MAP[a.name] ?? CalendarClock;
+        {/* 2×2 grid */}
+        <div className="mt-12 grid gap-4 md:grid-cols-2">
+          {AGENT_CARDS.map((a, i) => {
+            const Icon = a.icon;
             return (
-              <Reveal key={a.name} delay={i * 0.04}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.4 }}
-                  className="group relative h-full overflow-hidden rounded-2xl border border-slate-900/[0.08] bg-gradient-to-b from-slate-50 to-white p-5 transition-colors hover:border-cyan-200"
+              <Reveal key={a.name} delay={i * 0.05}>
+                <div
+                  className={cn(
+                    "surface flex h-full flex-col rounded-2xl border-l-2 p-6",
+                    a.border
+                  )}
                 >
-                  <div className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                    <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_0%,rgba(23,70,219,0.10),transparent_70%)]" />
+                  {/* Top: icon + subtitle */}
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
+                      <Icon className="h-4 w-4 text-slate-600" />
+                    </div>
+                    <div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                        {a.subtitle}
+                      </div>
+                      <h3 className="mt-0.5 text-[17px] font-medium text-slate-900">{a.name}</h3>
+                    </div>
                   </div>
 
-                  <div className="flex items-start justify-between">
-                    <div className="relative">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-200 bg-cyan-50 text-cyan-700">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <span className="pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-blue-50 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
-                    </div>
+                  {/* Body */}
+                  <p className="mt-4 flex-1 text-[13.5px] leading-relaxed text-slate-500">{a.body}</p>
+
+                  {/* Metric pill */}
+                  <div className="mt-5">
                     <span
                       className={cn(
-                        "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em]",
-                        a.status === "live"
-                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                          : "border-violet-200 bg-violet-50 text-violet-700"
+                        "inline-flex items-center rounded-full px-3 py-1 text-[12px] font-medium ring-1",
+                        a.metricColor
                       )}
                     >
-                      {a.status}
+                      {a.metric}
                     </span>
                   </div>
 
-                  <div className="mt-5">
-                    <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                      {a.tag}
-                    </div>
-                    <h3 className="mt-1 font-display text-[17px] font-medium tracking-tight text-slate-900">
-                      {a.name}
-                    </h3>
-                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-relaxed text-slate-500">
-                      {a.desc}
-                    </p>
-                  </div>
-
-                  {/* live wave */}
-                  <div className="mt-4 h-8 overflow-hidden rounded-md bg-slate-50">
-                    <Wave seed={i} />
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {a.metrics.map((m) => (
-                      <span
-                        key={m}
-                        className="rounded-full border border-slate-900/[0.08] bg-slate-50 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500"
-                      >
-                        {m}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-900/[0.05] pt-3">
-                    <StatusDot tone="live" label="Active" />
-                    <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-                      v{(2 + (i % 3) * 0.1).toFixed(1)}.{i + 4}
-                    </div>
-                  </div>
-                </motion.div>
+                  {/* Footnote */}
+                  <p className="mt-3 border-t border-slate-900/[0.06] pt-3 text-[11px] italic text-slate-400">
+                    {a.footnote}
+                  </p>
+                </div>
               </Reveal>
             );
           })}
         </div>
+
+        {/* Trust pill */}
+        <Reveal delay={0.2}>
+          <div className="mt-8 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-5 py-2.5 backdrop-blur">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                HIPAA-aligned · Read-only by default · Human-in-the-loop
+              </span>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
-}
-
-function Wave({ seed }: { seed: number }) {
-  const path = makeWave(seed);
-  return (
-    <svg viewBox="0 0 200 32" preserveAspectRatio="none" className="h-full w-full">
-      <defs>
-        <linearGradient id={`wg-${seed}`} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="rgba(23,70,219,0)" />
-          <stop offset="50%" stopColor="rgba(23,70,219,0.65)" />
-          <stop offset="100%" stopColor="rgba(109,40,217,0.0)" />
-        </linearGradient>
-      </defs>
-      <path
-        d={path}
-        stroke={`url(#wg-${seed})`}
-        strokeWidth="1.4"
-        fill="none"
-        vectorEffect="non-scaling-stroke"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          from="0"
-          to="-100"
-          dur="6s"
-          repeatCount="indefinite"
-        />
-      </path>
-    </svg>
-  );
-}
-
-function makeWave(seed: number): string {
-  const pts: string[] = [];
-  for (let x = 0; x <= 200; x += 4) {
-    const y =
-      16 +
-      Math.sin((x / 200) * Math.PI * 4 + seed) * 6 +
-      Math.sin((x / 200) * Math.PI * 9 + seed * 1.3) * 3;
-    pts.push(`${x === 0 ? "M" : "L"} ${x} ${y.toFixed(2)}`);
-  }
-  return pts.join(" ");
 }
