@@ -1,283 +1,189 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import {
-  Cable,
-  Search,
-  Workflow,
-  TrendingDown,
-  Wand2,
-  Rocket,
-} from "lucide-react";
 import { GridBackground } from "@/components/ui/GridBackground";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { StatusDot } from "@/components/ui/StatusDot";
+import { Reveal } from "@/components/ui/Reveal";
 import { AUDIT_STEPS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const ICONS = [Cable, Workflow, Search, TrendingDown, Wand2, Rocket];
-
-const TERMINAL_LINES: string[] = [
-  "› avishkar audit init --org riveroak-clinic",
-  "↻ connecting [Athena, Twilio, Stripe, Salesforce, Epic]...",
-  "✔ ingest 2.4M events · 412k patient records · 198k calls",
-  "↻ reconstructing operational graph...",
-  "✔ 312 nodes · 1,184 edges · 27 hand-off seams",
-  "↻ scanning for inefficiencies...",
-  "⚠  no-show recovery: 31% gap vs benchmark",
-  "⚠  voice queue: P95 hold = 4m 38s · drop-off 47%",
-  "⚠  denial triage: 412 unworked · est. $612k",
-  "↻ predicting revenue impact...",
-  "✔ leakage map · 7 priorities · est. $4,218,704 / yr",
-  "↻ proposing agent map...",
-  "✔ 6 agents · staging plan · 21d to first deploy",
-  "› ready to deploy · awaiting your approval _",
-];
+const INTEGRATIONS = [
+  "Epic",
+  "Cerner",
+  "Athena",
+  "eCW",
+  "Meditech",
+  "Waystar",
+  "RingCentral",
+] as const;
 
 export function AuditEngine() {
   return (
-    <section id="engine" className="relative py-24 sm:py-32">
+    <section id="audit" className="relative py-24 sm:py-32">
       <GridBackground />
 
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHeading
-          eyebrow="Operational Intelligence Audit"
-          title={
-            <>
-              We don&apos;t deliver decks.{" "}
-              <span className="text-gradient-cyan">We deliver a live model</span> of your operations.
-            </>
-          }
-          description="A fixed-scope engagement designed to uncover hidden revenue leakage, workflow inefficiencies, and automation opportunities across your healthcare organization. We connect to your systems, reconstruct how the organization actually runs, and quantify every dollar leaking through it — before we propose a single line of automation."
-        />
+        {/* Header */}
+        <div className="max-w-2xl">
+          <Reveal>
+            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-blue-700">
+              The Process
+            </span>
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="mt-3 text-[32px] font-semibold leading-[1.15] tracking-[-0.5px] text-gradient sm:text-4xl">
+              The 4-Stage Operational Recovery Lifecycle
+            </h2>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="mt-4 text-[15px] leading-relaxed text-slate-500">
+              The audit comes first. Always. Fixed scope. Read-only access. No automation proposed
+              until the diagnosis is complete and the numbers justify it.
+            </p>
+          </Reveal>
+        </div>
 
-        <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.05fr]">
-          {/* Left: pipeline */}
+        {/* 2-column layout */}
+        <div className="mt-14 grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+          {/* LEFT — vertical timeline */}
           <div className="relative">
-            <div className="surface relative overflow-hidden rounded-2xl p-5">
-              {/* scanning beam */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
-                <div className="absolute inset-x-0 h-32 animate-scan-y bg-[linear-gradient(180deg,transparent,rgba(23,70,219,0.10),transparent)]" />
-              </div>
+            {/* Connecting line */}
+            <div className="absolute left-[19px] top-6 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-blue-400/60 via-blue-300/30 to-emerald-400/60" />
 
-              <div className="mb-4 flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-                  audit.pipeline / step-flow
-                </span>
-                <StatusDot tone="live" label="scanning" />
-              </div>
-
-              <ol className="relative space-y-3 pl-8">
-                {/* connecting line */}
-                <div className="absolute left-[15px] top-2 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-cyan-400/60 via-slate-900/10 to-violet-400/40" />
-                {AUDIT_STEPS.map((s, i) => {
-                  const Icon = ICONS[i] ?? Workflow;
-                  return (
-                    <motion.li
-                      key={s.id}
-                      initial={{ opacity: 0, x: -8 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-10% 0px" }}
-                      transition={{ duration: 0.5, delay: 0.05 * i }}
-                      className="group relative rounded-xl border border-slate-900/[0.08] bg-slate-50/50 p-3.5 transition-colors hover:border-cyan-200 hover:bg-cyan-50/50"
+            <ol className="space-y-5">
+              {AUDIT_STEPS.map((step, i) => {
+                const isLast = i === AUDIT_STEPS.length - 1;
+                return (
+                  <motion.li
+                    key={step.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-5% 0px" }}
+                    transition={{ duration: 0.5, delay: i * 0.07 }}
+                    className="relative pl-12"
+                  >
+                    {/* Step circle */}
+                    <span
+                      className={cn(
+                        "absolute left-0 top-1 flex h-9 w-9 items-center justify-center rounded-full border text-[11px] font-mono font-medium",
+                        isLast
+                          ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                          : "border-blue-200 bg-blue-50 text-blue-700"
+                      )}
                     >
-                      <span className="absolute -left-8 top-3 flex h-7 w-7 items-center justify-center rounded-full border border-slate-900/10 bg-white text-cyan-600 shadow-[0_0_0_4px_var(--bg)]">
-                        <Icon className="h-3.5 w-3.5" />
-                      </span>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                            STEP {s.id}
-                          </span>
-                          <h3 className="text-[15px] font-medium tracking-tight text-slate-900">
-                            {s.label}
-                          </h3>
-                        </div>
-                        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-700">
-                          OK
+                      {step.id}
+                    </span>
+
+                    <div
+                      className={cn(
+                        "rounded-2xl border p-5 transition-colors",
+                        isLast
+                          ? "border-emerald-200 bg-emerald-50/40"
+                          : "border-slate-900/[0.08] bg-slate-50/50"
+                      )}
+                    >
+                      {/* Heading mono tag + title */}
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className={cn(
+                            "font-mono text-[10px] uppercase tracking-[0.16em]",
+                            isLast ? "text-emerald-700" : "text-blue-700"
+                          )}
+                        >
+                          {step.heading}
+                        </span>
+                        <span className="h-px flex-1 bg-slate-900/[0.06]" />
+                      </div>
+                      <h3 className="mt-1.5 text-[16px] font-medium text-slate-900">{step.label}</h3>
+                      <p className="mt-2 text-[13.5px] leading-relaxed text-slate-500">{step.detail}</p>
+
+                      {/* Tag */}
+                      <div className="mt-3">
+                        <span
+                          className={cn(
+                            "inline-block rounded-full border px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
+                            isLast
+                              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                              : "border-blue-200 bg-blue-50 text-blue-700"
+                          )}
+                        >
+                          {step.tag}
                         </span>
                       </div>
-                      <p className="mt-1 text-sm leading-relaxed text-slate-500">{s.detail}</p>
-                    </motion.li>
-                  );
-                })}
-              </ol>
-            </div>
-
-            {/* small chips below */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                "Athena",
-                "Epic",
-                "Cerner",
-                "Twilio",
-                "Salesforce Health",
-                "Salesforce",
-                "Snowflake",
-                "Stripe",
-                "Slack",
-              ].map((s) => (
-                <span
-                  key={s}
-                  className="rounded-full border border-slate-900/[0.08] bg-slate-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-500"
-                >
-                  {s}
-                </span>
-              ))}
-              <span className="rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-700">
-                + 80 more
-              </span>
-            </div>
+                    </div>
+                  </motion.li>
+                );
+              })}
+            </ol>
           </div>
 
-          {/* Right: terminal + cards */}
-          <div className="grid gap-5">
-            <Terminal />
-            <RevenueLeakCard />
+          {/* RIGHT — sticky supporting content */}
+          <div className="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start">
+            {/* Testimonial */}
+            <Reveal delay={0.1}>
+              <div className="rounded-2xl border-l-2 border-l-blue-300 bg-blue-50/60 p-5">
+                <blockquote className="text-[14px] italic leading-relaxed text-slate-700">
+                  "We identified $1.1M in leakage in 3 weeks and recovered $800K within the first quarter."
+                </blockquote>
+                <p className="mt-3 text-[12px] font-medium text-slate-500 not-italic">
+                  — CFO, 180-bed regional hospital
+                </p>
+              </div>
+            </Reveal>
+
+            {/* Outcome metrics */}
+            <Reveal delay={0.12}>
+              <div className="surface rounded-2xl p-5">
+                <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                  Outcome metrics
+                </div>
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  {[
+                    { value: "74%", label: "Admin reduce" },
+                    { value: "38%", label: "More confirms" },
+                    { value: "−61%", label: "Denial rate" },
+                  ].map((m) => (
+                    <div key={m.label}>
+                      <div className="text-[22px] font-semibold tracking-tight text-emerald-700">
+                        {m.value}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-slate-400">{m.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Integration compatibility */}
+            <Reveal delay={0.14}>
+              <div className="surface rounded-2xl p-5">
+                <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                  Compatible with your stack
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {INTEGRATIONS.map((s) => (
+                    <span
+                      key={s}
+                      className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 font-mono text-[10px] text-blue-700"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Fixed scope pill */}
+            <Reveal delay={0.16}>
+              <div className="flex items-center justify-center gap-2 rounded-xl border border-slate-900/[0.08] bg-slate-50/70 py-3 px-4">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                  Fixed scope · Read-only · BAA
+                </span>
+              </div>
+            </Reveal>
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function Terminal() {
-  const [printed, setPrinted] = useState<string[]>([]);
-
-  useEffect(() => {
-    let alive = true;
-    let i = 0;
-    let buf = "";
-    let charIdx = 0;
-    const tick = () => {
-      if (!alive) return;
-      const line = TERMINAL_LINES[i];
-      if (!line) {
-        setTimeout(() => {
-          if (!alive) return;
-          i = 0;
-          buf = "";
-          charIdx = 0;
-          setPrinted([]);
-          tick();
-        }, 3500);
-        return;
-      }
-      if (charIdx < line.length) {
-        buf += line[charIdx];
-        charIdx++;
-        setPrinted((p) => {
-          const next = [...p];
-          next[i] = buf;
-          return next;
-        });
-        setTimeout(tick, 18 + Math.random() * 30);
-      } else {
-        i++;
-        buf = "";
-        charIdx = 0;
-        setTimeout(tick, 220);
-      }
-    };
-    tick();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return (
-    <div className="surface relative overflow-hidden rounded-2xl">
-      <div className="flex items-center justify-between border-b border-slate-900/[0.08] px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-rose-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-        </div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-          ~/avishkar/audit.run
-        </span>
-        <span />
-      </div>
-      <div className="max-h-[360px] overflow-hidden p-4">
-        <pre className="whitespace-pre-wrap break-words font-mono text-[12.5px] leading-[1.7]">
-          {printed.map((line, i) => (
-            <div key={i}>
-              <Line line={line} />
-            </div>
-          ))}
-          <span className="inline-block h-3 w-1.5 align-middle bg-cyan-600 animate-blink" />
-        </pre>
-      </div>
-    </div>
-  );
-}
-
-function Line({ line }: { line: string }) {
-  if (line.startsWith("✔"))
-    return <span className="text-emerald-700">{line}</span>;
-  if (line.startsWith("⚠"))
-    return <span className="text-amber-700">{line}</span>;
-  if (line.startsWith("↻"))
-    return <span className="text-cyan-700">{line}</span>;
-  if (line.startsWith("›"))
-    return <span className="text-slate-700">{line}</span>;
-  return <span className="text-slate-500">{line}</span>;
-}
-
-function RevenueLeakCard() {
-  const leaks = [
-    { name: "No-show & late-cancel", value: 1_840_000, pct: 44 },
-    { name: "Denials & undercoding", value: 1_120_000, pct: 27 },
-    { name: "Voice drop-off", value: 612_000, pct: 14 },
-    { name: "Eligibility gaps", value: 396_000, pct: 9 },
-    { name: "Documentation rework", value: 250_704, pct: 6 },
-  ];
-  const total = leaks.reduce((s, l) => s + l.value, 0);
-
-  return (
-    <div className="surface relative overflow-hidden rounded-2xl p-5">
-      <div className="mb-3 flex items-center justify-between">
-        <div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-400">
-            leakage map
-          </span>
-          <div className="mt-1 font-display text-2xl font-medium tracking-tight text-slate-900">
-            ${(total / 1_000_000).toFixed(2)}M
-            <span className="ml-2 text-sm font-normal text-emerald-700">/ yr recovery</span>
-          </div>
-        </div>
-        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-700">
-          7 priorities
-        </span>
-      </div>
-
-      <div className="space-y-3">
-        {leaks.map((l, i) => (
-          <div key={l.name} className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-600">{l.name}</span>
-              <span className="font-mono text-slate-500">${l.value.toLocaleString()}</span>
-            </div>
-            <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-900/[0.05]">
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${l.pct}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.1, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className={cn(
-                  "absolute inset-y-0 left-0 rounded-full",
-                  i === 0 && "bg-gradient-to-r from-rose-400/80 to-rose-300",
-                  i === 1 && "bg-gradient-to-r from-amber-400/80 to-amber-300",
-                  i === 2 && "bg-gradient-to-r from-cyan-400/80 to-cyan-300",
-                  i === 3 && "bg-gradient-to-r from-violet-400/80 to-violet-300",
-                  i === 4 && "bg-gradient-to-r from-emerald-400/80 to-emerald-300"
-                )}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }

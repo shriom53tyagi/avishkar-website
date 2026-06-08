@@ -9,15 +9,33 @@ import { Button } from "./Button";
 import { NAV_LINKS } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
+const SECTION_IDS = ["approach", "diagnosis", "audit", "agents", "results", "security", "faq", "cta"];
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   return (
@@ -37,25 +55,42 @@ export function Navbar() {
           )}
         >
           <Logo />
+
           <nav className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="rounded-full px-3.5 py-1.5 text-[13px] text-slate-600 transition-colors hover:text-slate-900"
-              >
-                {l.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((l) => {
+              const sectionId = l.href.replace("/#", "");
+              const isActive = activeSection === sectionId;
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className={cn(
+                    "relative rounded-full px-3.5 py-1.5 text-[13px] transition-colors",
+                    isActive ? "text-slate-900" : "text-slate-600 hover:text-slate-900"
+                  )}
+                >
+                  {l.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-indicator"
+                      className="absolute inset-x-3.5 -bottom-px h-[2px] rounded-full bg-blue-600"
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
+
           <div className="hidden items-center gap-2 md:flex">
             <Button href="/contact" variant="ghost">
               Contact
             </Button>
             <Button href="/contact" variant="primary" showArrow>
-              Book an Operational Audit
+              Book an Audit
             </Button>
           </div>
+
           <button
             aria-label="Open menu"
             onClick={() => setOpen(true)}

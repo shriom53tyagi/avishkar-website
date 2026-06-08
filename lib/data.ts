@@ -5,92 +5,97 @@ export const CONTACT_EMAIL = "info@avhishkar.app";
 export const TAGLINE = "Find the Leak. Quantify the Impact. Deploy the Fix.";
 
 export const NAV_LINKS = [
-  { href: "/#why", label: "Why Avishkar" },
-  { href: "/#revenue", label: "Revenue" },
-  { href: "/#engine", label: "Operational Audit" },
+  { href: "/#approach", label: "Why us" },
+  { href: "/#audit", label: "Audit" },
   { href: "/#agents", label: "Agents" },
   { href: "/#results", label: "Results" },
+  { href: "/resources", label: "Resources" },
 ] as const;
 
 export const PROBLEMS = [
   {
     code: "OPS-001",
-    title: "Missed appointments",
+    title: "Missed appointments & scheduling gaps",
     detail:
       "No-shows, late cancels and unconfirmed bookings leak slots — and revenue — every clinic day.",
     metric: "−$1.84M / yr",
     severity: "critical",
+    pct: 82,
   },
   {
     code: "OPS-002",
-    title: "Call center drop-off",
+    title: "Claim denials & revenue cycle leakage",
+    detail:
+      "Denials, undercoding and missed eligibility checks quietly compound across the org.",
+    metric: "−$1.12M / yr",
+    severity: "high",
+    pct: 58,
+  },
+  {
+    code: "OPS-003",
+    title: "Call center & patient access drop-off",
     detail:
       "Hold times climb and patients abandon calls before they ever reach scheduling.",
     metric: "−$612K / yr",
     severity: "high",
-  },
-  {
-    code: "OPS-003",
-    title: "Revenue cycle leakage",
-    detail:
-      "Denials, undercoding and missed eligibility checks quietly compound across the org.",
-    metric: "−$1.12M / yr",
-    severity: "critical",
+    pct: 34,
   },
   {
     code: "OPS-004",
-    title: "Documentation overhead",
+    title: "Documentation gaps & undercoding",
     detail:
       "Clinicians lose hours a day to notes. Burnout climbs and documentation still arrives incomplete.",
-    metric: "2.1 hrs/day",
-    severity: "high",
+    metric: "−$388K / yr",
+    severity: "medium",
+    pct: 22,
   },
   {
     code: "OPS-005",
-    title: "Patient communication delays",
+    title: "Authorization & eligibility failures",
     detail:
-      "Pre-visit prep, follow-up and care-plan nudges depend on humans with too much queue.",
-    metric: "36 hr lag",
+      "Prior-auth denials and eligibility mismatches delay care and silently erode collections.",
+    metric: "−$264K / yr",
     severity: "medium",
+    pct: 18,
   },
 ] as const;
 
 export const AUDIT_STEPS = [
   {
     id: "01",
-    label: "Connect systems",
+    label: "Operational Intelligence Audit",
+    heading: "AUDIT",
     detail:
-      "Read-only integrations into EMR, scheduling, telephony, billing, and intake. Zero rip-and-replace.",
+      "Connect read-only to your EMR, billing, scheduling, telephony, and patient portal through our pre-built adapter library. Reconstruct a Live Operational Model — a real-time representation of how patients, data, tasks, and revenue flow through your organization.",
+    tag: "Fixed scope · Read-only",
+    tagColor: "blue" as const,
   },
   {
     id: "02",
-    label: "Map workflows",
+    label: "Revenue Leak Detection & Quantification",
+    heading: "QUANTIFY",
     detail:
-      "We reconstruct how patients, staff and data actually move — not how the org chart says they do.",
+      "Every operational gap — missed appointments, denied claims, abandoned calls, documentation burden, authorization failures — is measured in exact dollars. No estimates. No benchmarks applied to your data. Your actual numbers from your actual systems.",
+    tag: "Workflow-level precision",
+    tagColor: "blue" as const,
   },
   {
     id: "03",
-    label: "Detect inefficiencies",
+    label: "Ranked Recovery Plan",
+    heading: "PRIORITIZE",
     detail:
-      "Models surface dropped hand-offs, repeat work, queue stalls, comms gaps and SLA risk patterns.",
+      "A prioritized list of recovery opportunities ordered by financial impact and implementation ease. You see exactly what to fix first, second, and third — before any automation is proposed.",
+    tag: "Evidence-backed",
+    tagColor: "blue" as const,
   },
   {
     id: "04",
-    label: "Predict revenue impact",
+    label: "Targeted Agent Deployment",
+    heading: "DEPLOY",
     detail:
-      "We quantify leakage in dollars: no-shows, denials, undercoding, conversion loss and staff cost.",
-  },
-  {
-    id: "05",
-    label: "Recommend automation",
-    detail:
-      "A prioritized agent map tied to ROI, complexity, time-to-deploy and operational risk.",
-  },
-  {
-    id: "06",
-    label: "Deploy AI agents",
-    detail:
-      "Custom-built, supervised, monitored — running inside your environment with human handoffs.",
+      "AI agents designed for your specific environment — your EMR, your payer mix, your workflows. Supervised rollout with human oversight at every step. Outcomes measured continuously against the audit baseline.",
+    tag: "ROI proven first",
+    tagColor: "green" as const,
   },
 ] as const;
 
@@ -352,26 +357,26 @@ export const SOCIAL_LINKS = [
 export const FAQS = [
   {
     q: "What exactly is the Operational Intelligence Audit?",
-    a: "A fixed-scope engagement where we connect to your existing systems — EMR, billing, scheduling, call center, patient portals — and build a live model of how patients, data, tasks and revenue actually flow. We surface inefficiencies, quantify their financial impact, and hand you a prioritized recovery plan before any automation is deployed.",
+    a: "A fixed-scope engagement where we connect read-only to your existing systems — EMR, billing, scheduling, call center, patient portals — and build a Live Operational Model of how patients, data, tasks, and revenue actually flow through your organization.\n\nWe surface every operational gap, quantify its exact financial impact in dollars, and hand you a prioritized recovery plan — before any automation is proposed. The diagnosis is complete before any agent is deployed.",
   },
   {
     q: "How is Avishkar different from other healthcare AI vendors?",
-    a: "Most vendors deploy automation first and look for problems to solve. We diagnose first. We quantify where value is leaking, rank opportunities by ROI, and only then deploy targeted agents — and only where they deliver measurable return.",
+    a: "Most vendors deploy automation first and look for problems to solve. We diagnose first.\n\nWe quantify where revenue is leaking, rank every opportunity by ROI, and only then deploy targeted AI agents — and only where they deliver measurable return. No agent is proposed until the audit proves it will pay for itself.",
   },
   {
     q: "How long until we see measurable impact?",
-    a: "Most organizations see first measurable impact within about 12 weeks. The audit itself reconstructs your operations and produces a quantified leakage map; agents are then deployed where ROI is provable.",
+    a: "Most organizations see first measurable impact within approximately 12 weeks. The audit itself typically takes 3–4 weeks to reconstruct your operations and produce a quantified leakage map. Agent deployment follows immediately for the highest-ROI opportunities.\n\nWe publish timeframes because speed matters — but we never skip the diagnosis to move faster. The audit is what makes the deployment work.",
   },
   {
     q: "Is my patient data secure and HIPAA-compliant?",
-    a: "Yes. We operate read-only by default during the audit, minimize the PHI we touch, and offer a signed BAA. Every deployment includes role-based access, audit logging, and human-in-the-loop oversight.",
+    a: "Yes. During the audit phase, all access is read-only by default. We minimize the PHI we touch — only the data elements necessary for the Operational Model are accessed. We offer a signed BAA before any system access begins.\n\nEvery agent deployment includes role-based access control, a full audit trail on every action, and human-in-the-loop oversight. No clinical or financial workflow changes happen without human review.",
   },
   {
     q: "Do we have to replace our existing systems?",
-    a: "No. Avishkar works inside the infrastructure you already run. We integrate with your EMR, phones, and billing systems rather than asking you to rip and replace anything.",
+    a: "No. Avishkar works inside the infrastructure you already run. We connect to your EMR, telephony, billing, and scheduling systems through pre-built adapters — Epic, Cerner, Athena, eClinicalWorks, Meditech, RingCentral, Waystar, and others.\n\nThe audit reads from your systems. The agents operate within them. Nothing is ripped out or replaced.",
   },
   {
     q: "How does pricing work?",
-    a: "Engagements begin with a fixed-scope operational audit; ongoing agent deployment is tied to measurable ROI. Exact pricing is tailored to each organization — reach out and we'll scope it with you.",
+    a: "Every engagement begins with a fixed-scope Operational Intelligence Audit. The audit fee is agreed upfront — no surprises. Ongoing agent deployment is tied directly to measurable ROI: you see the projected recovery before committing to any agent.\n\nExact pricing is tailored to each organization's size, specialty mix, and systems landscape. Reach out and we will scope it together.",
   },
 ] as const;

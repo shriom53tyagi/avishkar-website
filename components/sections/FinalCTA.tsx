@@ -7,7 +7,7 @@ import { NeuralBackground } from "@/components/visuals/NeuralBackground";
 export function FinalCTA() {
   return (
     <section
-      id="audit"
+      id="cta"
       className="relative isolate overflow-hidden py-28 sm:py-36"
     >
       <div className="absolute inset-0 -z-10">
@@ -17,6 +17,7 @@ export function FinalCTA() {
       </div>
 
       <div className="mx-auto max-w-5xl px-6 text-center">
+        {/* Scarcity signal */}
         <motion.span
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -25,14 +26,15 @@ export function FinalCTA() {
           className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900/[0.03] px-3 py-1 backdrop-blur"
         >
           <span className="relative inline-flex h-1.5 w-1.5">
-            <span className="absolute inset-0 rounded-full bg-cyan-400" />
-            <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400/60" />
+            <span className="absolute inset-0 rounded-full bg-emerald-400" />
+            <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
           </span>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-600">
             now booking · Q3 audit cohort
           </span>
         </motion.span>
 
+        {/* Headline */}
         <motion.h2
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -40,23 +42,24 @@ export function FinalCTA() {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mt-6 max-w-4xl text-balance font-display text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[72px]"
         >
-          <span className="text-gradient">Your operations already</span>
-          <span className="text-gradient block">generate the data.</span>
-          <span className="mt-2 block text-gradient-cyan">
-            Let&apos;s turn it into recovered revenue.
-          </span>
+          <span className="text-gradient">Ready to</span>
+          <span className="text-gradient block">find the leak?</span>
         </motion.h2>
 
+        {/* Body */}
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.1 }}
-          className="mx-auto mt-6 max-w-2xl text-pretty text-[15px] text-slate-500"
+          className="mx-auto mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-slate-500"
         >
-          A 21-day audit. A quantified leakage map. A custom agent roadmap. Then we build.
+          The audit comes first. Always.
+          A fixed-scope diagnosis. A quantified leakage map. A ranked recovery plan.
+          Then — and only then — deployment.
         </motion.p>
 
+        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -72,6 +75,7 @@ export function FinalCTA() {
           </Button>
         </motion.div>
 
+        {/* Trust strip */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -83,9 +87,9 @@ export function FinalCTA() {
           <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>BAA available</span>
           <span className="h-1 w-1 rounded-full bg-slate-300" />
-          <span>21-day audit</span>
-          <span className="h-1 w-1 rounded-full bg-slate-300" />
           <span>Read-only by default</span>
+          <span className="h-1 w-1 rounded-full bg-slate-300" />
+          <span>Diagnosis before automation</span>
         </motion.div>
       </div>
     </section>

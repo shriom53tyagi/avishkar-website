@@ -2,7 +2,6 @@
 
 import { ShieldCheck, Lock, FileCheck2, Users2 } from "lucide-react";
 import { GridBackground } from "@/components/ui/GridBackground";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { SECURITY_PILLARS } from "@/lib/data";
 
@@ -13,49 +12,67 @@ const SECURITY_ICONS = {
   users: Users2,
 } as const;
 
+const COMPLIANCE_PILLS = [
+  { label: "HIPAA-aligned", active: true },
+  { label: "BAA available", active: true },
+  { label: "SOC 2 Type II in progress", active: false },
+  { label: "Read-only by default", active: true },
+  { label: "Encrypted in transit (TLS 1.2+)", active: true },
+  { label: "Encrypted at rest (AES-256)", active: true },
+  { label: "SSO integration available", active: true },
+] as const;
+
 export function Security() {
   return (
     <section id="security" className="relative scroll-mt-28 py-24 sm:py-32">
       <GridBackground variant="dots" />
 
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHeading
-          eyebrow="Security & compliance"
-          title={
-            <>
-              Healthcare-grade by default.{" "}
-              <span className="text-gradient-cyan">Your data stays yours.</span>
-            </>
-          }
-          description="We connect read-only during the audit, minimize the data we touch, and keep clinicians and staff in control of every deployed workflow."
-        />
+        {/* Header */}
+        <Reveal>
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-blue-700">
+            Trust &amp; Compliance
+          </span>
+        </Reveal>
+        <Reveal delay={0.05}>
+          <h2 className="mt-3 max-w-3xl text-[32px] font-semibold leading-[1.15] tracking-[-0.5px] text-gradient sm:text-4xl">
+            Healthcare-grade by default. Read-only during the audit. Your data stays yours.
+          </h2>
+        </Reveal>
 
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Pillars — dense 4-column grid */}
+        <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {SECURITY_PILLARS.map((p, i) => {
             const Icon = SECURITY_ICONS[p.icon];
             return (
-              <Reveal key={p.title} delay={i * 0.05}>
+              <Reveal key={p.title} delay={i * 0.04}>
                 <div className="surface h-full rounded-2xl p-5">
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
                     <Icon className="h-4 w-4 text-cyan-700" />
                   </span>
-                  <div className="mt-4 text-sm font-medium text-slate-900">{p.title}</div>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{p.detail}</p>
+                  <div className="mt-3 text-[14px] font-medium text-slate-900">{p.title}</div>
+                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-500">{p.detail}</p>
                 </div>
               </Reveal>
             );
           })}
         </div>
 
-        <Reveal delay={0.2}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
-            <span>HIPAA-aligned</span>
-            <span className="h-1 w-1 rounded-full bg-slate-300" />
-            <span>BAA available</span>
-            <span className="h-1 w-1 rounded-full bg-slate-300" />
-            <span>Read-only by default</span>
-            <span className="h-1 w-1 rounded-full bg-slate-300" />
-            <span>SOC 2 in progress</span>
+        {/* Compliance pills row */}
+        <Reveal delay={0.18}>
+          <div className="mt-8 flex flex-wrap items-center gap-2">
+            {COMPLIANCE_PILLS.map((pill) => (
+              <span
+                key={pill.label}
+                className={
+                  pill.active
+                    ? "rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-700"
+                    : "rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-400"
+                }
+              >
+                {pill.label}
+              </span>
+            ))}
           </div>
         </Reveal>
       </div>
