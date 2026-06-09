@@ -1,95 +1,95 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/Button";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { NeuralBackground } from "@/components/visuals/NeuralBackground";
 
 export function FinalCTA() {
   return (
-    <section
-      id="cta"
-      className="relative isolate overflow-hidden py-28 sm:py-36"
-    >
-      <div className="absolute inset-0 -z-10">
-        <NeuralBackground className="absolute inset-0 h-full w-full opacity-70" />
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_50%,transparent_0%,rgba(236,242,250,0.88)_75%,#ECF2FA_100%)]" />
-        <div className="absolute inset-0 bg-grid opacity-[0.25] mix-blend-multiply" />
+    <section id="cta" className="relative overflow-hidden bg-[#F8FAFE] py-28 sm:py-36">
+      {/* Neural network background */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-30">
+        <NeuralBackground className="h-full w-full" />
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 text-center">
-        {/* Scarcity signal */}
-        <motion.span
+      {/* Subtle gradient overlays */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_120%,rgba(8,145,178,0.10),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_50%,rgba(5,150,105,0.06),transparent_60%)]" />
+      </div>
+
+      <div className="relative mx-auto max-w-4xl px-6 text-center">
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-slate-900/[0.03] px-3 py-1 backdrop-blur"
+          transition={{ duration: 0.5 }}
+          className="mb-6 inline-flex"
         >
-          <span className="relative inline-flex h-1.5 w-1.5">
-            <span className="absolute inset-0 rounded-full bg-emerald-400" />
-            <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/60" />
+          <span className="eyebrow">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="absolute inset-0 rounded-full bg-emerald-500" />
+              <span className="absolute inset-0 animate-ping-slow rounded-full bg-emerald-400" />
+            </span>
+            Now booking Q3 2025 audit cohort
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-600">
-            now booking · Q3 audit cohort
-          </span>
-        </motion.span>
-
-        {/* Headline */}
-        <motion.h2
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto mt-6 max-w-4xl text-balance font-display text-4xl font-medium leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[72px]"
-        >
-          <span className="text-gradient">Ready to</span>
-          <span className="text-gradient block">find the leak?</span>
-        </motion.h2>
-
-        {/* Body */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.1 }}
-          className="mx-auto mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-slate-500"
-        >
-          The audit comes first. Always.
-          A fixed-scope diagnosis. A quantified leakage map. A ranked recovery plan.
-          Then — and only then — deployment.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
-        >
-          <Button href="/contact" variant="primary" showArrow>
-            Book an Operational Audit
-          </Button>
-          <Button href="/contact" variant="secondary">
-            Talk to the team
-          </Button>
         </motion.div>
 
-        {/* Trust strip */}
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+          className="text-[44px] font-bold leading-[1.06] tracking-[-2px] text-slate-900 sm:text-5xl lg:text-[60px]"
+        >
+          Ready to{" "}
+          <span className="text-gradient-cyan">find the leak?</span>
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="mx-auto mt-5 max-w-md text-[17px] leading-[1.7] text-slate-500"
+        >
+          Diagnosis first. Deployment only where the numbers prove it.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.22 }}
+          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
+        >
+          <Link href="/contact" className="cursor-pointer">
+            <span className="btn-primary px-7 py-3.5 text-[15px]">
+              Book an Operational Audit
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+          <Link href="/contact" className="cursor-pointer">
+            <span className="btn-secondary px-7 py-3.5 text-[15px]">
+              Talk to the team
+            </span>
+          </Link>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400"
+          transition={{ duration: 0.8, delay: 0.34 }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
         >
-          <span>HIPAA-aligned</span>
-          <span className="h-1 w-1 rounded-full bg-slate-300" />
-          <span>BAA available</span>
-          <span className="h-1 w-1 rounded-full bg-slate-300" />
-          <span>Read-only by default</span>
-          <span className="h-1 w-1 rounded-full bg-slate-300" />
-          <span>Diagnosis before automation</span>
+          {["HIPAA-aligned", "BAA available", "Read-only audit", "Diagnosis before automation"].map((t, i) => (
+            <span key={t} className="flex items-center gap-4">
+              {i > 0 && <span className="h-1 w-1 rounded-full bg-slate-300" />}
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-400">{t}</span>
+            </span>
+          ))}
         </motion.div>
       </div>
     </section>
