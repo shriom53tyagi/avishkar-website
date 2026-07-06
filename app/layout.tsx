@@ -145,7 +145,6 @@ const display = Inter({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
 });
 
 const mono = JetBrains_Mono({
@@ -207,7 +206,7 @@ export const metadata: Metadata = {
 
 
 export const viewport: Viewport = {
-  themeColor: "#04050A",
+  themeColor: "#FBFAF7",
   width: "device-width",
   initialScale: 1,
 };
@@ -218,7 +217,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${display.variable} ${mono.variable} dark`}
+      className={`${sans.variable} ${display.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <head>

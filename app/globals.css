@@ -10,16 +10,19 @@
 :root {
   color-scheme: light;
 
-  /* Backgrounds */
-  --bg: #F8FAFE;
-  --bg-alt: #F0F9FF;
+  /* Backgrounds — warm ivory canvas (Ramp-style) */
+  --canvas: #FBFAF7;
+  --canvas-alt: #F4F1EA;
+  --sand: #EFE9DD;
+  --bg: #FBFAF7;
+  --bg-alt: #F4F1EA;
   --bg-card: #FFFFFF;
-  --bg-section: #FAFCFF;
+  --bg-section: #FBFAF7;
 
   /* Text */
   --text: #0F172A;
-  --text-muted: #475569;
-  --text-faint: #94A3B8;
+  --text-muted: #4B5563;
+  --text-faint: #8A8578;
 
   /* Brand */
   --primary: #0891B2;
@@ -54,13 +57,13 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background: var(--canvas);
   font-feature-settings: "ss01", "cv11", "cv09";
-  /* Subtle cyan mesh */
+  /* Warm ivory with the faintest cyan/emerald mesh */
   background-image:
-    radial-gradient(900px 600px at 80% -5%, rgba(8,145,178,0.07) 0%, transparent 60%),
-    radial-gradient(700px 500px at 0% 40%, rgba(5,150,105,0.05) 0%, transparent 60%),
-    radial-gradient(600px 400px at 60% 100%, rgba(8,145,178,0.05) 0%, transparent 60%);
+    radial-gradient(1000px 700px at 82% -8%, rgba(8,145,178,0.05) 0%, transparent 60%),
+    radial-gradient(800px 600px at -5% 35%, rgba(5,150,105,0.035) 0%, transparent 60%),
+    radial-gradient(700px 500px at 60% 105%, rgba(8,145,178,0.035) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
@@ -109,13 +112,14 @@ body {
 .card-elevated {
   background: #FFFFFF;
   border: 1px solid var(--border-card);
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
-  transition: box-shadow 250ms ease-out, transform 250ms ease-out;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 250ms ease-out, transform 250ms ease-out, border-color 250ms ease-out;
 }
 .card-elevated:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+  transform: translateY(-3px);
 }
 
 /* Cyan-tinted card */
@@ -205,8 +209,76 @@ body {
 /* ─── Backgrounds / Sections ─────────────────────────────────────────── */
 
 .section-white   { background: #FFFFFF; }
-.section-tinted  { background: #F0F9FF; }
-.section-subtle  { background: #F8FAFE; }
+.section-tinted  { background: var(--canvas-alt); }
+.section-subtle  { background: var(--canvas); }
+
+/* ─── Chapters (alternating light tones) ─────────────────────────────── */
+
+.chapter-light {
+  background: var(--canvas);
+}
+.chapter-light-alt {
+  background: var(--canvas-alt);
+}
+
+/* ─── Oversized editorial display type ───────────────────────────────── */
+
+.display-xl {
+  font-family: var(--font-display), var(--font-sans), system-ui;
+  font-weight: 350;
+  font-size: clamp(2.5rem, 6.2vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+.display-lg {
+  font-family: var(--font-display), var(--font-sans), system-ui;
+  font-weight: 350;
+  font-size: clamp(2rem, 4.4vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+/* ─── Duotone photo treatment (brand-cohesive imagery) ───────────────── */
+
+.photo-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  isolation: isolate;
+}
+.photo-duotone img {
+  filter: saturate(0.85) contrast(1.05);
+}
+.photo-duotone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(8,145,178,0.10) 0%, rgba(10,14,22,0.30) 100%),
+    radial-gradient(120% 80% at 50% 0%, rgba(5,150,105,0.10), transparent 60%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+/* ─── Marquee (auto-scroll strip) ────────────────────────────────────── */
+
+.marquee {
+  display: flex;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3.5rem;
+  padding-right: 3.5rem;
+  animation: ticker 34s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
 
 /* ─── Backgrounds — decorative ───────────────────────────────────────── */
 
@@ -344,6 +416,9 @@ body {
 @keyframes orbit {
   0%   { transform: rotate(0deg) translateX(120px) rotate(0deg); }
   100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+@keyframes dash {
+  to { stroke-dashoffset: -12; }
 }
 
 /* Tailwind custom animation helpers */

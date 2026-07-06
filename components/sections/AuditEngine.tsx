@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 
 export function AuditEngine() {
   return (
-    <section id="audit" className="bg-white py-20 sm:py-28">
+    <section id="audit" className="chapter-light-alt py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6">
 
         <Reveal>
           <div className="mb-12 max-w-xl">
-            <span className="eyebrow">The Process</span>
+            <span className="eyebrow">Chapter 03 · The Process</span>
             <h2 className="mt-4 text-[34px] font-bold leading-[1.1] tracking-[-1px] text-gradient sm:text-4xl">
               4-Stage Recovery Lifecycle
             </h2>

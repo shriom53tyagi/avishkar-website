@@ -1,5 +1,5 @@
 /** Single source of truth for the public contact address (note the spelling). */
-export const CONTACT_EMAIL = "info@avhishkar.app";
+export const CONTACT_EMAIL = "info@avishkar.app";
 
 /** Product tagline, used across hero, CTA and metadata. */
 export const TAGLINE = "Find the Leak. Quantify the Impact. Deploy the Fix.";
@@ -90,11 +90,11 @@ export const AUDIT_STEPS = [
   },
   {
     id: "04",
-    label: "Targeted Agent Deployment",
-    heading: "DEPLOY",
+    label: "Measure, Recover & Optimize",
+    heading: "OPTIMIZE",
     detail:
-      "AI agents designed for your specific environment — your EMR, your payer mix, your workflows. Supervised rollout with human oversight at every step. Outcomes measured continuously against the audit baseline.",
-    tag: "ROI proven first",
+      "Every recovered dollar is tracked against the audit baseline. Monthly impact reviews, continuous ROI measurement, and tuning so recovery compounds quarter over quarter — not a one-time fix.",
+    tag: "Measured vs. baseline",
     tagColor: "green" as const,
   },
 ] as const;
@@ -190,27 +190,41 @@ export const SECURITY_PILLARS = [
   {
     icon: "lock",
     title: "PHI minimization",
+    badge: "Read-only",
     detail:
       "We read only what an audit requires. Connections are read-only by default and scoped to the minimum necessary.",
   },
   {
     icon: "shield",
     title: "HIPAA-aligned",
+    badge: "BAA available",
     detail:
       "Built to HIPAA standards with a BAA available. Encryption in transit and at rest across every integration.",
   },
   {
     icon: "file",
     title: "Audit logging",
+    badge: "100% traceable",
     detail:
       "Every agent action is logged and reviewable. Full traceability from recommendation to deployed workflow.",
   },
   {
     icon: "users",
     title: "Human-in-the-loop",
+    badge: "Always supervised",
     detail:
       "Role-based access and supervised rollouts. Clinicians and staff stay in control, with clear handoffs.",
   },
+] as const;
+
+/** Compliance status chips (rendered inside the trust vault on the home page). */
+export const COMPLIANCE_CHIPS = [
+  { label: "HIPAA-aligned", active: true },
+  { label: "BAA available", active: true },
+  { label: "SOC 2 Type II in progress", active: false },
+  { label: "Read-only by default", active: true },
+  { label: "TLS 1.2+ in transit", active: true },
+  { label: "AES-256 at rest", active: true },
 ] as const;
 
 /* ------------------------------------------------------------------ */

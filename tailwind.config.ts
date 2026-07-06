@@ -11,15 +11,11 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular"],
       },
       colors: {
-        ink: {
-          950: "#04050A",
-          900: "#070811",
-          850: "#0A0C17",
-          800: "#0E1120",
-          700: "#141828",
-          600: "#1B2034",
-          500: "#262C44",
+        canvas: {
+          DEFAULT: "#FBFAF7",
+          alt: "#F4F1EA",
         },
+        sand: "#EFE9DD",
         blue: {
           500: "#1746DB",
           600: "#1440C8",
@@ -61,6 +57,7 @@ const config: Config = {
         "float-slow": "float-slow 8s ease-in-out infinite",
         "shimmer": "shimmer 2.5s linear infinite",
         "ticker": "ticker 28s linear infinite",
+        "marquee": "ticker 34s linear infinite",
         "blink": "blink 1.1s steps(2, start) infinite",
         "orbit": "orbit 16s linear infinite",
       },

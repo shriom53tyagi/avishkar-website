@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL        = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
-const CONTACT_EMAIL = "info@avhishkar.app";
+const CONTACT_EMAIL = "info@avishkar.app";
 
 // ── Company facts ────────────────────────────────────────────────────────────
 // The model is ONLY allowed to answer from this block. If it is not here,
