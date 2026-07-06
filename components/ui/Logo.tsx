@@ -10,20 +10,20 @@ export function Logo({ className }: { className?: string }) {
       aria-label="Avishkar home"
     >
       {/* Logo image from public/logo.png */}
-      <span className="relative inline-flex h-7 w-7 items-center justify-center">
+      <span className="relative inline-flex h-11 w-11 items-center justify-center">
         <Image
           src="/logo.png"
           alt="Avishkar logo"
-          width={28}
-          height={28}
+          width={44}
+          height={44}
           priority
-          className="h-7 w-7 object-contain"
+          className="h-11 w-11 object-contain"
         />
         <span className="absolute inset-0 -z-10 rounded-full bg-blue-500/20 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
       </span>
-      <span className="text-[15px] font-medium tracking-tight text-slate-900">
+      <span className="text-[19px] font-semibold tracking-tight text-slate-900">
         Avishkar
-        <span className="ml-1.5 align-middle text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400">
+        <span className="ml-1.5 align-middle text-[11px] font-mono uppercase tracking-[0.18em] text-slate-400">
           /AI
         </span>
       </span>

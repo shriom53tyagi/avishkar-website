@@ -3,23 +3,22 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { NeuralBackground } from "@/components/visuals/NeuralBackground";
 
 export function FinalCTA() {
   return (
-    <section id="cta" className="relative overflow-hidden bg-[#F8FAFE] py-28 sm:py-36">
-      {/* Neural network background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-30">
-        <NeuralBackground className="h-full w-full" />
-      </div>
+    <section id="cta" className="chapter-light relative overflow-hidden py-28 sm:py-40">
+      {/* Soft brand glow behind the closing statement */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 45% at 50% 42%, rgba(8,145,178,0.10), transparent 70%), radial-gradient(ellipse 40% 35% at 62% 60%, rgba(5,150,105,0.07), transparent 70%)",
+        }}
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-dots opacity-30 mask-radial" />
 
-      {/* Subtle gradient overlays */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_120%,rgba(8,145,178,0.10),transparent_70%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_50%,rgba(5,150,105,0.06),transparent_60%)]" />
-      </div>
-
-      <div className="relative mx-auto max-w-4xl px-6 text-center">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -32,7 +31,7 @@ export function FinalCTA() {
               <span className="absolute inset-0 rounded-full bg-emerald-500" />
               <span className="absolute inset-0 animate-ping-slow rounded-full bg-emerald-400" />
             </span>
-            Now booking Q3 2025 audit cohort
+            Now booking Q3 2026 audit cohort
           </span>
         </motion.div>
 
@@ -41,7 +40,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="text-[44px] font-bold leading-[1.06] tracking-[-2px] text-slate-900 sm:text-5xl lg:text-[60px]"
+          className="display-xl text-slate-900"
         >
           Ready to{" "}
           <span className="text-gradient-cyan">find the leak?</span>
@@ -52,7 +51,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="mx-auto mt-5 max-w-md text-[17px] leading-[1.7] text-slate-500"
+          className="mx-auto mt-6 max-w-md text-[18px] leading-[1.7] text-slate-500"
         >
           Diagnosis first. Deployment only where the numbers prove it.
         </motion.p>
@@ -71,9 +70,7 @@ export function FinalCTA() {
             </span>
           </Link>
           <Link href="/contact" className="cursor-pointer">
-            <span className="btn-secondary px-7 py-3.5 text-[15px]">
-              Talk to the team
-            </span>
+            <span className="btn-secondary px-7 py-3.5 text-[15px]">Talk to the team</span>
           </Link>
         </motion.div>
 
@@ -82,7 +79,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.34 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
+          className="mt-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
         >
           {["HIPAA-aligned", "BAA available", "Read-only audit", "Diagnosis before automation"].map((t, i) => (
             <span key={t} className="flex items-center gap-4">

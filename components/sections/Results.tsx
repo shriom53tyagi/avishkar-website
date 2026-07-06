@@ -2,6 +2,7 @@
 
 import { Reveal } from "@/components/ui/Reveal";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
+import { DuotonePhoto } from "@/components/ui/DuotonePhoto";
 import { motion } from "framer-motion";
 
 const TOP_KPIS = [
@@ -18,13 +19,13 @@ const BOTTOM_STATS = [
 
 export function Results() {
   return (
-    <section id="results" className="bg-white py-20 sm:py-28">
+    <section id="results" className="chapter-light py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6">
 
         <Reveal>
           <div className="mb-12 max-w-xl">
-            <span className="eyebrow">Outcomes</span>
-            <h2 className="mt-4 text-[34px] font-bold leading-[1.1] tracking-[-1px] text-gradient sm:text-4xl">
+            <span className="eyebrow">Chapter 05 · The Proof</span>
+            <h2 className="display-lg mt-5 text-slate-900">
               The audit found it.{" "}
               <span className="text-gradient-cyan">The agents recovered it.</span>
             </h2>
@@ -81,10 +82,18 @@ export function Results() {
         </Reveal>
 
         <Reveal delay={0.22}>
-          <div className="mt-4 overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50 to-white p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
-              <p className="flex-1 text-[16px] italic leading-relaxed text-slate-700">
-                "We identified $1.1M in leakage in 3 weeks and recovered $800K within Q1."
+          <div className="mt-4 overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50 to-white p-6 md:p-8">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-8">
+              <DuotonePhoto
+                src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"
+                alt="Healthcare finance executive"
+                className="h-20 w-20 shrink-0"
+                rounded="rounded-2xl"
+                sizes="80px"
+              />
+              <p className="flex-1 text-[17px] italic leading-relaxed text-slate-700">
+                "We identified $1.1M in leakage in 3 weeks and recovered $800K within Q1.
+                The diagnosis paid for itself before a single agent went live."
               </p>
               <div className="shrink-0 rounded-2xl border border-emerald-200/60 bg-white p-4 text-center shadow-sm">
                 <div className="text-[28px] font-bold text-emerald-600">$800K</div>

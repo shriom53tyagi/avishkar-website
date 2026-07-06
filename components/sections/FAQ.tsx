@@ -13,13 +13,13 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-white py-20 sm:py-28">
+    <section id="faq" className="chapter-light py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-6">
 
         <Reveal>
           <div className="mb-10 text-center">
             <span className="eyebrow mx-auto">Common Questions</span>
-            <h2 className="mt-4 text-[34px] font-bold leading-[1.1] tracking-[-1px] text-gradient sm:text-4xl">
+            <h2 className="display-lg mt-5 text-slate-900">
               Before you book.
             </h2>
           </div>

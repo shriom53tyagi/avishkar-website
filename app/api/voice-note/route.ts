@@ -17,14 +17,14 @@ import { getRateLimiter, getClientIp } from "@/lib/ratelimit";
  *   SES_AWS_SECRET_ACCESS_KEY  IAM secret
  *   SES_AWS_REGION             SES region (e.g. us-west-1)
  *   SES_FROM_EMAIL             Verified sender address in SES (plain email only, no display name)
- *   SES_TO_EMAIL               Recipient (defaults to info@avhishkar.app)
+ *   SES_TO_EMAIL               Recipient (defaults to info@avishkar.app)
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const TO_EMAIL   = process.env.SES_TO_EMAIL   || "info@avhishkar.app";
-const FROM_EMAIL = process.env.SES_FROM_EMAIL || "info@avhishkar.app";
+const TO_EMAIL   = process.env.SES_TO_EMAIL   || "info@avishkar.app";
+const FROM_EMAIL = process.env.SES_FROM_EMAIL || "info@avishkar.app";
 const MAX_BYTES  = 10 * 1024 * 1024; // 10 MB
 
 const sanitize = (s: string) =>
