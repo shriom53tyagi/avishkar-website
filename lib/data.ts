@@ -361,7 +361,7 @@ export const OPEN_ROLES = [
 
 /** Social links shown in the footer. Replace hrefs with real handles. */
 export const SOCIAL_LINKS = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/", icon: "linkedin" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/avishkarai/", icon: "linkedin" },
   { label: "X", href: "https://x.com/", icon: "x" },
   { label: "GitHub", href: "https://github.com/", icon: "github" },
   { label: "YouTube", href: "https://www.youtube.com/", icon: "youtube" },
