@@ -1,38 +1,32 @@
-import { Hero } from "@/components/sections/Hero";
-import { ProofStrip } from "@/components/sections/ProofStrip";
-import { VideoReveal } from "@/components/sections/VideoReveal";
-import { RevenueMetrics } from "@/components/sections/RevenueMetrics";
-import { WhyDifferent } from "@/components/sections/WhyDifferent";
-import { AuditEngine } from "@/components/sections/AuditEngine";
-import { Agents } from "@/components/sections/Agents";
-import { Results } from "@/components/sections/Results";
-import { Security } from "@/components/sections/Security";
-import { FAQ } from "@/components/sections/FAQ";
-import { FinalCTA } from "@/components/sections/FinalCTA";
-import { JsonLd } from "@/components/ui/JsonLd";
-import { faqSchema } from "@/lib/schema";
+import { Hero } from "@/components/home/Hero";
+import { Problem } from "@/components/home/Problem";
+import { Capability } from "@/components/home/Capability";
+import { AgentsPreview } from "@/components/home/AgentsPreview";
+import { HowWeWork } from "@/components/home/HowWeWork";
+import { Trust } from "@/components/home/Trust";
+import { FinalCTA } from "@/components/home/FinalCTA";
 
 /**
- * Section order follows the blueprint's cognitive journey:
- *   Hero → Proof Strip → Demo → Problem Validation → Methodology →
- *   Audit Lifecycle → Agents → Outcomes → Trust → FAQ → CTA
- * The whole page runs on the light design system (warm ivory canvas,
- * cyan/emerald accents) — no dark chapters.
+ * Home page order:
+ *   Hero → Problem → Capability → Agents → How we work → Trust →
+ *   Final CTA → Footer (in the layout)
+ *
+ * Breadth comes before the agent showcase on purpose: a visitor should learn
+ * what we build in general before seeing the examples, so agents read as
+ * evidence rather than as the entire company. The model Avishkar is building
+ * lives in the hero's right column, not as a later section.
+ *
+ * Nothing else belongs here. Detail lives one level deeper.
  */
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={faqSchema} />
       <Hero />
-      <ProofStrip />
-      <VideoReveal />
-      <RevenueMetrics />
-      <WhyDifferent />
-      <AuditEngine />
-      <Agents />
-      <Results />
-      <Security />
-      <FAQ />
+      <Problem />
+      <Capability />
+      <AgentsPreview />
+      <HowWeWork />
+      <Trust />
       <FinalCTA />
     </>
   );

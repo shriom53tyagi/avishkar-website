@@ -1,141 +1,90 @@
 import type { Metadata } from "next";
-import { Mail, Clock, ShieldCheck, FileText, CalendarDays } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { VoiceNote } from "@/components/ui/VoiceNote";
+import { Section } from "@/components/ui/Section";
 import { CalendarEmbed } from "@/components/ui/CalendarEmbed";
-import { Reveal } from "@/components/ui/Reveal";
-import { CONTACT_EMAIL } from "@/lib/data";
+import { CONTACT_EMAIL } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Book an Operational Audit",
+  title: "Talk to Avishkar",
   description:
-    "Book a free Operational Intelligence Audit for your hospital or clinic. Identify hidden revenue leakage, get a quantified recovery plan, and deploy AI agents only where ROI is proven.",
-  openGraph: {
-    title: "Book an Operational Audit — Avishkar AI",
-    description:
-      "A fixed-scope audit that quantifies hidden revenue loss across your EMR, billing, scheduling and call centers. HIPAA-aligned, read-only, BAA available.",
-    url: "https://avishkar.app/contact",
-  },
+    "Book a 30-minute conversation with Avishkar. Tell us the workflow your practice is trying to improve and we'll work out where technology could help.",
+  alternates: { canonical: "/contact" },
 };
-export default function ContactPage() {
+
+const PREP = [
+  "The workflow that frustrates you most right now",
+  "Who on the team touches it, and how often",
+  "The systems that hold the data — CRM, scheduling, EMR, phones, spreadsheets",
+  "What a good outcome would look like in a month",
+];
+
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ intent?: string }>;
+}) {
+  const { intent } = await searchParams;
+  const custom = intent === "custom";
+
   return (
     <>
       <PageHeader
-        eyebrow="Get in touch"
+        eyebrow="Talk to us"
         title={
-          <>
-            Find the leak.{" "}
-            <span className="text-gradient-cyan">Let&apos;s quantify the impact.</span>
-          </>
+          custom
+            ? "Tell us what you're trying to solve."
+            : "Book a 30-minute conversation."
         }
-        description="Pick a time that works for you, leave a voice note, or email us directly. We typically respond within one business day."
+        description={
+          custom
+            ? "The agents on our site are examples of current work, not a catalogue. Describe the problem and we'll tell you honestly what we'd build around it."
+            : "Thirty minutes on the workflow you want to improve. We'll ask about the systems involved and where the time goes, then tell you where technology could help — and where it wouldn't."
+        }
       />
 
-      <section className="relative pb-24 pt-8 sm:pb-32">
-        <div className="mx-auto max-w-7xl px-6 space-y-6">
-
-          {/* Row 1: Calendar + Voice note */}
-          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-
-            {/* Calendar booking */}
-            <Reveal>
-              <div className="surface h-full rounded-2xl p-6 sm:p-8">
-                <div className="mb-5 flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
-                    <CalendarDays className="h-5 w-5 text-cyan-700" />
-                  </span>
-                  <div>
-                    <h2 className="font-display text-2xl font-medium tracking-tight text-gradient">
-                      Book a discovery call
-                    </h2>
-                    <p className="text-[13px] text-slate-400">
-                      30 min · Operational audit scoping
-                    </p>
-                  </div>
-                </div>
-                <p className="mb-6 max-w-lg text-[15px] leading-relaxed text-slate-500">
-                  Pick a time directly in the calendar below. We&apos;ll scope a
-                  fixed, read-only audit, walk through a sample leakage report,
-                  and show you the numbers before anything gets automated.
-                </p>
-                <CalendarEmbed />
-              </div>
-            </Reveal>
-
-            {/* Right column: voice note + direct email */}
-            <div className="flex flex-col gap-6">
-              {/* Voice note */}
-              <Reveal delay={0.08}>
-                <div className="flex flex-col">
-                  <div className="mb-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-400">
-                    <span className="relative inline-flex h-1.5 w-1.5">
-                      <span className="absolute inset-0 rounded-full bg-cyan-400" />
-                      <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400/60" />
-                    </span>
-                    Leave a voice note
-                  </div>
-                  <VoiceNote />
-                </div>
-              </Reveal>
-
-              {/* Direct email fallback */}
-              <Reveal delay={0.14}>
-                <div className="surface rounded-2xl p-5">
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
-                      <Mail className="h-4 w-4 text-cyan-700" />
-                    </span>
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">Prefer email?</div>
-                      <p className="mt-0.5 text-[13px] text-slate-500">
-                        Reach us directly at{" "}
-                        <a
-                          href={`mailto:${CONTACT_EMAIL}?subject=Operational%20Audit%20Inquiry`}
-                          className="text-cyan-700 underline-offset-4 hover:underline"
-                        >
-                          {CONTACT_EMAIL}
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
+      <Section tone="canvas">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+          <div>
+            <h2 className="text-h3 text-ink">Pick a time</h2>
+            <p className="mt-2 text-small text-ink-muted">
+              Straight to the calendar. If nothing fits, email us and we&apos;ll find a slot.
+            </p>
+            <div className="mt-6">
+              <CalendarEmbed />
             </div>
           </div>
 
-          {/* Row 2: What to expect strip */}
-          <div className="grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                icon: Clock,
-                title: "One business day",
-                note: "Typical response time if you email or leave a voice note.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Read-only & HIPAA-aligned",
-                note: "BAA available before any system access begins.",
-              },
-              {
-                icon: FileText,
-                title: "Fixed-scope audit",
-                note: "A quantified leakage map in ~12 weeks.",
-              },
-            ].map((c, i) => (
-              <Reveal key={c.title} delay={0.15 + i * 0.05}>
-                <div className="surface h-full rounded-2xl p-5">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
-                    <c.icon className="h-4 w-4 text-cyan-700" />
-                  </span>
-                  <div className="mt-4 text-sm font-medium text-slate-900">{c.title}</div>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{c.note}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <div>
+            <h2 className="text-h3 text-ink">Prefer email?</h2>
+            <p className="mt-2 text-small text-ink-muted">
+              Write to{" "}
+              <a
+                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+                  custom ? "A problem we're trying to solve" : "30-minute conversation"
+                )}`}
+                className="text-accent underline underline-offset-4"
+              >
+                {CONTACT_EMAIL}
+              </a>{" "}
+              with a couple of lines about the workflow. We usually reply within one business day.
+            </p>
 
+            <h2 className="mt-12 text-h3 text-ink">Worth having ready</h2>
+            <ul className="mt-5 space-y-3">
+              {PREP.map((item) => (
+                <li key={item} className="border-t border-line pt-3 text-small text-ink-muted">
+                  {item}
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-8 text-small text-ink-subtle">
+              No preparation is required. Nothing in the conversation obliges you to buy anything,
+              and we won&apos;t ask for system access to have it.
+            </p>
+          </div>
         </div>
-      </section>
+      </Section>
     </>
   );
 }

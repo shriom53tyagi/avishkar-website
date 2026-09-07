@@ -1,116 +1,95 @@
-# Avishkar AI — Healthcare Operational Intelligence & Automation
+# Avishkar — practice technology
 
-A futuristic, production-quality site for **Avishkar AI**, a healthcare operational
-intelligence and automation platform that helps hospitals and clinics find and recover
-hidden revenue losses. Avishkar starts with a comprehensive AI-powered operational
-audit, quantifies the financial impact of every inefficiency, then deploys specialized
-AI agents only where they deliver measurable ROI.
+Marketing site for **Avishkar**: we connect the systems a practice already uses and
+build AI agents, integrations, automation and custom tools around its workflows.
 
-> "Find the Leak. Quantify the Impact. Deploy the Fix."
+> Technology built around how your practice works.
 
-## Tech Stack
+The site has two jobs: explain what Avishkar is in about ten seconds, and give a
+qualified visitor a clear path to trying an agent or booking a conversation.
 
-- **Next.js 15** (App Router, RSC)
-- **React 19**
-- **TypeScript** (strict)
-- **Tailwind CSS** (custom dark-first design system)
-- **Framer Motion** (cinematic micro-interactions)
-- **Lucide Icons**
+## Tech stack
 
-## Design language
+- **Next.js 15** (App Router, RSC) · **React 19** · **TypeScript** (strict)
+- **Tailwind CSS** with a small token set (see `tailwind.config.ts`)
+- **Inter** via `next/font`, single family
+- **Framer Motion** for exactly one entrance animation
 
-- Dark-mode-default with a deep ink palette (`#04050A`)
-- Layered glassmorphism, animated grid + dot backgrounds
-- Subtle neural / scan motion, not cartoonish illustrations
-- A "live" feel: tickers, sparklines, agent waves, terminal typing
-- Healthcare-grade trust cues: HIPAA, BAA, RBAC, PHI minimization
+## Information architecture
 
-## Sections
-
-1. **Hero** — animated dashboard, workflow graph, floating chips, live ticker
-2. **Problems** — animated alert cards with severity bars
-3. **AI Audit Engine** — pipeline + live terminal + leakage map
-4. **Agents** — 8-card roster with live waveforms and metrics
-5. **Inside Your System** — multi-layer architecture visual + trust pillars
-6. **Results** — animated counters across 6 outcome metrics
-7. **Process** — premium 4-step timeline (horizontal + mobile vertical)
-8. **Contact** — direct email, Apple-style voice note, Careers (`mailto:`), Security & Compliance
-9. **Final CTA** — full-bleed neural network canvas, cinematic close
-
-## Interactive features
-
-- **Domain-locked AI chatbot** — a floating widget (bottom-right) that answers
-  questions about Avishkar AI only. All LLM calls run **server-side** through
-  `app/api/chat/route.ts`; the API key is read from `ANTHROPIC_API_KEY` and is
-  never exposed to the browser. A strict system prompt keeps it on-topic, refuses
-  off-domain questions, and defers to `info@avhishkar.app` when it doesn't know.
-- **Apple-style voice note** (Contact section) — tap to record with a live
-  waveform, timer, playback and re-record, built on the `MediaRecorder` API with
-  graceful mic-permission handling. On send it POSTs the audio to
-  `app/api/voice-note/route.ts`, which is where you wire up storage or forwarding
-  to `info@avhishkar.app` (see the marked `TODO` block in that file).
-- **Interactive visitor counter** (footer) — rolls up on load, reacts to
-  hover/click, and is persisted server-side via `app/api/visitors/route.ts`
-  (a small JSON file under `data/`, with an in-memory fallback).
-
-## Environment variables
-
-Copy `.env.example` to `.env.local` and fill in your key:
-
-```bash
-cp .env.example .env.local
+```
+/                    Home — 8 sections, in a fixed order
+/agents              Agent library, grouped by availability
+/agents/[slug]       One page per agent, generated from content
+/how-we-work         Engagement model, what we build, common questions
+/about               Who we are and how we think
+/contact             Booking + "tell us what you're trying to solve"
+/security            How access and data are handled
+/resources           Existing SEO articles (footer-linked)
+/careers /privacy /terms
 ```
 
-| Variable            | Required | Description                                                        |
-| ------------------- | -------- | ------------------------------------------------------------------ |
-| `ANTHROPIC_API_KEY` | Yes      | Anthropic API key for the server-side chatbot. Never commit this.  |
-| `ANTHROPIC_MODEL`   | No       | Override the chat model (defaults to a fast, low-cost Claude model).|
+Navigation is three links plus one CTA. The site uses four CTA labels in total:
+`Book a 30-min conversation`, `Try agent`, `Explore agents`, and
+`Tell us what you're trying to solve` (see `CTA` in `lib/content.ts`).
 
-> The chatbot still loads without a key — it simply replies asking the user to
-> email `info@avhishkar.app` instead of erroring.
+## Content model
+
+All copy lives in two files, so wording changes never require touching layout:
+
+| File              | Holds                                                        |
+| ----------------- | ------------------------------------------------------------ |
+| `lib/content.ts`  | Navigation, CTA labels, every page's copy, security claims   |
+| `lib/agents.ts`   | The agent library — one typed entry per agent                |
+| `lib/resources.ts`| The SEO article content                                      |
+
+**Adding an agent** means adding one entry to `AGENTS` in `lib/agents.ts`. The
+library grouping, category filter, home page preview, footer list, detail page,
+sitemap and structured data all derive from it.
+
+**Shipping an agent** means changing `status` to `"live"` and setting `demoUrl`.
+The card then shows a `Try agent` CTA and the detail page links to the demo.
+
+## Claims policy
+
+The site carries no client logos, no invented metrics and no certifications we
+have not earned. Before launch, review `SECURITY_PILLARS` in `lib/content.ts` —
+if a line cannot be evidenced in a security questionnaire, cut it.
+
+## Design system
+
+- Two neutral surfaces (`canvas`, `alt`), white cards, a three-step ink ramp
+- One accent (`#124C5F`), plus a green for available and an amber for in-development
+- 8px radius, 1px borders, no shadows, no gradients
+- One animation: an 8px rise and fade on section enter, disabled under
+  `prefers-reduced-motion` and forced visible under `<noscript>`
 
 ## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local   # then add your ANTHROPIC_API_KEY
+cp .env.example .env.local   # add NEXT_PUBLIC_CALENDLY_URL
 npm run dev
 ```
 
-Then open http://localhost:3000
-
-## Build
+## Checks
 
 ```bash
+npm run typecheck
+npm run lint
 npm run build
-npm start
 ```
 
 ## Project structure
 
 ```
-app/                 # Next.js App Router
-  layout.tsx
-  page.tsx
-  globals.css
-  api/               # Server-side route handlers (key stays on the server)
-    chat/            #   POST → domain-locked Avishkar AI chatbot
-    voice-note/      #   POST → receives recorded voice notes (multipart)
-    visitors/        #   GET/POST → persisted visitor counter
+app/                    Routes
 components/
-  ui/                # Reusable primitives (buttons, nav, chat widget, voice note, ...)
-  sections/          # Page sections (incl. Contact: voice note + careers + security)
-  visuals/           # Heavy animated visuals (canvas + svg)
+  home/                 The eight home page sections
+  agents/               Agent library (client-side category filter)
+  ui/                   Primitives: Container, Section, Button, Reveal, Nav, Footer
 lib/
-  data.ts            # Copy + structured content (CONTACT_EMAIL, security pillars, ...)
-  utils.ts
-data/                # Runtime store for the visitor counter (gitignored JSON)
-tailwind.config.ts
-next.config.ts
+  content.ts            Site copy and navigation
+  agents.ts             Agent library
+  schema.ts             Structured data, derived from the content files
 ```
-
-## Notes
-
-- Honors `prefers-reduced-motion` and avoids overwhelming animations
-- All visuals are hand-built (SVG / canvas) — no stock imagery.
-- Mock data lives in `lib/data.ts` — swap with real metrics when ready 

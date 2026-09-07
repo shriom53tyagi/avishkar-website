@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft, ArrowRight, Clock, Calendar,
-  TrendingUp, AlertTriangle, Lightbulb,
-} from "lucide-react";
-import { Reveal } from "@/components/ui/Reveal";
+import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/Button";
 import { RESOURCES, getResource } from "@/lib/resources";
+import { CTA } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -24,21 +23,22 @@ export async function generateMetadata({
   return {
     title: resource.metaTitle,
     description: resource.metaDescription,
+    alternates: { canonical: `/resources/${resource.slug}` },
     openGraph: {
       title: resource.metaTitle,
       description: resource.metaDescription,
-      url: `https://avishkar.app/resources/${resource.slug}`,
+      url: `${SITE_URL}/resources/${resource.slug}`,
       type: "article",
       publishedTime: resource.publishedAt,
     },
   };
 }
 
-const ACCENT_COLORS = {
-  cyan:    { text: "text-cyan-700",    bg: "bg-cyan-50",    border: "border-cyan-200"    },
-  emerald: { text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200" },
-  violet:  { text: "text-violet-700",  bg: "bg-violet-50",  border: "border-violet-200"  },
-  amber:   { text: "text-amber-700",   bg: "bg-amber-50",   border: "border-amber-200"   },
+/** Callout tone maps onto the two state colors — no third accent. */
+const CALLOUT_TONES = {
+  insight: "border-line-strong bg-surface text-ink-muted",
+  warning: "border-attention/30 bg-attention-tint text-attention",
+  cta: "border-positive/30 bg-positive-tint text-positive",
 } as const;
 
 export default async function ResourcePage({
@@ -52,255 +52,150 @@ export default async function ResourcePage({
 
   return (
     <>
-      {/* Article header */}
-      <section className="relative overflow-hidden pb-8 pt-36 sm:pt-44">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10"
-          aria-hidden
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(21,112,239,0.05)_0%,transparent_100%)]" />
-        </div>
+      <section className="border-b border-line bg-canvas pb-14 pt-14 md:pb-16 md:pt-20">
+        <Container>
+          <div className="max-w-measure">
+            <Link
+              href="/resources"
+              className="text-small text-ink-subtle transition-colors hover:text-ink"
+            >
+              <span aria-hidden>&larr;</span> All resources
+            </Link>
 
-        <div className="mx-auto max-w-3xl px-6">
-          {/* Back link */}
-          <Link
-            href="/resources"
-            className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-slate-400 transition-colors hover:text-slate-900"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            All resources
-          </Link>
+            <div className="mt-8 flex flex-wrap items-center gap-3 text-label text-ink-subtle">
+              <span>
+                {new Date(resource.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+              <span aria-hidden>·</span>
+              <span>{resource.readingTime}</span>
+            </div>
 
-          {/* Meta row */}
-          <div className="mb-4 flex flex-wrap items-center gap-3 text-[12px] text-slate-400">
-            <span className="inline-flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5" />
-              {new Date(resource.publishedAt).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric",
-              })}
-            </span>
-            <span className="h-1 w-1 rounded-full bg-slate-300" />
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" />
-              {resource.readingTime}
-            </span>
+            <h1 className="mt-4 text-h1 text-ink">{resource.headline}</h1>
+            <p className="mt-5 text-lead text-ink-muted">{resource.intro}</p>
           </div>
-
-          {/* Headline */}
-          <h1 className="font-display text-3xl font-medium leading-tight tracking-tight text-gradient sm:text-4xl md:text-5xl">
-            {resource.headline}
-          </h1>
-
-          {/* Intro */}
-          <p className="mt-6 text-[16px] leading-relaxed text-slate-500">
-            {resource.intro}
-          </p>
-
-          {/* Divider */}
-          <div className="mt-10 h-px bg-gradient-to-r from-transparent via-slate-900/10 to-transparent" />
-        </div>
+        </Container>
       </section>
 
-      {/* Article body */}
-      <section className="pb-24">
-        <div className="mx-auto max-w-3xl px-6">
+      <Container>
+        <div className="max-w-measure py-14 md:py-20">
           <div className="space-y-14">
-            {resource.sections.map((section, si) => (
-              <Reveal key={section.heading} delay={si * 0.03}>
-                <div>
-                  {/* Section heading */}
-                  <h2 className="mb-4 font-display text-xl font-medium tracking-tight text-slate-900 sm:text-2xl">
-                    {section.heading}
-                  </h2>
+            {resource.sections.map((section) => (
+              <section key={section.heading}>
+                <h2 className="text-h2 text-ink">{section.heading}</h2>
 
-                  {/* Body text */}
-                  {section.body && (
-                    <p className="mb-5 text-[15px] leading-relaxed text-slate-500">
-                      {section.body}
-                    </p>
-                  )}
+                {section.body && (
+                  <p className="mt-4 text-body text-ink-muted">{section.body}</p>
+                )}
 
-                  {/* Stats grid */}
-                  {section.stats && section.stats.length > 0 && (
-                    <div
-                      className={cn(
-                        "mb-6 grid gap-4",
-                        section.stats.length <= 2
-                          ? "grid-cols-2"
-                          : section.stats.length === 3
-                          ? "grid-cols-3"
-                          : "grid-cols-2 sm:grid-cols-4"
-                      )}
-                    >
-                      {section.stats.map((s) => {
-                        const a = ACCENT_COLORS[s.accent ?? "cyan"];
-                        return (
-                          <div
-                            key={s.label}
-                            className={cn(
-                              "rounded-2xl border p-4 text-center",
-                              a.bg, a.border
-                            )}
-                          >
-                            <div className={cn("font-display text-2xl font-medium", a.text)}>
-                              {s.value}
-                            </div>
-                            <div className="mt-1 text-[12px] text-slate-500">{s.label}</div>
-                            {s.note && (
-                              <div className="mt-1 text-[11px] text-slate-400">{s.note}</div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                {section.stats && section.stats.length > 0 && (
+                  <dl
+                    className={cn(
+                      "mt-6 grid gap-x-8 gap-y-6",
+                      section.stats.length <= 2 ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4"
+                    )}
+                  >
+                    {section.stats.map((stat) => (
+                      <div key={stat.label} className="border-t border-line-strong pt-3">
+                        <dt className="text-h3 text-ink">{stat.value}</dt>
+                        <dd className="mt-1 text-small text-ink-muted">
+                          {stat.label}
+                          {stat.note && (
+                            <span className="block text-ink-subtle">{stat.note}</span>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
 
-                  {/* Data table */}
-                  {section.table && (
-                    <div className="mb-6 overflow-x-auto rounded-2xl border border-slate-900/[0.08]">
-                      <table className="w-full border-collapse text-[13.5px]">
-                        <thead>
-                          <tr className="border-b border-slate-900/[0.08] bg-slate-50">
-                            {section.table.headers.map((h) => (
-                              <th
-                                key={h}
-                                className="px-4 py-3 text-left font-medium text-slate-600"
-                              >
-                                {h}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {section.table.rows.map((row, ri) => (
-                            <tr
-                              key={ri}
-                              className="border-b border-slate-900/[0.05] transition-colors hover:bg-slate-50"
-                            >
-                              <td className="px-4 py-3 font-medium text-slate-700">
-                                {row.label}
-                              </td>
-                              <td className="px-4 py-3 text-cyan-700 font-medium">
-                                {row.value}
-                              </td>
-                              {row.note && (
-                                <td className="px-4 py-3 text-slate-500">{row.note}</td>
-                              )}
-                            </tr>
+                {section.table && (
+                  <div className="mt-6 overflow-x-auto rounded border border-line">
+                    <table className="w-full border-collapse text-small">
+                      <thead>
+                        <tr className="border-b border-line bg-alt text-left">
+                          {section.table.headers.map((header) => (
+                            <th key={header} className="px-4 py-3 font-medium text-ink">
+                              {header}
+                            </th>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section.table.rows.map((row) => (
+                          <tr key={row.label} className="border-b border-line last:border-0">
+                            <td className="px-4 py-3 font-medium text-ink">{row.label}</td>
+                            <td className="px-4 py-3 text-ink-muted">{row.value}</td>
+                            {row.note && (
+                              <td className="px-4 py-3 text-ink-subtle">{row.note}</td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
 
-                  {/* Bullet list */}
-                  {section.list && section.list.length > 0 && (
-                    <ul className="mb-5 space-y-2">
-                      {section.list.map((item) => (
-                        <li
-                          key={item}
-                          className="flex items-start gap-3 text-[14.5px] leading-relaxed text-slate-500"
-                        >
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* Callout */}
-                  {section.callout && (
-                    <div
-                      className={cn(
-                        "flex gap-3 rounded-2xl border p-4",
-                        section.callout.type === "insight"
-                          ? "border-cyan-200 bg-cyan-50"
-                          : section.callout.type === "warning"
-                          ? "border-amber-200 bg-amber-50"
-                          : "border-emerald-200 bg-emerald-50"
-                      )}
-                    >
-                      {section.callout.type === "insight" && (
-                        <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
-                      )}
-                      {section.callout.type === "warning" && (
-                        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
-                      )}
-                      {section.callout.type === "cta" && (
-                        <TrendingUp className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
-                      )}
-                      <p
-                        className={cn(
-                          "text-[13.5px] leading-relaxed",
-                          section.callout.type === "insight"
-                            ? "text-cyan-700"
-                            : section.callout.type === "warning"
-                            ? "text-amber-700"
-                            : "text-emerald-700"
-                        )}
+                {section.list && section.list.length > 0 && (
+                  <ul className="mt-6 space-y-3">
+                    {section.list.map((item) => (
+                      <li
+                        key={item}
+                        className="border-t border-line pt-3 text-small text-ink-muted"
                       >
-                        {section.callout.text}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </Reveal>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {section.callout && (
+                  <p
+                    className={cn(
+                      "mt-6 rounded border p-4 text-small",
+                      CALLOUT_TONES[section.callout.type]
+                    )}
+                  >
+                    {section.callout.text}
+                  </p>
+                )}
+              </section>
             ))}
           </div>
 
-          {/* CTA block */}
-          <Reveal delay={0.1}>
-            <div className="surface mt-16 rounded-2xl p-8">
-              <h3 className="font-display text-2xl font-medium tracking-tight text-gradient">
-                {resource.cta.heading}
-              </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-slate-500">
-                {resource.cta.body}
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href={resource.cta.primaryHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_12px_rgba(23,70,219,0.30),0_16px_48px_-8px_rgba(23,70,219,0.42)] transition-transform hover:-translate-y-px hover:bg-blue-700"
-                >
-                  {resource.cta.primaryLabel}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                {resource.cta.secondaryLabel && resource.cta.secondaryHref && (
-                  <Link
-                    href={resource.cta.secondaryHref}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-900/15 bg-slate-50 px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-900/30 hover:text-slate-900"
-                  >
-                    {resource.cta.secondaryLabel}
-                  </Link>
-                )}
-              </div>
+          <div className="mt-16 rounded border border-line-strong bg-surface p-8">
+            <h2 className="text-h3 text-ink">{resource.cta.heading}</h2>
+            <p className="mt-3 text-small text-ink-muted">{resource.cta.body}</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <Button href="/contact">{CTA.book}</Button>
+              <Button href="/agents" variant="secondary">
+                {CTA.seeWork}
+              </Button>
             </div>
-          </Reveal>
+          </div>
 
-          {/* Related links */}
           {resource.relatedLinks.length > 0 && (
-            <Reveal delay={0.1}>
-              <div className="mt-10">
-                <div className="mb-4 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
-                  Related resources
-                </div>
-                <div className="space-y-2">
-                  {resource.relatedLinks.map((l) => (
+            <div className="mt-12">
+              <p className="eyebrow">Related resources</p>
+              <ul className="mt-4 space-y-3">
+                {resource.relatedLinks.map((link) => (
+                  <li key={link.href}>
                     <Link
-                      key={l.href}
-                      href={l.href}
-                      className="flex items-center gap-2 text-[14px] text-slate-500 transition-colors hover:text-blue-600"
+                      href={link.href}
+                      className="text-small text-ink-muted transition-colors hover:text-ink"
                     >
-                      <ArrowRight className="h-3.5 w-3.5 shrink-0" />
-                      {l.label}
+                      {link.label} <span aria-hidden>&rarr;</span>
                     </Link>
-                  ))}
-                </div>
-              </div>
-            </Reveal>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-      </section>
+      </Container>
     </>
   );
 }

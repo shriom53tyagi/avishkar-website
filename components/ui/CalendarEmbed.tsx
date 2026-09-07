@@ -1,22 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CalendarDays, ExternalLink } from "lucide-react";
 import { hasConsent } from "@/components/ui/CookieConsent";
 
 /*
- * Calendly inline embed widget.
- *
- * Uses Calendly's official initInlineWidget({ url, parentElement }) API.
- * If the script is blocked or the env var is missing, a fallback card
- * with a direct link is shown.
+ * Calendly inline embed.
  *
  * Setup:
- *   1. Create a Calendly account + event type at calendly.com
- *   2. Copy your booking URL
- *   3. Add to .env.local:
- *        NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/yourname/audit-discovery
- *   4. Restart the dev server
+ *   1. Create the event type in Calendly and copy its booking URL.
+ *   2. Add NEXT_PUBLIC_CALENDLY_URL=... to .env.local
+ *   3. Restart the dev server.
+ *
+ * If the script is blocked, consent is declined, or the env var is missing,
+ * a plain fallback with a direct link is shown instead.
  */
 
 const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL || "";
@@ -48,6 +44,12 @@ function loadCss(href: string) {
   l.rel = "stylesheet";
   l.href = href;
   document.head.appendChild(l);
+}
+
+function Fallback({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded border border-line bg-surface p-8">{children}</div>
+  );
 }
 
 export function CalendarEmbed() {
@@ -88,66 +90,52 @@ export function CalendarEmbed() {
 
   if (state === "no-consent") {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-900/[0.08] bg-slate-50 px-6 py-12 text-center">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
-          <CalendarDays className="h-6 w-6 text-cyan-700" />
-        </span>
-        <div>
-          <div className="text-sm font-medium text-slate-900">Booking calendar requires cookies</div>
-          <p className="mt-1 max-w-xs text-[13px] text-slate-500">
-            Please accept cookies to enable the booking calendar.
-          </p>
-        </div>
+      <Fallback>
+        <p className="text-small font-semibold text-ink">The booking calendar needs cookies</p>
+        <p className="mt-2 text-small text-ink-muted">
+          Accept cookies to load the calendar, or email us and we&apos;ll find a time.
+        </p>
         <button
           onClick={() => {
             localStorage.removeItem("cookie_consent");
             window.location.reload();
           }}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-900/10 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-900/20 hover:text-slate-900"
+          className="mt-6 rounded border border-line-strong px-4 py-2 text-small font-medium text-ink transition-colors hover:border-ink-subtle"
         >
-          Update preferences
+          Update cookie preferences
         </button>
-      </div>
+      </Fallback>
     );
   }
 
   if (state === "error") {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-900/[0.08] bg-slate-50 px-6 py-12 text-center">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-cyan-200 bg-cyan-50">
-          <CalendarDays className="h-6 w-6 text-cyan-700" />
-        </span>
-        <div>
-          <div className="text-sm font-medium text-slate-900">Open the booking calendar</div>
-          <p className="mt-1 max-w-xs text-[13px] text-slate-500">
-            {CALENDLY_URL
-              ? "The embedded calendar could not load (it may be blocked by a browser extension). Use the button below."
-              : "Booking calendar is not configured yet. Set NEXT_PUBLIC_CALENDLY_URL in your environment."}
-          </p>
-        </div>
+      <Fallback>
+        <p className="text-small font-semibold text-ink">Open the booking calendar</p>
+        <p className="mt-2 text-small text-ink-muted">
+          {CALENDLY_URL
+            ? "The embedded calendar could not load — it may be blocked by a browser extension. Use the link below."
+            : "The booking calendar is not configured yet. Set NEXT_PUBLIC_CALENDLY_URL in the environment."}
+        </p>
         {CALENDLY_URL && (
           <a
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-[0_1px_3px_rgba(23,70,219,0.28),0_4px_16px_rgba(23,70,219,0.32)] transition-transform hover:-translate-y-px hover:bg-blue-700"
+            className="mt-6 inline-flex rounded bg-accent px-5 py-3 text-small font-medium text-white transition-colors hover:bg-accent-hover"
           >
-            <ExternalLink className="h-4 w-4" />
-            Open calendar in new tab
+            Open calendar in a new tab
           </a>
         )}
-      </div>
+      </Fallback>
     );
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-slate-900/[0.08] bg-white">
+    <div className="relative w-full overflow-hidden rounded border border-line bg-surface">
       {state === "loading" && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white">
-          <div className="flex flex-col items-center gap-3 text-slate-500">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-blue-500" />
-            <span className="text-[13px]">Loading calendar...</span>
-          </div>
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface">
+          <span className="text-small text-ink-subtle">Loading calendar…</span>
         </div>
       )}
       <div ref={ref} style={{ minWidth: "320px", height: "700px" }} />
