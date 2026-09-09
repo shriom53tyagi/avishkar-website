@@ -1,37 +1,49 @@
-import { Section, SectionHeading } from "@/components/ui/Section";
-import { Reveal } from "@/components/ui/Reveal";
+import { Section } from "@/components/ui/Section";
+import { Stagger, StaggerItem, FadeUp } from "@/components/ui/Motion";
 import { Button } from "@/components/ui/Button";
 import { HOW_WE_WORK } from "@/lib/content";
 
+/**
+ * The engagement timeline. A marker sits on the rule above each step and the
+ * rule runs between them, so the three columns read as one sequence.
+ *
+ * The steps are cards rather than bare columns: at full-page height, three
+ * thin text columns leave the section looking empty, and giving them a
+ * surface lets the row carry the extra height honestly.
+ */
 export function HowWeWork() {
   return (
-    <Section tone="canvas">
-      <SectionHeading
-        eyebrow="How we work"
-        title={HOW_WE_WORK.headline}
-        sub={HOW_WE_WORK.sub}
-      />
+    <Section id="how-we-work" tone="canvas" full nextId="trust">
+      <FadeUp className="max-w-measure">
+        <p className="eyebrow mb-4">How we work</p>
+        <h2 className="text-h2 text-ink">{HOW_WE_WORK.headline}</h2>
+        <p className="mt-4 text-lead text-ink-muted">{HOW_WE_WORK.sub}</p>
+      </FadeUp>
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-3 lg:gap-12">
+      <Stagger className="mt-14 grid gap-5 lg:grid-cols-3 lg:gap-6">
         {HOW_WE_WORK.steps.map((step, i) => (
-          <Reveal key={step.title} delay={i * 0.05}>
-            <div className="border-t border-line-strong pt-5">
+          <StaggerItem key={step.title} className="h-full">
+            <div className="group flex h-full flex-col rounded-lg border border-line bg-surface p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-card-hover md:p-8">
               <div className="flex items-baseline justify-between gap-4">
-                <p className="text-label text-ink-subtle">{String(i + 1).padStart(2, "0")}</p>
-                <p className="text-label text-ink-subtle">{step.timing}</p>
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-accent/30 bg-accent-tint text-label font-medium text-accent">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="text-label uppercase tracking-[0.08em] text-ink-subtle">
+                  {step.timing}
+                </p>
               </div>
-              <h3 className="mt-3 text-h3 text-ink">{step.title}</h3>
-              <p className="mt-2 text-small text-ink-muted">{step.body}</p>
+              <h3 className="mt-6 text-h3 text-ink">{step.title}</h3>
+              <p className="mt-3 text-body text-ink-muted">{step.body}</p>
             </div>
-          </Reveal>
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
 
-      <div className="mt-10">
+      <FadeUp className="mt-12">
         <Button href="/how-we-work" variant="quiet" arrow>
           How we work
         </Button>
-      </div>
+      </FadeUp>
     </Section>
   );
 }

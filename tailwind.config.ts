@@ -57,6 +57,14 @@ const config: Config = {
         DEFAULT: "8px",
         lg: "10px",
       },
+      boxShadow: {
+        /* Resting elevation for cards and panels: barely-there on the neutral
+           canvas, just enough to lift a surface off the page. */
+        card: "0 1px 2px rgba(22, 25, 29, 0.04), 0 1px 1px rgba(22, 25, 29, 0.03)",
+        /* Hover elevation, paired with a small upward translate. */
+        "card-hover":
+          "0 12px 24px -8px rgba(22, 25, 29, 0.12), 0 4px 8px -4px rgba(22, 25, 29, 0.06)",
+      },
       transitionDuration: {
         DEFAULT: "180ms",
       },

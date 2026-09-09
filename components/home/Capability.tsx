@@ -1,22 +1,37 @@
-import { Section, SectionHeading } from "@/components/ui/Section";
-import { Reveal } from "@/components/ui/Reveal";
+import { Section } from "@/components/ui/Section";
+import { Stagger, StaggerItem, FadeUp } from "@/components/ui/Motion";
 import { CAPABILITY } from "@/lib/content";
 
+/**
+ * The four-step method, set as a two-column spread: the headline holds the
+ * left rail while the steps stack down the right. At full-page height a
+ * single centred block would leave most of the section empty, so the columns
+ * carry the height instead of padding doing it.
+ */
 export function Capability() {
   return (
-    <Section tone="alt">
-      <SectionHeading eyebrow="What Avishkar does" title={CAPABILITY.headline} />
+    <Section id="capability" tone="alt" full nextId="agents">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-24">
+        <FadeUp className="lg:self-center">
+          <p className="eyebrow mb-4">What Avishkar does</p>
+          <h2 className="text-h2 text-ink">{CAPABILITY.headline}</h2>
+        </FadeUp>
 
-      <div className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
-        {CAPABILITY.steps.map((step, i) => (
-          <Reveal key={step.title} delay={i * 0.05}>
-            <div className="border-t border-line-strong pt-5">
-              <p className="text-label text-ink-subtle">{String(i + 1).padStart(2, "0")}</p>
-              <h3 className="mt-3 text-h3 text-ink">{step.title}</h3>
-              <p className="mt-2 text-small text-ink-muted">{step.body}</p>
-            </div>
-          </Reveal>
-        ))}
+        <Stagger className="flex flex-col">
+          {CAPABILITY.steps.map((step, i) => (
+            <StaggerItem key={step.title}>
+              <div className="group grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 border-t border-line-strong py-7 md:gap-x-10 md:py-8">
+                <p className="text-label font-medium text-accent transition-colors">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <div>
+                  <h3 className="text-h3 text-ink">{step.title}</h3>
+                  <p className="mt-2 max-w-measure text-body text-ink-muted">{step.body}</p>
+                </div>
+              </div>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </div>
     </Section>
   );

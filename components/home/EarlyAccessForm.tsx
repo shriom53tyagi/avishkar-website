@@ -62,7 +62,10 @@ export function EarlyAccessForm({
   if (done) {
     return (
       <div
-        className={cn("rounded border border-line bg-surface", compact ? "p-4" : "p-5")}
+        className={cn(
+          "rounded border border-line bg-surface",
+          compact ? "border-0 p-0" : "p-5"
+        )}
         aria-live="polite"
       >
         <p className="text-h3 text-ink">{EARLY_ACCESS.successTitle}</p>
@@ -75,7 +78,10 @@ export function EarlyAccessForm({
     <form
       onSubmit={onSubmit}
       noValidate
-      className={cn("rounded border border-line bg-surface", compact ? "p-4" : "p-5")}
+      className={cn(
+        "rounded border-line bg-surface",
+        compact ? "border-t pt-5" : "border p-5"
+      )}
     >
       <p className="text-small font-medium text-ink">{EARLY_ACCESS.formLabel}</p>
 

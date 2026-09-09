@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { FOOTER_AGENTS } from "@/lib/agents";
 import {
@@ -56,21 +55,6 @@ export function Footer() {
 
   return (
     <footer className="border-t border-line bg-surface">
-      {/* Brand statement — the last thing we say before the links. */}
-      <Container>
-        <div className="border-b border-line py-16 md:py-20">
-          <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">{FOOTER_BRAND.statement}</h2>
-            <p className="mt-4 text-lead text-ink-muted">{FOOTER_BRAND.body}</p>
-            <div className="mt-8">
-              <Button href="/contact" arrow>
-                {FOOTER_BRAND.cta}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Container>
-
       <Container>
         <div className="grid grid-cols-2 gap-x-8 gap-y-12 py-14 md:grid-cols-3 lg:grid-cols-5">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">

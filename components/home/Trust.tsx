@@ -1,31 +1,38 @@
-import { Section, SectionHeading } from "@/components/ui/Section";
-import { Reveal } from "@/components/ui/Reveal";
+import { Section } from "@/components/ui/Section";
+import { Stagger, StaggerItem, FadeUp } from "@/components/ui/Motion";
 import { Button } from "@/components/ui/Button";
 import { SECURITY_PILLARS, TRUST } from "@/lib/content";
 
+/**
+ * Security posture. The pillars sit in bordered tiles rather than under bare
+ * rules so the right column has enough weight to hold its half of a
+ * full-page section.
+ */
 export function Trust() {
   return (
-    <Section tone="alt">
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
-        <Reveal>
-          <SectionHeading eyebrow="Trust" title={TRUST.headline} sub={TRUST.sub} />
+    <Section id="trust" tone="alt" full nextId="final-cta">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-20">
+        <FadeUp>
+          <p className="eyebrow mb-4">Trust</p>
+          <h2 className="text-h2 text-ink">{TRUST.headline}</h2>
+          <p className="mt-4 text-lead text-ink-muted">{TRUST.sub}</p>
           <div className="mt-8">
             <Button href="/security" variant="quiet" arrow>
               Learn about security
             </Button>
           </div>
-        </Reveal>
+        </FadeUp>
 
-        <Reveal delay={0.06}>
-          <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
-            {SECURITY_PILLARS.map((pillar) => (
-              <div key={pillar.title} className="border-t border-line-strong pt-4">
-                <dt className="text-small font-semibold text-ink">{pillar.title}</dt>
-                <dd className="mt-2 text-small text-ink-muted">{pillar.body}</dd>
+        <Stagger className="grid gap-4 sm:grid-cols-2">
+          {SECURITY_PILLARS.map((pillar) => (
+            <StaggerItem key={pillar.title} className="h-full">
+              <div className="h-full rounded-lg border border-line bg-surface p-6 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-card-hover">
+                <p className="text-body font-semibold text-ink">{pillar.title}</p>
+                <p className="mt-3 text-small text-ink-muted">{pillar.body}</p>
               </div>
-            ))}
-          </dl>
-        </Reveal>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </div>
     </Section>
   );

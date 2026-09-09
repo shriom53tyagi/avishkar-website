@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 
 type Tone = "canvas" | "alt" | "surface";
 
@@ -20,6 +21,8 @@ export function Section({
   tone = "canvas",
   className,
   bordered,
+  full,
+  nextId,
 }: {
   children: ReactNode;
   id?: string;
@@ -27,18 +30,31 @@ export function Section({
   className?: string;
   /** Hairline above the section, for adjacent sections sharing a tone. */
   bordered?: boolean;
+  /**
+   * Fill the viewport and centre the content vertically.
+   *
+   * `min-h` rather than `h`: on narrow screens the content of most sections
+   * is taller than a viewport, and it must grow instead of being clipped.
+   * `svh` rather than `vh` so a mobile browser's dynamic toolbar doesn't
+   * inflate the height past the visible area.
+   */
+  full?: boolean;
+  /** id of the next section. Renders a scroll-down cue that jumps there while this section is in view. Only meaningful on a `full` section. */
+  nextId?: string;
 }) {
   return (
     <section
       id={id}
       className={cn(
-        "py-16 md:py-24 lg:py-28",
+        "relative",
+        full ? "flex min-h-svh items-center py-20 md:py-24" : "py-16 md:py-24 lg:py-28",
         TONES[tone],
         bordered && "border-t border-line",
         className
       )}
     >
-      <Container>{children}</Container>
+      <Container className={full ? "w-full" : undefined}>{children}</Container>
+      {full && nextId && <ScrollCue targetId={nextId} />}
     </section>
   );
 }

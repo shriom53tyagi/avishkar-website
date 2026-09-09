@@ -46,20 +46,113 @@
   .eyebrow {
     @apply text-label font-medium uppercase text-ink-subtle;
   }
+
 }
 
-/* Agent roster: a powered node sitting in a process. */
-@keyframes agent-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.45;
-  }
+/* ── Ambient backdrop ───────────────────────────────────────────────────
+   Drifting blooms behind the hero and the closing band. Transform/opacity
+   only, so the animation stays off the main thread. */
+@keyframes bloom-drift-a {
+  0%,
   100% {
-    transform: scale(1.28);
-    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, -6%, 0) scale(1.12);
   }
 }
 
+@keyframes bloom-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-6%, 5%, 0) scale(0.95);
+  }
+}
+
+@keyframes bloom-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+  50% {
+    transform: translate3d(5%, 7%, 0) scale(1.1);
+  }
+}
+
+.ambient-bloom {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.ambient-bloom-a {
+  top: -18%;
+  right: -10%;
+  width: 46rem;
+  height: 46rem;
+  background: radial-gradient(circle, rgba(18, 76, 95, 0.3), transparent 70%);
+  animation: bloom-drift-a 26s ease-in-out infinite;
+}
+
+.ambient-bloom-b {
+  bottom: -30%;
+  left: -12%;
+  width: 40rem;
+  height: 40rem;
+  background: radial-gradient(circle, rgba(31, 122, 77, 0.22), transparent 70%);
+  animation: bloom-drift-b 32s ease-in-out infinite;
+}
+
+.ambient-bloom-c {
+  top: 20%;
+  left: 35%;
+  width: 32rem;
+  height: 32rem;
+  background: radial-gradient(circle, rgba(143, 100, 18, 0.14), transparent 70%);
+  animation: bloom-drift-c 38s ease-in-out infinite;
+}
+
+.ambient-bloom-a.is-dark {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 70%);
+}
+
+.ambient-bloom-b.is-dark {
+  background: radial-gradient(circle, rgba(120, 220, 190, 0.14), transparent 70%);
+}
+
+.ambient-bloom-c.is-dark {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 70%);
+}
+
+/* Faint engineering grid, masked to fade out toward the edges. */
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(theme("colors.ink.DEFAULT") 1px, transparent 1px),
+    linear-gradient(90deg, theme("colors.ink.DEFAULT") 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity: 0.025;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+.ambient-grid.is-dark {
+  background-image: linear-gradient(#fff 1px, transparent 1px),
+    linear-gradient(90deg, #fff 1px, transparent 1px);
+  opacity: 0.05;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-bloom {
+    animation: none !important;
+  }
+}
+
+/* Agent roster: a small "live" pulse next to running agents. */
 @keyframes agent-eq {
   0%,
   100% {
@@ -68,127 +161,6 @@
   50% {
     transform: scaleY(1);
   }
-}
-
-.agent-loop {
-  border: 1px solid theme("colors.line.DEFAULT");
-  border-radius: 8px;
-  background: theme("colors.alt");
-  padding: 0.7rem 0.85rem 0.65rem;
-}
-
-.agent-loop-head {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: theme("colors.ink.subtle");
-}
-
-.agent-loop-body {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  min-height: 2.85rem;
-  margin-top: 0.1rem;
-}
-
-.agent-loop-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  background: theme("colors.line.strong");
-}
-
-.agent-loop-live .agent-loop-line {
-  background: theme("colors.accent.DEFAULT");
-  opacity: 0.35;
-}
-
-.agent-loop-v {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background: theme("colors.alt");
-  padding-right: 0.4rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  line-height: 1.25;
-  color: theme("colors.ink.DEFAULT");
-}
-
-.agent-loop-v-to {
-  padding-right: 0;
-  padding-left: 0.4rem;
-  text-align: right;
-}
-
-.agent-loop-action {
-  margin-top: 0.05rem;
-  text-align: center;
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: theme("colors.ink.subtle");
-}
-
-.agent-loop-live .agent-loop-action {
-  color: theme("colors.accent.DEFAULT");
-}
-
-.agent-core {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  height: 2.85rem;
-  width: 2.85rem;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-}
-
-.agent-core-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  border: 1px solid theme("colors.line.strong");
-}
-
-.agent-core-face {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  height: 2.25rem;
-  width: 2.25rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid theme("colors.line.strong");
-  border-radius: 999px;
-  background: theme("colors.surface");
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: theme("colors.ink.muted");
-}
-
-.agent-core-live .agent-core-face {
-  border-color: theme("colors.accent.DEFAULT");
-  background: theme("colors.accent.DEFAULT");
-  color: #fff;
-}
-
-.agent-core-live .agent-core-ring {
-  border-color: theme("colors.accent.DEFAULT");
-  animation: agent-ring 2.6s ease-out infinite;
 }
 
 .agent-eq {
@@ -218,20 +190,6 @@
 .agent-eq span:nth-child(3) {
   height: 7px;
   animation-delay: 0.32s;
-}
-
-.agent-cta-arrow {
-  transition: transform 0.18s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .agent-card:hover .agent-core-ring {
-    border-color: theme("colors.accent.DEFAULT");
-  }
-
-  .agent-card:hover .agent-cta-arrow {
-    transform: translateX(3px);
-  }
 }
 
 /* Reveal-animated blocks stay readable if the animation never runs. */
