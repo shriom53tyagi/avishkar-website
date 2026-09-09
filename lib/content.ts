@@ -190,9 +190,6 @@ export const AGENTS_PAGE = {
 /* ── Footer ─────────────────────────────────────────────────────────── */
 
 export const FOOTER_BRAND = {
-  statement: "Let's build what's missing.",
-  body: "Your practice already has the technology. Let's make it work harder.",
-  cta: "Talk to Avishkar",
   description: "Technology built around how your practice works.",
   descriptionSub:
     "Integrations, automation, internal tools, AI agents, and custom software for modern practices.",

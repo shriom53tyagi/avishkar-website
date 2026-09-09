@@ -6,9 +6,9 @@ type Variant = "primary" | "secondary" | "quiet";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-accent text-white hover:bg-accent-hover",
+    "bg-accent text-white shadow-card hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-card-hover",
   secondary:
-    "border border-line-strong bg-surface text-ink hover:border-ink-subtle",
+    "border border-line-strong bg-surface text-ink shadow-card hover:-translate-y-0.5 hover:border-ink-subtle hover:shadow-card-hover",
   quiet:
     "text-accent underline-offset-4 hover:underline",
 };
@@ -39,7 +39,7 @@ export function Button({
   arrow?: boolean;
 }) {
   const classes = cn(
-    "inline-flex items-center gap-2 text-small font-medium transition-colors",
+    "inline-flex items-center gap-2 text-small font-medium transition-all duration-300",
     SIZES[variant],
     VARIANTS[variant],
     className
