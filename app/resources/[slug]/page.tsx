@@ -74,7 +74,7 @@ export default async function ResourcePage({
               <span>{resource.readingTime}</span>
             </div>
 
-            <h1 className="mt-4 text-h1 text-ink">{resource.headline}</h1>
+            <h1 className="mt-4 text-h1 font-serif font-light tracking-[-0.02em] text-ink">{resource.headline}</h1>
             <p className="mt-5 text-lead text-ink-muted">{resource.intro}</p>
           </div>
         </Container>
@@ -85,7 +85,7 @@ export default async function ResourcePage({
           <div className="space-y-14">
             {resource.sections.map((section) => (
               <section key={section.heading}>
-                <h2 className="text-h2 text-ink">{section.heading}</h2>
+                <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{section.heading}</h2>
 
                 {section.body && (
                   <p className="mt-4 text-body text-ink-muted">{section.body}</p>
@@ -100,7 +100,7 @@ export default async function ResourcePage({
                   >
                     {section.stats.map((stat) => (
                       <div key={stat.label} className="border-t border-line-strong pt-3">
-                        <dt className="text-h3 text-ink">{stat.value}</dt>
+                        <dt className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{stat.value}</dt>
                         <dd className="mt-1 text-small text-ink-muted">
                           {stat.label}
                           {stat.note && (
@@ -167,7 +167,7 @@ export default async function ResourcePage({
           </div>
 
           <div className="mt-16 rounded border border-line-strong bg-surface p-8">
-            <h2 className="text-h3 text-ink">{resource.cta.heading}</h2>
+            <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{resource.cta.heading}</h2>
             <p className="mt-3 text-small text-ink-muted">{resource.cta.body}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
               <Button href="/contact">{CTA.book}</Button>

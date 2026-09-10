@@ -40,7 +40,7 @@ export default function CareersPage() {
         <div className="grid gap-x-12 gap-y-10 sm:grid-cols-3">
           {VALUES.map((value) => (
             <div key={value.title} className="border-t border-line-strong pt-5">
-              <h2 className="text-h3 text-ink">{value.title}</h2>
+              <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{value.title}</h2>
               <p className="mt-2 text-small text-ink-muted">{value.note}</p>
             </div>
           ))}
@@ -60,7 +60,7 @@ export default function CareersPage() {
               >
                 <div>
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="text-h3 text-ink">{role.title}</span>
+                    <span className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{role.title}</span>
                     <span className="text-label uppercase text-ink-subtle">{role.team}</span>
                   </div>
                   <p className="mt-2 max-w-measure text-small text-ink-muted">{role.blurb}</p>
@@ -78,7 +78,7 @@ export default function CareersPage() {
       <div className="border-t border-line bg-canvas py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">Don&apos;t see your role?</h2>
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">Don&apos;t see your role?</h2>
             <p className="mt-4 text-lead text-ink-muted">
               Send a note about the kind of problems you want to work on, and what you&apos;ve
               built.

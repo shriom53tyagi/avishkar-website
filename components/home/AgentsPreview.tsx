@@ -15,7 +15,7 @@ export function AgentsPreview() {
     <Section id="agents" tone="surface" full nextId="how-we-work">
       <FadeUp className="max-w-measure">
         <p className="eyebrow mb-4">Work you can see</p>
-        <h2 className="text-h2 text-ink">{AGENTS_PREVIEW.headline}</h2>
+        <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{AGENTS_PREVIEW.headline}</h2>
         <p className="mt-4 text-lead text-ink-muted">{AGENTS_PREVIEW.sub}</p>
       </FadeUp>
 
@@ -36,7 +36,7 @@ export function AgentsPreview() {
       <FadeUp>
         <div className="mt-16 border-t border-line pt-10 lg:flex lg:items-start lg:justify-between lg:gap-16">
           <div className="max-w-measure">
-            <h3 className="text-h3 text-ink">
+            <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
               {BUILT_NOT_BOUGHT.customHeadline}
             </h3>
             <p className="mt-3 text-small text-ink-muted">{BUILT_NOT_BOUGHT.customBody}</p>

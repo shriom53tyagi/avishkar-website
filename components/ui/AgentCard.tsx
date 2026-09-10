@@ -18,16 +18,14 @@ export function AgentCard({ agent, className }: { agent: Agent; className?: stri
       href={`/agents/${agent.slug}`}
       aria-label={label}
       className={cn(
-        "agent-card group flex h-full w-full flex-col gap-3 rounded border bg-surface p-5 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover",
-        live
-          ? "border-line-strong hover:border-accent"
-          : "border-line hover:border-line-strong",
+        "agent-card card group flex h-full w-full flex-col gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5",
+        live ? "hover:border-accent" : "",
         className
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-h3 text-ink">{agent.name}</h3>
+          <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{agent.name}</h3>
           <p className="mt-0.5 text-label uppercase text-ink-subtle">{agent.category} agent</p>
         </div>
         {live ? (

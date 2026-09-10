@@ -20,7 +20,7 @@ import { FinalCTA } from "@/components/home/FinalCTA";
  */
 export default function HomePage() {
   return (
-    <>
+    <div className="relative">
       <Hero />
       <Problem />
       <Capability />
@@ -28,6 +28,6 @@ export default function HomePage() {
       <HowWeWork />
       <Trust />
       <FinalCTA />
-    </>
+    </div>
   );
 }

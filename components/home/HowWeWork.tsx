@@ -16,14 +16,14 @@ export function HowWeWork() {
     <Section id="how-we-work" tone="canvas" full nextId="trust">
       <FadeUp className="max-w-measure">
         <p className="eyebrow mb-4">How we work</p>
-        <h2 className="text-h2 text-ink">{HOW_WE_WORK.headline}</h2>
+        <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{HOW_WE_WORK.headline}</h2>
         <p className="mt-4 text-lead text-ink-muted">{HOW_WE_WORK.sub}</p>
       </FadeUp>
 
       <Stagger className="mt-14 grid gap-5 lg:grid-cols-3 lg:gap-6">
         {HOW_WE_WORK.steps.map((step, i) => (
           <StaggerItem key={step.title} className="h-full">
-            <div className="group flex h-full flex-col rounded-lg border border-line bg-surface p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-card-hover md:p-8">
+            <div className="group card flex h-full flex-col p-7 transition-all duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-card-hover md:p-8">
               <div className="flex items-baseline justify-between gap-4">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-accent/30 bg-accent-tint text-label font-medium text-accent">
                   {String(i + 1).padStart(2, "0")}
@@ -32,7 +32,7 @@ export function HowWeWork() {
                   {step.timing}
                 </p>
               </div>
-              <h3 className="mt-6 text-h3 text-ink">{step.title}</h3>
+              <h3 className="mt-6 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{step.title}</h3>
               <p className="mt-3 text-body text-ink-muted">{step.body}</p>
             </div>
           </StaggerItem>

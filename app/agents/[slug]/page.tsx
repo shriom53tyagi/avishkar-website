@@ -75,10 +75,10 @@ export default async function AgentPage({
       <Section tone="canvas">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
           <div>
-            <h2 className="text-h3 text-ink">What it does</h2>
+            <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">What it does</h2>
             <p className="mt-3 max-w-measure text-body text-ink-muted">{agent.what}</p>
 
-            <h2 className="mt-12 text-h3 text-ink">What you get</h2>
+            <h2 className="mt-12 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">What you get</h2>
             <dl className="mt-5 space-y-6">
               {agent.outputs.map((output) => (
                 <div key={output.label} className="border-t border-line pt-4">
@@ -92,7 +92,7 @@ export default async function AgentPage({
           </div>
 
           <div>
-            <h2 className="text-h3 text-ink">What it analyzes</h2>
+            <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">What it analyzes</h2>
             <ul className="mt-5 space-y-3">
               {agent.analyzes.map((item) => (
                 <li key={item} className="border-t border-line pt-3 text-small text-ink-muted">
@@ -111,7 +111,7 @@ export default async function AgentPage({
       <div className="border-t border-line bg-alt py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">
               {live
                 ? "Want this connected to your practice?"
                 : `Need the ${agent.name} sooner?`}

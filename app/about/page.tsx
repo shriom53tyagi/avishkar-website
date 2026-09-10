@@ -38,7 +38,7 @@ export default function AboutPage() {
         <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2">
           {ABOUT.principles.map((principle) => (
             <div key={principle.title} className="border-t border-line-strong pt-5">
-              <h3 className="text-h3 text-ink">{principle.title}</h3>
+              <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{principle.title}</h3>
               <p className="mt-2 max-w-measure text-small text-ink-muted">{principle.body}</p>
             </div>
           ))}
@@ -48,7 +48,7 @@ export default function AboutPage() {
       <div className="border-t border-line bg-canvas py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">Bring us the problem.</h2>
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">Bring us the problem.</h2>
             <p className="mt-4 text-lead text-ink-muted">
               The best first conversation is a specific one: a workflow, a report you can&apos;t
               get, or a system that won&apos;t give up its data.

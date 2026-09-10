@@ -90,7 +90,7 @@ function AgentGroup({
   return (
     <section className={className}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-line-strong pb-4">
-        <h2 className="text-h3 text-ink">
+        <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
           {title} <span className="text-ink-subtle">({count})</span>
         </h2>
         <p className="text-small text-ink-subtle">{note}</p>

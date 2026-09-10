@@ -48,7 +48,7 @@ function loadCss(href: string) {
 
 function Fallback({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded border border-line bg-surface p-8">{children}</div>
+    <div className="card p-8">{children}</div>
   );
 }
 
@@ -132,7 +132,7 @@ export function CalendarEmbed() {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded border border-line bg-surface">
+    <div className="card relative w-full overflow-hidden">
       {state === "loading" && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface">
           <span className="text-small text-ink-subtle">Loading calendar…</span>

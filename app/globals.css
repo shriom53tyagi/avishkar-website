@@ -4,6 +4,22 @@
 
 :root {
   color-scheme: light;
+
+  --porcelain: #fbfaf7;
+  --stone: #f4f1ea;
+  --sand: #efe9dd;
+  --stone-2: rgba(8, 145, 178, 0.2);
+  --ink: #0f172a;
+  --ink-soft: #4b5563;
+  --dead: #8a8578;
+  --brass: #0891b2;
+  --brass-dk: #0e7490;
+  --brass-lt: #3fb0c9;
+  --accent: #059669;
+  --accent-lt: #d1fae5;
+  --shadow-sm: 0 1px 3px rgba(8, 145, 178, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(8, 145, 178, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px -4px rgba(8, 145, 178, 0.14), 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 @layer base {
@@ -30,8 +46,8 @@
   }
 
   ::selection {
-    background: theme("colors.accent.tint");
-    color: theme("colors.accent.DEFAULT");
+    background: var(--brass-lt);
+    color: #fff;
   }
 
   :focus-visible {
@@ -42,11 +58,112 @@
 }
 
 @layer components {
-  /* Small uppercase section label — the only letterspaced type on the site. */
+  /* Brass-tinted pill for section kickers. */
   .eyebrow {
-    @apply text-label font-medium uppercase text-ink-subtle;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    background: rgba(8, 145, 178, 0.08);
+    border: 1px solid rgba(8, 145, 178, 0.18);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brass);
   }
 
+  /* Card surface used for any panel/card across the site. */
+  .card {
+    background: #fcfbfa;
+    border: 1px solid var(--stone-2);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Clamped Fraunces display headline. <em> renders brass; <i> renders italic. */
+  .say {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(2.2rem, 4.35vw, 4.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+  }
+  .say.wide {
+    max-width: 26ch;
+  }
+  .say em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--brass);
+  }
+  .say i {
+    font-style: italic;
+  }
+
+  /* Short accent bar under a lead statement. */
+  .rule {
+    width: 5.5rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  /* Pill for tags / tech / feature lists. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--stone-2);
+    border-radius: 100px;
+    background: #fcfbfa;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+
+  /* Uppercase micro-label rhythm for captions/labels/eyebrow-adjacent text. */
+  .micro-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--dead);
+  }
+}
+
+/* ── Floating background cards (hero) ────────────────────────────────── */
+@keyframes float-in {
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -0.6rem;
+  }
+}
+/* ── Word-by-word blur-in ─────────────────────────────────────────────── */
+.w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.55em);
+  filter: blur(6px);
+}
+.live .w {
+  animation: word 0.95s cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+}
+@keyframes word {
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
 }
 
 /* ── Ambient backdrop ───────────────────────────────────────────────────
@@ -148,6 +265,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-bloom {
+    animation: none !important;
+  }
+  .w {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
     animation: none !important;
   }
 }

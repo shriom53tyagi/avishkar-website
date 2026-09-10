@@ -59,7 +59,7 @@ export function WhatWeDo({ showHeading = true }: { showHeading?: boolean }) {
             const Icon = c.icon;
             return (
               <Reveal key={c.title} delay={i * 0.07}>
-                <div id={c.id} className="flex h-full scroll-mt-28 flex-col rounded-lg border border-line bg-surface p-7">
+                <div id={c.id} className="card flex h-full scroll-mt-28 flex-col p-7">
                   <div className="flex items-center justify-between">
                     <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-accent-tint text-accent">
                       <Icon className="h-5 w-5" />
@@ -74,7 +74,7 @@ export function WhatWeDo({ showHeading = true }: { showHeading?: boolean }) {
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-5 text-h3 font-semibold text-ink">{c.title}</h3>
+                  <h3 className="mt-5 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{c.title}</h3>
                   <p className="mt-2 flex-1 text-small leading-relaxed text-ink-muted">
                     {c.description}
                   </p>

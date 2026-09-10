@@ -48,7 +48,7 @@ export function Navbar() {
       className={cn(
         "sticky top-0 z-50 transition-colors duration-300",
         scrolled || open
-          ? "border-b border-line bg-canvas/85 backdrop-blur-md"
+          ? "border-b border-line bg-[#FBFAF7]/85 backdrop-blur-md"
           : "border-b border-transparent bg-transparent"
       )}
     >
@@ -63,7 +63,7 @@ export function Navbar() {
                 href={link.href}
                 aria-current={isActive(link.href) ? "page" : undefined}
                 className={cn(
-                  "relative rounded px-3 py-2 text-small transition-colors",
+                  "relative rounded px-3 py-2 text-[0.72rem] font-medium uppercase tracking-[0.2em] transition-colors",
                   isActive(link.href) ? "text-ink" : "text-ink-muted hover:text-ink"
                 )}
               >
@@ -73,14 +73,14 @@ export function Navbar() {
                     layoutId="nav-active"
                     aria-hidden
                     className="absolute inset-x-3 -bottom-px h-px bg-accent"
-                    transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: reduce ? 0 : 0.3, ease: [0.2, 0.9, 0.25, 1] }}
                   />
                 )}
               </Link>
             ))}
             <Link
               href={BOOKING_URL}
-              className="ml-3 rounded bg-accent px-4 py-2 text-small font-medium text-white transition-colors hover:bg-accent-hover"
+              className="ml-3 rounded bg-accent px-4 py-2 text-[0.72rem] font-medium uppercase tracking-[0.2em] text-white transition-colors hover:bg-accent-hover"
             >
               {CTA.book}
             </Link>
@@ -106,7 +106,7 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: reduce ? 0 : 0.28, ease: [0.2, 0.9, 0.25, 1] }}
           >
             <Container>
               <nav className="flex flex-col py-4" aria-label="Main">

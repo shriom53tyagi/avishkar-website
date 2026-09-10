@@ -49,7 +49,7 @@ export default function SecurityPage() {
         <dl className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2">
           {SECURITY_PILLARS.map((pillar) => (
             <div key={pillar.title} className="border-t border-line-strong pt-5">
-              <dt className="text-h3 text-ink">{pillar.title}</dt>
+              <dt className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{pillar.title}</dt>
               <dd className="mt-2 max-w-measure text-small text-ink-muted">{pillar.body}</dd>
             </div>
           ))}
@@ -64,7 +64,7 @@ export default function SecurityPage() {
               key={practice.title}
               className="grid gap-3 border-t border-line-strong pt-5 md:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] md:gap-12"
             >
-              <h3 className="text-h3 text-ink">{practice.title}</h3>
+              <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{practice.title}</h3>
               <p className="max-w-measure text-body text-ink-muted">{practice.body}</p>
             </div>
           ))}
@@ -74,7 +74,7 @@ export default function SecurityPage() {
       <div className="border-t border-line bg-canvas py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">Security review or questionnaire?</h2>
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">Security review or questionnaire?</h2>
             <p className="mt-4 text-lead text-ink-muted">
               Send it over. We&apos;d rather answer specific questions about your environment than
               publish generic assurances.

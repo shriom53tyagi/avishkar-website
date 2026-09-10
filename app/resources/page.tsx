@@ -29,7 +29,7 @@ export default function ResourcesPage() {
             <li key={resource.slug}>
               <Link
                 href={`/resources/${resource.slug}`}
-                className="flex h-full flex-col rounded border border-line bg-surface p-6 transition-colors hover:border-accent"
+                className="card flex h-full flex-col p-6 transition-colors hover:border-accent"
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-label uppercase tracking-[0.08em] text-ink-subtle">
@@ -37,7 +37,7 @@ export default function ResourcesPage() {
                   </span>
                   <span className="text-label text-ink-subtle">{resource.readingTime}</span>
                 </div>
-                <h2 className="mt-5 text-h3 text-ink">{resource.title}</h2>
+                <h2 className="mt-5 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{resource.title}</h2>
                 <p className="mt-2 flex-1 text-small text-ink-muted">
                   {resource.metaDescription}
                 </p>
@@ -53,7 +53,7 @@ export default function ResourcesPage() {
       <div className="border-t border-line bg-alt py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">Want the numbers from your own practice?</h2>
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">Want the numbers from your own practice?</h2>
             <p className="mt-4 text-lead text-ink-muted">
               Benchmarks describe typical organizations. We&apos;d rather look at your workflow
               and your data.

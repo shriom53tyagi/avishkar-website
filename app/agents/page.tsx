@@ -40,7 +40,7 @@ export default function AgentsPage() {
         <Container>
           <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
             <div className="max-w-measure">
-              <h2 className="text-h2 text-ink">{AGENTS_PAGE.breadthHeadline}</h2>
+              <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{AGENTS_PAGE.breadthHeadline}</h2>
               <p className="mt-4 text-lead text-ink-muted">{AGENTS_PAGE.breadthBody}</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                 <Button href="/contact?intent=custom">{CTA.custom}</Button>

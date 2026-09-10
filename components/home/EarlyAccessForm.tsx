@@ -68,7 +68,7 @@ export function EarlyAccessForm({
         )}
         aria-live="polite"
       >
-        <p className="text-h3 text-ink">{EARLY_ACCESS.successTitle}</p>
+        <p className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{EARLY_ACCESS.successTitle}</p>
         <p className="mt-2 text-small text-ink-muted">{EARLY_ACCESS.successBody}</p>
       </div>
     );

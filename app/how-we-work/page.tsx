@@ -36,7 +36,7 @@ export default function HowWeWorkPage() {
             >
               <div>
                 <p className="text-label text-ink-subtle">{String(i + 1).padStart(2, "0")}</p>
-                <h2 className="mt-2 text-h3 text-ink">{step.title}</h2>
+                <h2 className="mt-2 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{step.title}</h2>
                 <p className="mt-2 text-small text-ink-subtle">{step.timing}</p>
               </div>
               <p className="max-w-measure text-body text-ink-muted">{step.body}</p>
@@ -73,7 +73,7 @@ export default function HowWeWorkPage() {
         <dl className="mt-10 max-w-measure space-y-8">
           {ENGAGEMENT_FAQS.map((faq) => (
             <div key={faq.q} className="border-t border-line pt-5">
-              <dt className="text-h3 text-ink">{faq.q}</dt>
+              <dt className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{faq.q}</dt>
               <dd className="mt-3 text-body text-ink-muted">{faq.a}</dd>
             </div>
           ))}
@@ -83,7 +83,7 @@ export default function HowWeWorkPage() {
       <div className="border-t border-line bg-alt py-16 md:py-20">
         <Container>
           <div className="max-w-measure">
-            <h2 className="text-h2 text-ink">Start with the workflow.</h2>
+            <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">Start with the workflow.</h2>
             <p className="mt-4 text-lead text-ink-muted">
               Thirty minutes, no slide deck. If technology isn&apos;t the right answer, we&apos;ll
               say so.

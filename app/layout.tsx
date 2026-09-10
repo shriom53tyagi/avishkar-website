@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationSchema } from "@/lib/schema";
 import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
 import { SITE_URL } from "@/lib/site";
+import { Room } from "@/components/visuals/Room";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools
@@ -102,6 +103,13 @@ const sans = Inter({
   display: "swap",
 });
 
+const serif = Fraunces({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -153,7 +161,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={sans.variable} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
         {/* Without JS the reveal animation never runs, so force its end state. */}
@@ -162,10 +170,13 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
+        <Room />
         <JsonLd data={organizationSchema} />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <div className="relative z-10">
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </div>
         <CookieConsentLoader />
       </body>
     </html>

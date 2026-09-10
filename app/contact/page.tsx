@@ -45,7 +45,7 @@ export default async function ContactPage({
       <Section tone="canvas">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
           <div>
-            <h2 className="text-h3 text-ink">Pick a time</h2>
+            <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">Pick a time</h2>
             <p className="mt-2 text-small text-ink-muted">
               Straight to the calendar. If nothing fits, email us and we&apos;ll find a slot.
             </p>
@@ -55,7 +55,7 @@ export default async function ContactPage({
           </div>
 
           <div>
-            <h2 className="text-h3 text-ink">Prefer email?</h2>
+            <h2 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">Prefer email?</h2>
             <p className="mt-2 text-small text-ink-muted">
               Write to{" "}
               <a
@@ -69,7 +69,7 @@ export default async function ContactPage({
               with a couple of lines about the workflow. We usually reply within one business day.
             </p>
 
-            <h2 className="mt-12 text-h3 text-ink">Worth having ready</h2>
+            <h2 className="mt-12 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">Worth having ready</h2>
             <ul className="mt-5 space-y-3">
               {PREP.map((item) => (
                 <li key={item} className="border-t border-line pt-3 text-small text-ink-muted">

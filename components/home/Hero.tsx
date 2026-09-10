@@ -2,8 +2,11 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Stagger, StaggerItem, FadeUp } from "@/components/ui/Motion";
 import { AmbientBackdrop } from "@/components/visuals/AmbientBackdrop";
+import { FloatingCards } from "@/components/visuals/FloatingCards";
 import { ScrollCue } from "@/components/ui/ScrollCue";
-import { CTA, EARLY_ACCESS, HERO } from "@/lib/content";
+import { Words } from "@/components/ui/Words";
+import { CTA, EARLY_ACCESS, HERO, PROBLEM } from "@/lib/content";
+import { AGENT_CATEGORIES } from "@/lib/agents";
 import { EarlyAccessForm } from "@/components/home/EarlyAccessForm";
 
 /**
@@ -21,12 +24,17 @@ export function Hero() {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-4rem-1px)] items-center overflow-hidden border-b border-line bg-canvas py-20 md:py-24">
       <AmbientBackdrop />
+      <FloatingCards
+        items={[...PROBLEM.systems, ...AGENT_CATEGORIES].filter((item) => item !== "Scheduling")}
+      />
 
       <Container className="relative">
         <div className="grid w-full gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(300px,5fr)] lg:items-center lg:gap-16">
           <Stagger className="max-w-2xl">
             <StaggerItem>
-              <h1 className="text-display text-ink">{HERO.headline}</h1>
+              <h1 className="text-display font-serif font-light tracking-[-0.025em] text-ink">
+                <Words>{HERO.headline}</Words>
+              </h1>
             </StaggerItem>
 
             <StaggerItem>
@@ -52,11 +60,11 @@ export function Hero() {
           <FadeUp delay={0.25}>
             <aside
               id="early-access"
-              className="min-w-0 rounded-lg border border-line bg-surface/70 p-6 shadow-card backdrop-blur-sm"
+              className="card min-w-0 bg-surface/70 p-6 backdrop-blur-sm"
               aria-label={EARLY_ACCESS.eyebrow}
             >
               <p className="eyebrow">{EARLY_ACCESS.eyebrow}</p>
-              <h2 className="mt-3 text-h3 text-ink">
+              <h2 className="mt-3 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
                 {EARLY_ACCESS.headline}
               </h2>
               <p className="mt-3 text-small text-ink-muted">{EARLY_ACCESS.body}</p>
