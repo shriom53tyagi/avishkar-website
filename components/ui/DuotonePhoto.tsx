@@ -1,31 +1,27 @@
 import Image from "next/image";
-
-interface Props {
-  src: string;
-  alt: string;
-  /** Aspect/size via className on the frame (e.g. "h-[420px]"). */
-  className?: string;
-  priority?: boolean;
-  sizes?: string;
-  rounded?: string;
-}
+import { cn } from "@/lib/utils";
 
 /**
- * next/image wrapped in a brand duotone frame (.photo-duotone) so all imagery
- * reads cohesively against the cyan/emerald palette. Fills its frame; control
- * dimensions via the `className` on the wrapper.
+ * A small rounded photo used inline next to quotes/testimonials. No duotone
+ * filter is applied yet — kept as a plain, cropped image so it renders
+ * correctly today; revisit if the design calls for a true duotone effect.
  */
 export function DuotonePhoto({
   src,
   alt,
   className,
-  priority = false,
-  sizes = "(max-width: 768px) 100vw, 50vw",
-  rounded = "rounded-[22px]",
-}: Props) {
+  rounded = "rounded-xl",
+  sizes = "64px",
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  rounded?: string;
+  sizes?: string;
+}) {
   return (
-    <div className={`photo-frame photo-duotone ${rounded} ${className ?? ""}`}>
-      <Image src={src} alt={alt} fill priority={priority} sizes={sizes} className="object-cover" />
+    <div className={cn("relative overflow-hidden", rounded, className)}>
+      <Image src={src} alt={alt} fill sizes={sizes} className="object-cover" />
     </div>
   );
 }

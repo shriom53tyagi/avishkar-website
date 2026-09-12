@@ -1,36 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Schibsted_Grotesk, DM_Mono } from "next/font/google";
 import "./globals.css";
-import { CursorGlow } from "@/components/ui/CursorGlow";
-import { Navbar } from "@/components/ui/Navbar";
-import { Footer } from "@/components/ui/Footer";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { ChatWidget } from "@/components/ui/ChatWidget";
+import { AvHeader } from "@/components/av/AvHeader";
+import { AvFooter } from "@/components/av/AvFooter";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationSchema } from "@/lib/schema";
 import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
+import { SITE_URL } from "@/lib/site";
 
 /**
- * Suppresses React 19 hydration-mismatch warnings caused by external tools that
- * inject attributes into the DOM after server HTML is sent but before React
- * hydrates: Cursor's preview pane (`data-cursor-ref`), Grammarly, Dark Reader,
- * LastPass, etc. These mismatches are benign but surface as red "errors" in
- * the Next.js dev overlay.
- *
- * Two layers of defense:
- *
- *  1. Strip known tool-injected attributes from the DOM with a MutationObserver
- *     so React simply never sees a mismatch in the first place (the cleanest
- *     fix when it wins the race).
- *
- *  2. As fallback, install a property descriptor on `console.error` so every
- *     reassignment (Next.js's dev overlay reassigns it) is re-wrapped with our
- *     filter on the outside — silently dropping hydration-noise messages so
- *     they never reach the overlay's error counter.
- *
- * Both layers only target a fixed allow-list of tool-injected attributes and
- * a fixed allow-list of warning prefixes; real application errors flow
- * through untouched.
+ * Suppresses React 19 hydration-mismatch warnings caused by external tools
+ * that inject attributes into the DOM after server HTML is sent but before
+ * React hydrates (Cursor's preview pane, Grammarly, Dark Reader, LastPass).
+ * Only a fixed allow-list of attributes and warning prefixes is touched.
  */
 const SUPPRESS_HYDRATION_NOISE = `
 (function () {
@@ -83,27 +65,6 @@ const SUPPRESS_HYDRATION_NOISE = `
         subtree: true
       });
     }
-
-    // Block synchronous tool-injected attributes during the hydration window.
-    // After hydration completes (or 1.5s, whichever first) we restore the
-    // original setAttribute so other tooling keeps working normally.
-    if (typeof Element !== 'undefined' && Element.prototype && Element.prototype.setAttribute) {
-      var origSet = Element.prototype.setAttribute;
-      var blocking = true;
-      Element.prototype.setAttribute = function (name, value) {
-        if (blocking && typeof name === 'string' && noisyAttrs.indexOf(name) !== -1) return;
-        return origSet.call(this, name, value);
-      };
-      var release = function () {
-        blocking = false;
-        Element.prototype.setAttribute = origSet;
-      };
-      if (typeof window !== 'undefined') {
-        window.addEventListener('load', function () { setTimeout(release, 100); }, { once: true });
-        setTimeout(release, 1500);
-      }
-    }
-
     var noisyMessages = [
       'hydrated but some attributes',
       'Hydration failed because',
@@ -135,67 +96,53 @@ const SUPPRESS_HYDRATION_NOISE = `
 })();
 `;
 
-const sans = Inter({
+const sans = Schibsted_Grotesk({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const display = Inter({
+const mono = DM_Mono({
   subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
 });
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://avishkar.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Avishkar AI ",
-    template: "%s · Avishkar AI",
-  },
-  icons: {
-    icon: '/logo.png',          // Points to public/icon.png
-    apple: '/logo.png',    
+    default: "Avishkar — Technology built around how your practice works",
+    template: "%s · Avishkar",
   },
   description:
-    "Avishkar AI is a healthcare operational intelligence platform. We start with a structured operational audit, quantify hidden revenue loss across your EMR, billing, scheduling and call centers, then deploy AI agents only where they deliver measurable ROI.",
+    "Avishkar connects the systems your practice already uses and builds the technology around them — integrations, automation, internal tools, reporting and AI agents.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   keywords: [
-    "healthcare operational intelligence",
-    "healthcare operational audit",
-    "revenue leakage healthcare",
-    "hidden revenue recovery",
-    "AI denial management",
-    "patient no-show reduction",
-    "EMR automation",
-    "HIPAA compliant healthcare AI",
-    "clinical documentation automation",
+    "practice technology",
+    "custom healthcare software",
+    "practice management integrations",
+    "practice operations automation",
+    "aesthetic practice software",
+    "AI agents for medspas",
   ],
   openGraph: {
-    title: "Avishkar AI — Find the Leak. Quantify the Impact. Deploy the Fix.",
+    title: "Avishkar — Technology built around how your practice works",
     description:
-      "A structured operational audit for hospitals and clinics that surfaces hidden revenue loss and deploys AI agents only where they pay off.",
+      "Integrations, automation, internal tools, AI agents and custom software for medspas, aesthetic practices, clinics and healthcare teams.",
     type: "website",
-    url: "https://avishkar.app",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Avishkar AI — Healthcare Operational Intelligence",
-      },
-    ],
+    url: SITE_URL,
+    siteName: "Avishkar",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Avishkar AI — Healthcare Operational Intelligence",
+    title: "Avishkar — Technology built around how your practice works",
     description:
-      "Find the Leak. Quantify the Impact. Deploy the Fix. Structured operational audits for healthcare.",
-    images: ["/og-image.png"],
+      "Integrations, automation, internal tools, AI agents and custom software for modern practices.",
   },
   verification: {
     other: {
@@ -204,9 +151,8 @@ export const metadata: Metadata = {
   },
 };
 
-
 export const viewport: Viewport = {
-  themeColor: "#FBFAF7",
+  themeColor: "#F1F1ED",
   width: "device-width",
   initialScale: 1,
 };
@@ -215,25 +161,21 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${sans.variable} ${display.variable} ${mono.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
+        {/* Without JS the reveal animation never runs, so force its end state. */}
+        <noscript>
+          <style>{".reveal{opacity:1 !important;transform:none !important}"}</style>
+        </noscript>
       </head>
-      <body
-        className="relative min-h-screen font-sans antialiased"
-        suppressHydrationWarning
-      >
-       <JsonLd data={organizationSchema} />
-        <CursorGlow />
-        <ScrollProgress />
-        <Navbar />
-        <main className="relative">{children}</main>
-        <Footer />
-        <ChatWidget />
+      <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
+        <JsonLd data={organizationSchema} />
+        <div className="relative z-10" style={{ maxWidth: "100%", overflowX: "hidden" }}>
+          <AvHeader />
+          <main>{children}</main>
+          <AvFooter />
+        </div>
         <CookieConsentLoader />
       </body>
     </html>

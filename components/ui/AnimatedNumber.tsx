@@ -1,49 +1,63 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
+import { useInView, useReducedMotion } from "framer-motion";
 
-interface Props {
-  value: number;
-  prefix?: string;
-  suffix?: string;
-  duration?: number;
-  decimals?: number;
-  className?: string;
-}
-
+/**
+ * Counts up to `value` once, when scrolled into view. Renders the final
+ * value statically if the visitor prefers reduced motion.
+ */
 export function AnimatedNumber({
   value,
   prefix,
   suffix,
-  duration = 1600,
-  decimals,
-  className,
-}: Props) {
+  duration = 1.1,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15% 0px" });
-  const [n, setN] = useState(0);
-
-  const dec = decimals ?? (Number.isInteger(value) ? 0 : 1);
+  const inView = useInView(ref, { once: true, margin: "-10% 0px -10% 0px" });
+  const reduceMotion = useReducedMotion();
+  // Always starts at 0 so server and client agree on the first paint;
+  // `useReducedMotion` is null during SSR, so branching on it here would
+  // render a different number on each side and fail hydration.
+  const [display, setDisplay] = useState(0);
 
   useEffect(() => {
+    if (reduceMotion) {
+      setDisplay(value);
+      return;
+    }
     if (!inView) return;
-    let raf = 0;
+
+    let raf: number;
     const start = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setN(value * eased);
-      if (p < 1) raf = requestAnimationFrame(tick);
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / (duration * 1000), 1);
+      setDisplay(value * ease(progress));
+      if (progress < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        setDisplay(value);
+      }
     };
+
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, value, duration]);
+  }, [inView, reduceMotion, value, duration]);
+
+  const isInteger = Number.isInteger(value);
+  const formatted = isInteger ? Math.round(display).toString() : display.toFixed(1);
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref}>
       {prefix}
-      {n.toFixed(dec)}
+      {formatted}
       {suffix}
     </span>
   );

@@ -2,7 +2,7 @@
   "name": "avishkar",
   "version": "0.1.0",
   "private": true,
-  "description": "Avishkar — AI Audit & Agentic Automation for Healthcare",
+  "description": "Avishkar — technology built around how your practice works",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,14 +11,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.1060.0",
-    "@types/nodemailer": "^8.0.0",
-    "@upstash/ratelimit": "^2.0.8",
-    "@upstash/redis": "^1.38.0",
+    "@aws-sdk/client-ses": "^3.1127.0",
     "framer-motion": "^11.11.17",
     "lucide-react": "^0.468.0",
     "next": "^15.0.7",
-    "nodemailer": "^8.0.10",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
