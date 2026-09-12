@@ -26,9 +26,21 @@ export function ArticlePage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const header = document.querySelector("header");
+    if (!header) return;
+    const setVar = () => {
+      document.documentElement.style.setProperty("--header-h", `${header.getBoundingClientRect().height}px`);
+    };
+    setVar();
+    const ro = new ResizeObserver(setVar);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <div style={{ height: 3, background: "rgba(20,24,26,.08)", position: "sticky", top: 73, zIndex: 49 }}>
+      <div style={{ height: 3, background: "rgba(20,24,26,.08)", position: "sticky", top: "var(--header-h, 73px)", zIndex: 49 }}>
         <div style={{ height: "100%", background: "#2F6B5F", width: `${pct}%` }} />
       </div>
 
@@ -62,7 +74,7 @@ export function ArticlePage() {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 56, marginTop: 56, alignItems: "flex-start" }}>
-          <aside style={{ flex: "1 1 200px", minWidth: 0, position: "sticky", top: 120 }}>
+          <aside className="av-article-toc" style={{ flex: "1 1 200px", minWidth: 0, position: "sticky", top: 120 }}>
             <div style={{ ...mono, fontSize: 10.5, letterSpacing: ".12em", textTransform: "uppercase", color: "#5E6664" }}>In this piece</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14, fontSize: 14 }}>
               <a href="#s1" style={{ color: "#4E5654" }}>The accidental stack</a>
@@ -85,7 +97,7 @@ export function ArticlePage() {
               Ask a front desk lead to narrate a single patient visit and count the systems they touch. Six is common. Each boundary between two systems is a place where a human becomes the integration — retyping a phone number, re-checking a consent, remembering that this patient is mid-series.
             </p>
 
-            <blockquote style={{ margin: "36px 0 0", padding: "26px 28px", borderRadius: 14, background: "#14181A", color: "#EDF0EC" }}>
+            <blockquote className="av-article-quote" style={{ margin: "36px 0 0", padding: "26px 28px", borderRadius: 14, background: "#14181A", color: "#EDF0EC" }}>
               <div style={{ fontSize: 21, lineHeight: 1.45, maxWidth: "44ch" }}>&ldquo;The software wasn&apos;t the problem. The gaps between the software were the problem.&rdquo;</div>
               <div style={{ ...mono, fontSize: 11.5, color: "#98A19E", marginTop: 14 }}>Owner, four-location medspa group</div>
             </blockquote>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -195,6 +195,20 @@ export function HomePage() {
   const active = STAGES[step];
   const today = view !== "avishkar";
 
+  const railScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = railScrollRef.current;
+    if (!container) return;
+    // Only the mobile horizontal-scroll rail (flex-direction: row, below 900px)
+    // needs the active pill scrolled into view. On desktop the rail is a
+    // vertical, fully-visible list, and calling scrollIntoView there drags
+    // the whole page's scroll position along with it every time `step`
+    // auto-advances.
+    if (getComputedStyle(container).flexDirection !== "row") return;
+    const activePill = container.children[step] as HTMLElement | undefined;
+    activePill?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [step]);
+
   const onJoin = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) setJoined(true);
@@ -202,7 +216,7 @@ export function HomePage() {
 
   return (
     <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <section id="top" style={{ maxWidth: 1240, margin: "0 auto", padding: "104px 32px 0" }}>
+      <section id="top" className="av-hero-section" style={{ maxWidth: 1240, margin: "0 auto", padding: "104px 32px 0" }}>
         <div
           className="av-rise"
           style={{
@@ -241,11 +255,11 @@ export function HomePage() {
           <p style={{ fontSize: "clamp(17px, 1.5vw, 20px)", lineHeight: 1.5, color: "#4E5654", maxWidth: "54ch", margin: 0, textWrap: "pretty" }}>
             Avishkar builds AI, automation and custom systems for aesthetic practices — connecting patient journeys, practice operations, and the technology behind them.
           </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <a href="#how" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+          <div className="av-hero-cta-row" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <a href="#how" className="av-hero-btn-dark av-hero-cta-btn" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED", textAlign: "center" }}>
               See what we can build →
             </a>
-            <Link href="/contact" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
+            <Link href="/contact" className="av-hero-btn-outline av-hero-cta-btn" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A", textAlign: "center" }}>
               Talk to Avishkar
             </Link>
           </div>
@@ -254,6 +268,7 @@ export function HomePage() {
 
       <section style={{ maxWidth: 1240, margin: "0 auto", padding: "64px 32px 0" }}>
         <div
+          className="av-dashboard-card"
           style={{
             position: "relative",
             border: "1px solid rgba(20,24,26,.12)",
@@ -460,12 +475,13 @@ export function HomePage() {
           </div>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginTop: 22, alignItems: "stretch" }}>
-            <div style={{ flex: "1 1 230px", minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+            <div ref={railScrollRef} className="av-stage-rail" style={{ flex: "1 1 230px", minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
               {STAGES.map((s, idx) => {
                 const activeRow = idx === step;
                 return (
                   <div
                     key={s.n}
+                    className="av-stage-rail-item"
                     onClick={() => pickStep(idx)}
                     style={{
                       cursor: "pointer",
@@ -486,7 +502,7 @@ export function HomePage() {
               })}
             </div>
 
-            <div style={{ flex: "2.1 1 420px", minWidth: 0, border: "1px solid rgba(20,24,26,.12)", borderRadius: 16, background: "#FDFDFB", padding: 24, display: "flex", flexDirection: "column" }}>
+            <div className="av-stage-detail" style={{ flex: "2.1 1 420px", minWidth: 0, border: "1px solid rgba(20,24,26,.12)", borderRadius: 16, background: "#FDFDFB", padding: 24, display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                 <span style={{ ...mono, fontSize: 10.5, letterSpacing: ".12em", textTransform: "uppercase", color: "#5E6664" }}>Stage {active.n} of 10 · {active.label}</span>
                 <span style={{ fontSize: 11.5, padding: "4px 10px", borderRadius: 999, background: "rgba(47,107,95,.1)", color: "#245348", whiteSpace: "nowrap" }}>{active.side}</span>
@@ -596,7 +612,7 @@ export function HomePage() {
         </div>
 
         {today ? (
-          <div style={{ marginTop: 28, border: "1px solid rgba(20,24,26,.12)", borderRadius: 20, background: "#F8F8F5", padding: "clamp(22px,3vw,36px)" }}>
+          <div className="av-compare-block" style={{ marginTop: 28, border: "1px solid rgba(20,24,26,.12)", borderRadius: 20, background: "#F8F8F5", padding: "clamp(22px,3vw,36px)" }}>
             <div style={{ ...mono, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#2A6154" }}>Today · the lead crosses seven tools and three people</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }}>
               {["Instagram", "Google", "Website form", "Inbox & DMs"].map((s) => (
@@ -621,7 +637,7 @@ export function HomePage() {
             <div style={{ marginTop: 22, fontSize: 15, color: "#4E5654", maxWidth: "60ch" }}>Nothing here was chosen badly. Each tool solves one stage — and every boundary between two of them is where time, context and leads leak out.</div>
           </div>
         ) : (
-          <div style={{ marginTop: 28, borderRadius: 20, background: "#14181A", color: "#EDF0EC", padding: "clamp(22px,3vw,36px)" }}>
+          <div className="av-compare-block" style={{ marginTop: 28, borderRadius: 20, background: "#14181A", color: "#EDF0EC", padding: "clamp(22px,3vw,36px)" }}>
             <div style={{ ...mono, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#6FA394" }}>With Avishkar · the same tools, orchestrated</div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 22 }}>
               <div style={{ border: "1px solid rgba(255,255,255,.2)", borderRadius: 999, padding: "10px 26px", fontSize: 15 }}>Patient</div>
@@ -893,10 +909,12 @@ export function HomePage() {
       </section>
 
       <section id="partner" style={{ maxWidth: 1240, margin: "0 auto", padding: "104px 32px 0" }}>
-        <div style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>02 — Partnership</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 48, alignItems: "flex-end", justifyContent: "space-between", marginTop: 18 }}>
-          <h2 style={{ fontSize: "clamp(32px, 4.2vw, 58px)", lineHeight: 1.02, letterSpacing: "-.034em", fontWeight: 500, margin: 0, maxWidth: "16ch" }}>More than software. Your technology partner.</h2>
-          <p style={{ fontSize: 17, lineHeight: 1.6, color: "#4E5654", maxWidth: "44ch", margin: 0 }}>We work alongside your team to design, integrate, improve, and evolve the technology behind the business — quarter after quarter, not once at launch.</p>
+        <div style={{ borderRadius: 20, background: "#14181A", color: "#EDF0EC", padding: "clamp(32px,4.4vw,48px)" }}>
+          <div style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#98A19E" }}>02 — Partnership</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 48, alignItems: "flex-end", justifyContent: "space-between", marginTop: 18 }}>
+            <h2 style={{ fontSize: "clamp(32px, 4.2vw, 58px)", lineHeight: 1.02, letterSpacing: "-.034em", fontWeight: 500, margin: 0, maxWidth: "16ch", color: "#EDF0EC" }}>More than software. Your technology partner.</h2>
+            <p style={{ fontSize: 17, lineHeight: 1.6, color: "#B2BAB7", maxWidth: "44ch", margin: 0 }}>We work alongside your team to design, integrate, improve, and evolve the technology behind the business — quarter after quarter, not once at launch.</p>
+          </div>
         </div>
 
         <div style={{ marginTop: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 0 }}>
@@ -986,7 +1004,7 @@ export function HomePage() {
       </section>
 
       <section id="contact" style={{ maxWidth: 1240, margin: "0 auto", padding: "120px 32px 0" }}>
-        <div style={{ borderRadius: 22, background: "#14181A", color: "#F1F1ED", padding: "clamp(40px, 6vw, 88px) clamp(28px, 5vw, 72px)" }}>
+        <div className="av-final-cta-band" style={{ borderRadius: 22, background: "#14181A", color: "#F1F1ED", padding: "clamp(40px, 6vw, 88px) clamp(28px, 5vw, 72px)" }}>
           <h2 style={{ fontSize: "clamp(34px, 5.2vw, 72px)", lineHeight: 1.02, letterSpacing: "-.036em", fontWeight: 500, margin: 0, maxWidth: "16ch", textWrap: "balance" }}>Let&apos;s build what&apos;s next for your practice.</h2>
           <p style={{ fontSize: "clamp(16px,1.4vw,19px)", lineHeight: 1.6, color: "#B2BAB7", maxWidth: "52ch", margin: "24px 0 0" }}>Whether you are modernizing an existing practice or building the technology foundation for what&apos;s next, Avishkar can help.</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", marginTop: 36 }}>
