@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { AGENTS } from "@/lib/agents";
-import { RESOURCES } from "@/lib/resources";
 import { SITE_URL } from "@/lib/site";
+
+const INSIGHTS_SLUGS = ["the-practice-operating-system-nobody-sold-you"];
 
 /**
  * Generates /sitemap.xml. Agent and resource pages are derived from their
@@ -17,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/about`, lastModified, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/contact`, lastModified, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/security`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/resources`, lastModified, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/insights`, lastModified, changeFrequency: "weekly", priority: 0.6 },
     { url: `${SITE_URL}/careers`, lastModified, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/privacy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/terms`, lastModified, changeFrequency: "yearly", priority: 0.3 },
@@ -30,12 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: agent.status === "live" ? 0.8 : 0.6,
   }));
 
-  const resourcePages: MetadataRoute.Sitemap = RESOURCES.map((resource) => ({
-    url: `${SITE_URL}/resources/${resource.slug}`,
+  const insightPages: MetadataRoute.Sitemap = INSIGHTS_SLUGS.map((slug) => ({
+    url: `${SITE_URL}/insights/${slug}`,
     lastModified,
     changeFrequency: "monthly",
     priority: 0.5,
   }));
 
-  return [...staticPages, ...agentPages, ...resourcePages];
+  return [...staticPages, ...agentPages, ...insightPages];
 }

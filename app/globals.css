@@ -2,6 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Avishkar brand (2026 redesign) ─────────────────────────────────────
+   Global rules ported verbatim from the Avishkar.dc.html / Insights.dc.html /
+   Article.dc.html mockups. */
+body {
+  background: #f1f1ed;
+  color: #14181a;
+}
+
+a:hover {
+  color: #2f6b5f;
+}
+
+::selection {
+  background: #d6e4de;
+}
+
+@keyframes avRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes avPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes avSweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+@keyframes avWord {
+  from {
+    opacity: 0;
+    transform: translateY(0.28em);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.av-rise {
+  animation: avRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.av-word {
+  animation: avWord 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.av-early-access-pill:hover {
+  background: rgba(47, 107, 95, 0.18) !important;
+}
+.av-talk-btn:hover {
+  background: #2f6b5f !important;
+  border-color: #2f6b5f !important;
+}
+.av-hero-btn-dark:hover {
+  background: #2f6b5f !important;
+}
+.av-hero-btn-outline:hover {
+  border-color: #14181a !important;
+  background: rgba(20, 24, 26, 0.04) !important;
+}
+.av-outline-btn:hover {
+  border-color: #14181a !important;
+  background: rgba(20, 24, 26, 0.04) !important;
+}
+.av-contact-btn:hover {
+  background: #2f6b5f !important;
+  color: #f1f1ed !important;
+}
+.av-join-btn:hover {
+  background: #3a7c6e !important;
+}
+.av-dark-input:focus {
+  border-color: #6fa394 !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+.av-subscribe-input:focus {
+  border-color: #6fa394 !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+.av-contact-btn-dark:hover {
+  background: #2f6b5f !important;
+}
+.av-role-card:hover {
+  border-color: #2f6b5f !important;
+}
+.av-agent-card:hover {
+  border-color: #2f6b5f !important;
+  transform: translateY(-2px);
+}
+
 :root {
   color-scheme: light;
 

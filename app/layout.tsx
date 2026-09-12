@@ -1,13 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Schibsted_Grotesk, DM_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/ui/Navbar";
-import { Footer } from "@/components/ui/Footer";
+import { AvHeader } from "@/components/av/AvHeader";
+import { AvFooter } from "@/components/av/AvFooter";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationSchema } from "@/lib/schema";
 import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
 import { SITE_URL } from "@/lib/site";
-import { Room } from "@/components/visuals/Room";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools
@@ -97,16 +96,17 @@ const SUPPRESS_HYDRATION_NOISE = `
 })();
 `;
 
-const sans = Inter({
+const sans = Schibsted_Grotesk({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const serif = Fraunces({
+const mono = DM_Mono({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-serif",
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -152,7 +152,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAFAF9",
+  themeColor: "#F1F1ED",
   width: "device-width",
   initialScale: 1,
 };
@@ -161,7 +161,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
         {/* Without JS the reveal animation never runs, so force its end state. */}
@@ -170,12 +170,11 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
-        <Room />
         <JsonLd data={organizationSchema} />
-        <div className="relative z-10">
-          <Navbar />
+        <div className="relative z-10" style={{ maxWidth: "100%", overflowX: "hidden" }}>
+          <AvHeader />
           <main>{children}</main>
-          <Footer />
+          <AvFooter />
         </div>
         <CookieConsentLoader />
       </body>
