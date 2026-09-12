@@ -3,6 +3,7 @@
 import { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
 
 type Post = { title: string; cat: string; read: string; date: string; art: string; dek: string; img: string };
 
@@ -29,6 +30,8 @@ export function InsightsPage() {
   const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribeError, setSubscribeError] = useState("");
+  const [subscribePending, setSubscribePending] = useState(false);
 
   const q = query.trim().toLowerCase();
   const filtered = ALL.filter(
@@ -38,9 +41,22 @@ export function InsightsPage() {
   );
   const showFeature = cat === "All" && !q;
 
-  const onSubscribe = (e: React.FormEvent) => {
+  const onSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) setSubscribed(true);
+    const next = email.trim();
+    if (!isValidEmail(next)) {
+      setSubscribeError("Enter a valid work email.");
+      return;
+    }
+    setSubscribeError("");
+    setSubscribePending(true);
+    const result = await submitEarlyAccess(next);
+    setSubscribePending(false);
+    if (!result.ok) {
+      setSubscribeError(result.error);
+      return;
+    }
+    setSubscribed(true);
   };
 
   return (
@@ -174,20 +190,33 @@ export function InsightsPage() {
             <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "#B2BAB7", margin: "14px 0 0", maxWidth: "46ch" }}>Operations, technology, and what we&apos;re learning building for aesthetic practices.</p>
           </div>
           {!subscribed ? (
-            <form onSubmit={onSubscribe} style={{ display: "flex", flexWrap: "wrap", gap: 10, flex: "1 1 340px", minWidth: 0 }}>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@yourpractice.com"
-                className="av-subscribe-input"
-                style={{ flex: "1 1 200px", minWidth: 0, fontFamily: "inherit", fontSize: 15, padding: "14px 18px", borderRadius: 999, border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.05)", color: "#F1F1ED", outline: "none" }}
-              />
-              <button type="submit" className="av-join-btn" style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "none", background: "#2F6B5F", color: "#F8F8F5", cursor: "pointer" }}>
-                Subscribe
-              </button>
-            </form>
+            <div style={{ flex: "1 1 340px", minWidth: 0 }}>
+              <form onSubmit={onSubscribe} style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (subscribeError) setSubscribeError("");
+                  }}
+                  placeholder="you@yourpractice.com"
+                  className="av-subscribe-input"
+                  style={{ flex: "1 1 200px", minWidth: 0, fontFamily: "inherit", fontSize: 15, padding: "14px 18px", borderRadius: 999, border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.05)", color: "#F1F1ED", outline: "none" }}
+                />
+                <button
+                  type="submit"
+                  disabled={subscribePending}
+                  className="av-join-btn"
+                  style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "none", background: "#2F6B5F", color: "#F8F8F5", cursor: subscribePending ? "default" : "pointer", opacity: subscribePending ? 0.7 : 1 }}
+                >
+                  {subscribePending ? "Sending…" : "Subscribe"}
+                </button>
+              </form>
+              {subscribeError && (
+                <div style={{ ...mono, fontSize: 11.5, color: "#E5A0A0", marginTop: 10 }}>{subscribeError}</div>
+              )}
+            </div>
           ) : (
             <div style={{ flex: "1 1 300px", border: "1px solid rgba(111,163,148,.35)", background: "rgba(47,107,95,.14)", borderRadius: 14, padding: "18px 20px", fontSize: 16 }}>
               Subscribed. Next issue goes out at the start of the month.

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
 
 const WORDS = ["aesthetics.", "medspas.", "wellness.", "modern practices."];
 
@@ -169,6 +170,8 @@ export function HomePage() {
   const [view, setView] = useState<"today" | "avishkar">("today");
   const [email, setEmail] = useState("");
   const [joined, setJoined] = useState(false);
+  const [joinError, setJoinError] = useState("");
+  const [joinPending, setJoinPending] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setWord((w) => (w + 1) % WORDS.length), 2600);
@@ -201,17 +204,39 @@ export function HomePage() {
     if (!container) return;
     // Only the mobile horizontal-scroll rail (flex-direction: row, below 900px)
     // needs the active pill scrolled into view. On desktop the rail is a
-    // vertical, fully-visible list, and calling scrollIntoView there drags
-    // the whole page's scroll position along with it every time `step`
-    // auto-advances.
+    // vertical, fully-visible list and this effect is a no-op there.
+    //
+    // Scroll the container's own scrollLeft directly rather than using
+    // Element.scrollIntoView: scrollIntoView asks the browser to bring the
+    // target into view across *every* scrollable ancestor, including the
+    // page itself — if the rail (or the page) isn't fully within the
+    // viewport it will also scroll the whole page vertically, which is
+    // exactly what must not happen here since this fires on every
+    // auto-cycle tick regardless of where the user is looking.
     if (getComputedStyle(container).flexDirection !== "row") return;
     const activePill = container.children[step] as HTMLElement | undefined;
-    activePill?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (!activePill) return;
+    const target =
+      activePill.offsetLeft - container.clientWidth / 2 + activePill.clientWidth / 2;
+    container.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
   }, [step]);
 
-  const onJoin = (e: React.FormEvent) => {
+  const onJoin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) setJoined(true);
+    const next = email.trim();
+    if (!isValidEmail(next)) {
+      setJoinError("Enter a valid work email.");
+      return;
+    }
+    setJoinError("");
+    setJoinPending(true);
+    const result = await submitEarlyAccess(next);
+    setJoinPending(false);
+    if (!result.ok) {
+      setJoinError(result.error);
+      return;
+    }
+    setJoined(true);
   };
 
   return (
@@ -375,20 +400,28 @@ export function HomePage() {
                       type="email"
                       required
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (joinError) setJoinError("");
+                      }}
                       placeholder="you@yourpractice.com"
                       className="av-dark-input"
                       style={{ flex: "1 1 240px", minWidth: 0, fontFamily: "inherit", fontSize: 15, padding: "14px 18px", borderRadius: 999, border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.05)", color: "#F1F1ED", outline: "none" }}
                     />
                     <button
                       type="submit"
+                      disabled={joinPending}
                       className="av-join-btn"
-                      style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "none", background: "#2F6B5F", color: "#F8F8F5", cursor: "pointer" }}
+                      style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "none", background: "#2F6B5F", color: "#F8F8F5", cursor: joinPending ? "default" : "pointer", opacity: joinPending ? 0.7 : 1 }}
                     >
-                      Join the Early Access List
+                      {joinPending ? "Sending…" : "Join the Early Access List"}
                     </button>
                   </form>
-                  <div style={{ ...mono, fontSize: 11.5, color: "#7F8886", marginTop: 12 }}>No newsletter. One note when there&apos;s something real to try.</div>
+                  {joinError ? (
+                    <div style={{ ...mono, fontSize: 11.5, color: "#E5A0A0", marginTop: 12 }}>{joinError}</div>
+                  ) : (
+                    <div style={{ ...mono, fontSize: 11.5, color: "#7F8886", marginTop: 12 }}>No newsletter. One note when there&apos;s something real to try.</div>
+                  )}
                 </>
               ) : (
                 <div style={{ marginTop: 28, border: "1px solid rgba(111,163,148,.35)", background: "rgba(47,107,95,.14)", borderRadius: 14, padding: "20px 22px", maxWidth: 480 }}>
