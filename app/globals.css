@@ -10,12 +10,40 @@ body {
   color: #14181a;
 }
 
-a:hover {
-  color: #2f6b5f;
-}
-
 ::selection {
   background: #d6e4de;
+}
+
+/* ── Responsive-fitness baseline ─────────────────────────────────────── */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 2px solid #2f6b5f;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: #2f6b5f;
+  }
 }
 
 @keyframes avRise {
@@ -64,31 +92,6 @@ a:hover {
   animation: avWord 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.av-early-access-pill:hover {
-  background: rgba(47, 107, 95, 0.18) !important;
-}
-.av-talk-btn:hover {
-  background: #2f6b5f !important;
-  border-color: #2f6b5f !important;
-}
-.av-hero-btn-dark:hover {
-  background: #2f6b5f !important;
-}
-.av-hero-btn-outline:hover {
-  border-color: #14181a !important;
-  background: rgba(20, 24, 26, 0.04) !important;
-}
-.av-outline-btn:hover {
-  border-color: #14181a !important;
-  background: rgba(20, 24, 26, 0.04) !important;
-}
-.av-contact-btn:hover {
-  background: #2f6b5f !important;
-  color: #f1f1ed !important;
-}
-.av-join-btn:hover {
-  background: #3a7c6e !important;
-}
 .av-dark-input:focus {
   border-color: #6fa394 !important;
   background: rgba(255, 255, 255, 0.09) !important;
@@ -97,15 +100,166 @@ a:hover {
   border-color: #6fa394 !important;
   background: rgba(255, 255, 255, 0.09) !important;
 }
-.av-contact-btn-dark:hover {
-  background: #2f6b5f !important;
+
+@media (hover: hover) and (pointer: fine) {
+  .av-early-access-pill:hover {
+    background: rgba(47, 107, 95, 0.18) !important;
+  }
+  .av-talk-btn:hover {
+    background: #2f6b5f !important;
+    border-color: #2f6b5f !important;
+  }
+  .av-hero-btn-dark:hover {
+    background: #2f6b5f !important;
+  }
+  .av-hero-btn-outline:hover {
+    border-color: #14181a !important;
+    background: rgba(20, 24, 26, 0.04) !important;
+  }
+  .av-outline-btn:hover {
+    border-color: #14181a !important;
+    background: rgba(20, 24, 26, 0.04) !important;
+  }
+  .av-contact-btn:hover {
+    background: #2f6b5f !important;
+    color: #f1f1ed !important;
+  }
+  .av-join-btn:hover {
+    background: #3a7c6e !important;
+  }
+  .av-contact-btn-dark:hover {
+    background: #2f6b5f !important;
+  }
+  .av-role-card:hover {
+    border-color: #2f6b5f !important;
+  }
+  .av-agent-card:hover {
+    border-color: #2f6b5f !important;
+    transform: translateY(-2px);
+  }
 }
-.av-role-card:hover {
-  border-color: #2f6b5f !important;
+
+/* ── Header: hamburger below 768px ─────────────────────────────────────── */
+.av-mobile-cta {
+  display: none;
 }
-.av-agent-card:hover {
-  border-color: #2f6b5f !important;
-  transform: translateY(-2px);
+.av-mobile-menu {
+  display: none;
+}
+@media (max-width: 900px) {
+  .av-desktop-nav,
+  .av-desktop-cta {
+    display: none !important;
+  }
+  .av-mobile-cta {
+    display: flex !important;
+  }
+  .av-mobile-menu {
+    display: block;
+  }
+}
+
+/* ── Stage carousel: horizontal scroll rail below 900px ─────────────────── */
+@media (max-width: 900px) {
+  .av-stage-rail {
+    flex-direction: row !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+    gap: 8px !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .av-stage-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .av-stage-rail-item {
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    padding: 10px 16px !important;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .av-stage-detail {
+    padding: 18px !important;
+  }
+}
+
+/* ── Article page: hide TOC below 900px, tighten blockquote below 640px ── */
+@media (max-width: 900px) {
+  .av-article-toc {
+    display: none !important;
+  }
+}
+@media (max-width: 640px) {
+  .av-article-quote {
+    padding: 20px 22px !important;
+  }
+}
+
+/* ── Hero: tighter top padding + full-width stacked CTAs on small phones ── */
+@media (max-width: 640px) {
+  .av-hero-section {
+    padding-top: 56px !important;
+  }
+}
+@media (max-width: 480px) {
+  .av-hero-cta-row {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+  .av-hero-cta-btn {
+    width: 100%;
+  }
+}
+
+/* ── Hero dashboard mockup: tighter outer padding on small phones ───────── */
+@media (max-width: 640px) {
+  .av-dashboard-card {
+    padding: 16px !important;
+  }
+}
+
+/* ── Today/Avishkar comparison blocks: lower the clamp() min ─────────────── */
+@media (max-width: 480px) {
+  .av-compare-block {
+    padding: 18px !important;
+  }
+}
+
+/* ── Final dark CTA banner: lower the clamp() mins on small phones ──────── */
+@media (max-width: 480px) {
+  .av-final-cta-band {
+    padding: 28px 20px !important;
+  }
+}
+
+/* ── Insights filter bar: search on its own row, pills scroll below 640px ─ */
+@media (max-width: 640px) {
+  .av-search-box {
+    order: -1;
+    width: 100%;
+    min-width: 0 !important;
+  }
+  .av-cat-pills {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .av-cat-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .av-cat-pill {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 44px;
+  }
 }
 
 :root {

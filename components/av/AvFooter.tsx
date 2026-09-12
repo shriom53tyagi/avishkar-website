@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
@@ -80,16 +81,7 @@ export function AvFooter() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 48 }}>
           <div style={{ flex: "1.6 1 280px", minWidth: 0 }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span
-                style={{
-                  width: 11,
-                  height: 11,
-                  background: "#2F6B5F",
-                  borderRadius: 2,
-                  transform: "rotate(45deg)",
-                  display: "block",
-                }}
-              />
+              <Image src="/logo.png" alt="" width={26} height={14} style={{ display: "block", width: "auto", height: 14 }} />
               <span style={{ fontSize: 19, fontWeight: 600, letterSpacing: "-.02em", color: "#14181A" }}>Avishkar</span>
             </Link>
             <p style={{ fontSize: 14.5, lineHeight: 1.6, color: "#4E5654", margin: "16px 0 0", maxWidth: "34ch" }}>

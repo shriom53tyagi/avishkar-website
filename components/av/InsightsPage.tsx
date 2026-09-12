@@ -56,8 +56,8 @@ export function InsightsPage() {
       </section>
 
       <section style={{ maxWidth: 1240, margin: "0 auto", padding: "44px 32px 0" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,26,.12)", paddingBottom: 18 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div className="av-insights-filter-bar" style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,26,.12)", paddingBottom: 18 }}>
+          <div className="av-cat-pills" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {CATS.map((name) => {
               const active = name === cat;
               return (
@@ -65,6 +65,7 @@ export function InsightsPage() {
                   key={name}
                   type="button"
                   onClick={() => setCat(name)}
+                  className="av-cat-pill"
                   style={{
                     cursor: "pointer",
                     fontFamily: "inherit",
@@ -82,7 +83,7 @@ export function InsightsPage() {
               );
             })}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, border: "1px solid rgba(20,24,26,.16)", borderRadius: 999, padding: "9px 16px", background: "#F8F8F5", minWidth: 220 }}>
+          <div className="av-search-box" style={{ display: "flex", alignItems: "center", gap: 10, border: "1px solid rgba(20,24,26,.16)", borderRadius: 999, padding: "9px 16px", background: "#F8F8F5", minWidth: 220 }}>
             <span style={{ ...mono, fontSize: 12, color: "#5E6664" }}>⌕</span>
             <input
               type="text"
