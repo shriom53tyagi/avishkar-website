@@ -13,7 +13,7 @@ qualified visitor a clear path to trying an agent or booking a conversation.
 - **Next.js 15** (App Router, RSC) · **React 19** · **TypeScript** (strict)
 - **Tailwind CSS** with a small token set (see `tailwind.config.ts`)
 - **Inter** via `next/font`, single family
-- **Framer Motion** for exactly one entrance animation
+- **Framer Motion** for exactly one entrance animatio
 
 ## Information architecture
 
