@@ -14,8 +14,9 @@ export function Trust() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-20">
         <FadeUp>
           <p className="eyebrow mb-4">Trust</p>
-          <h2 className="text-h2 text-ink">{TRUST.headline}</h2>
+          <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{TRUST.headline}</h2>
           <p className="mt-4 text-lead text-ink-muted">{TRUST.sub}</p>
+          <div className="rule mt-6" />
           <div className="mt-8">
             <Button href="/security" variant="quiet" arrow>
               Learn about security
@@ -26,7 +27,7 @@ export function Trust() {
         <Stagger className="grid gap-4 sm:grid-cols-2">
           {SECURITY_PILLARS.map((pillar) => (
             <StaggerItem key={pillar.title} className="h-full">
-              <div className="h-full rounded-lg border border-line bg-surface p-6 shadow-card transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-card-hover">
+              <div className="card h-full p-6 transition-all duration-300 hover:-translate-y-0.5">
                 <p className="text-body font-semibold text-ink">{pillar.title}</p>
                 <p className="mt-3 text-small text-ink-muted">{pillar.body}</p>
               </div>

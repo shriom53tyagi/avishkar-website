@@ -32,7 +32,7 @@ export function Reveal({
       className={className ? `reveal ${className}` : "reveal"}
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
-      transition={{ duration: 0.34, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.34, delay, ease: [0.2, 0.9, 0.25, 1] }}
     >
       {children}
     </motion.div>

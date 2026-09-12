@@ -30,7 +30,9 @@ export function FinalCTA() {
       <Container className="relative">
         <Stagger className="mx-auto max-w-3xl text-center">
           <StaggerItem>
-            <h2 className="text-display font-semibold text-white">{FINAL_CTA.headline}</h2>
+            <h2 className="text-display font-serif font-light tracking-[-0.025em] text-white">
+              {FINAL_CTA.headline}
+            </h2>
           </StaggerItem>
           <StaggerItem>
             <p className="mx-auto mt-7 max-w-measure text-lead text-white/70">

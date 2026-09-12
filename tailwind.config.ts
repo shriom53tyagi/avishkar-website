@@ -10,29 +10,32 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
+        sans: ["var(--font-sans)", "Helvetica", "sans-serif"],
+        mono: ["var(--font-mono)", "monospace"],
       },
       colors: {
-        canvas: "#FAFAF9",
-        surface: "#FFFFFF",
-        alt: "#F2F2EF",
+        canvas: "#FBFAF7",
+        surface: "#FCFBFA",
+        alt: "#F4F1EA",
+        sand: "#EFE9DD",
         ink: {
-          DEFAULT: "#16191D",
-          muted: "#5A6169",
-          subtle: "#8C939B",
+          DEFAULT: "#0F172A",
+          muted: "#4B5563",
+          subtle: "#8A8578",
         },
         line: {
-          DEFAULT: "#E4E4E0",
-          strong: "#D2D2CC",
+          DEFAULT: "rgba(8,145,178,.20)",
+          strong: "rgba(8,145,178,.32)",
         },
         accent: {
-          DEFAULT: "#124C5F",
-          hover: "#0D3B4A",
-          tint: "#EAF1F3",
+          DEFAULT: "#0891B2",
+          hover: "#0E7490",
+          light: "#3FB0C9",
+          tint: "#E8F4F7",
         },
         positive: {
-          DEFAULT: "#1F7A4D",
-          tint: "#ECF4EF",
+          DEFAULT: "#059669",
+          tint: "#D1FAE5",
         },
         attention: {
           DEFAULT: "#8F6412",
@@ -60,10 +63,12 @@ const config: Config = {
       boxShadow: {
         /* Resting elevation for cards and panels: barely-there on the neutral
            canvas, just enough to lift a surface off the page. */
-        card: "0 1px 2px rgba(22, 25, 29, 0.04), 0 1px 1px rgba(22, 25, 29, 0.03)",
+        card: "0 1px 3px rgba(8,145,178,.06), 0 1px 2px rgba(0,0,0,.04)",
         /* Hover elevation, paired with a small upward translate. */
-        "card-hover":
-          "0 12px 24px -8px rgba(22, 25, 29, 0.12), 0 4px 8px -4px rgba(22, 25, 29, 0.06)",
+        "card-hover": "0 8px 32px -4px rgba(8,145,178,.14), 0 4px 8px rgba(0,0,0,.04)",
+        sm: "0 1px 3px rgba(8,145,178,.06), 0 1px 2px rgba(0,0,0,.04)",
+        md: "0 4px 16px -2px rgba(8,145,178,.10), 0 2px 4px rgba(0,0,0,.04)",
+        lg: "0 8px 32px -4px rgba(8,145,178,.14), 0 4px 8px rgba(0,0,0,.04)",
       },
       transitionDuration: {
         DEFAULT: "180ms",

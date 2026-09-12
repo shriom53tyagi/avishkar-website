@@ -57,7 +57,7 @@ export function LatestUpdates({ showHeading = true }: { showHeading?: boolean })
         <div className="grid gap-5 sm:grid-cols-2">
           {UPDATES.map((u, i) => (
             <Reveal key={u.label} delay={i * 0.07}>
-              <div id={u.id} className="h-full scroll-mt-28 rounded-lg border border-line bg-surface p-7">
+              <div id={u.id} className="card h-full scroll-mt-28 p-7">
                 <div className="text-h1 font-bold leading-none tracking-tight text-accent">
                   <AnimatedNumber value={u.value} prefix={u.prefix || undefined} suffix={u.suffix} />
                 </div>
@@ -69,7 +69,7 @@ export function LatestUpdates({ showHeading = true }: { showHeading?: boolean })
         </div>
 
         <Reveal delay={0.3}>
-          <div className="mt-5 overflow-hidden rounded-lg border border-line bg-surface p-6 md:p-8">
+          <div className="card mt-5 overflow-hidden p-6 md:p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-8">
               <DuotonePhoto
                 src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"

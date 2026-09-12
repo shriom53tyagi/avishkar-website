@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
  */
 
 /** Slight overshoot-free ease. Matches the existing Reveal curve. */
-export const EASE = [0.22, 1, 0.36, 1] as const;
+export const EASE = [0.2, 0.9, 0.25, 1] as const;
 
 const DISTANCE = 14;
 

@@ -2,8 +2,284 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Avishkar brand (2026 redesign) ─────────────────────────────────────
+   Global rules ported verbatim from the Avishkar.dc.html / Insights.dc.html /
+   Article.dc.html mockups. */
+body {
+  background: #f1f1ed;
+  color: #14181a;
+}
+
+::selection {
+  background: #d6e4de;
+}
+
+/* ── Responsive-fitness baseline ─────────────────────────────────────── */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: 2px solid #2f6b5f;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: #2f6b5f;
+  }
+}
+
+@keyframes avRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes avPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes avSweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+@keyframes avWord {
+  from {
+    opacity: 0;
+    transform: translateY(0.28em);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.av-rise {
+  animation: avRise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.av-word {
+  animation: avWord 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.av-dark-input:focus {
+  border-color: #6fa394 !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+.av-subscribe-input:focus {
+  border-color: #6fa394 !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .av-early-access-pill:hover {
+    background: rgba(47, 107, 95, 0.18) !important;
+  }
+  .av-talk-btn:hover {
+    background: #2f6b5f !important;
+    border-color: #2f6b5f !important;
+  }
+  .av-hero-btn-dark:hover {
+    background: #2f6b5f !important;
+  }
+  .av-hero-btn-outline:hover {
+    border-color: #14181a !important;
+    background: rgba(20, 24, 26, 0.04) !important;
+  }
+  .av-outline-btn:hover {
+    border-color: #14181a !important;
+    background: rgba(20, 24, 26, 0.04) !important;
+  }
+  .av-contact-btn:hover {
+    background: #2f6b5f !important;
+    color: #f1f1ed !important;
+  }
+  .av-join-btn:hover {
+    background: #3a7c6e !important;
+  }
+  .av-contact-btn-dark:hover {
+    background: #2f6b5f !important;
+  }
+  .av-role-card:hover {
+    border-color: #2f6b5f !important;
+  }
+  .av-agent-card:hover {
+    border-color: #2f6b5f !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* ── Header: hamburger below 768px ─────────────────────────────────────── */
+.av-mobile-cta {
+  display: none;
+}
+.av-mobile-menu {
+  display: none;
+}
+@media (max-width: 900px) {
+  .av-desktop-nav,
+  .av-desktop-cta {
+    display: none !important;
+  }
+  .av-mobile-cta {
+    display: flex !important;
+  }
+  .av-mobile-menu {
+    display: block;
+  }
+}
+
+/* ── Stage carousel: horizontal scroll rail below 900px ─────────────────── */
+@media (max-width: 900px) {
+  .av-stage-rail {
+    flex-direction: row !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+    gap: 8px !important;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .av-stage-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .av-stage-rail-item {
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    padding: 10px 16px !important;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .av-stage-detail {
+    padding: 18px !important;
+  }
+}
+
+/* ── Article page: hide TOC below 900px, tighten blockquote below 640px ── */
+@media (max-width: 900px) {
+  .av-article-toc {
+    display: none !important;
+  }
+}
+@media (max-width: 640px) {
+  .av-article-quote {
+    padding: 20px 22px !important;
+  }
+}
+
+/* ── Hero: tighter top padding + full-width stacked CTAs on small phones ── */
+@media (max-width: 640px) {
+  .av-hero-section {
+    padding-top: 56px !important;
+  }
+}
+@media (max-width: 480px) {
+  .av-hero-cta-row {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+  .av-hero-cta-btn {
+    width: 100%;
+  }
+}
+
+/* ── Hero dashboard mockup: tighter outer padding on small phones ───────── */
+@media (max-width: 640px) {
+  .av-dashboard-card {
+    padding: 16px !important;
+  }
+}
+
+/* ── Today/Avishkar comparison blocks: lower the clamp() min ─────────────── */
+@media (max-width: 480px) {
+  .av-compare-block {
+    padding: 18px !important;
+  }
+}
+
+/* ── Final dark CTA banner: lower the clamp() mins on small phones ──────── */
+@media (max-width: 480px) {
+  .av-final-cta-band {
+    padding: 28px 20px !important;
+  }
+}
+
+/* ── Insights filter bar: search on its own row, pills scroll below 640px ─ */
+@media (max-width: 640px) {
+  .av-search-box {
+    order: -1;
+    width: 100%;
+    min-width: 0 !important;
+  }
+  .av-cat-pills {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .av-cat-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .av-cat-pill {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+}
+
 :root {
   color-scheme: light;
+
+  --porcelain: #fbfaf7;
+  --stone: #f4f1ea;
+  --sand: #efe9dd;
+  --stone-2: rgba(8, 145, 178, 0.2);
+  --ink: #0f172a;
+  --ink-soft: #4b5563;
+  --dead: #8a8578;
+  --brass: #0891b2;
+  --brass-dk: #0e7490;
+  --brass-lt: #3fb0c9;
+  --accent: #059669;
+  --accent-lt: #d1fae5;
+  --shadow-sm: 0 1px 3px rgba(8, 145, 178, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(8, 145, 178, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px -4px rgba(8, 145, 178, 0.14), 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 @layer base {
@@ -30,8 +306,8 @@
   }
 
   ::selection {
-    background: theme("colors.accent.tint");
-    color: theme("colors.accent.DEFAULT");
+    background: var(--brass-lt);
+    color: #fff;
   }
 
   :focus-visible {
@@ -42,11 +318,112 @@
 }
 
 @layer components {
-  /* Small uppercase section label — the only letterspaced type on the site. */
+  /* Brass-tinted pill for section kickers. */
   .eyebrow {
-    @apply text-label font-medium uppercase text-ink-subtle;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    background: rgba(8, 145, 178, 0.08);
+    border: 1px solid rgba(8, 145, 178, 0.18);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brass);
   }
 
+  /* Card surface used for any panel/card across the site. */
+  .card {
+    background: #fcfbfa;
+    border: 1px solid var(--stone-2);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Clamped Fraunces display headline. <em> renders brass; <i> renders italic. */
+  .say {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(2.2rem, 4.35vw, 4.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+  }
+  .say.wide {
+    max-width: 26ch;
+  }
+  .say em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--brass);
+  }
+  .say i {
+    font-style: italic;
+  }
+
+  /* Short accent bar under a lead statement. */
+  .rule {
+    width: 5.5rem;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  /* Pill for tags / tech / feature lists. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--stone-2);
+    border-radius: 100px;
+    background: #fcfbfa;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+
+  /* Uppercase micro-label rhythm for captions/labels/eyebrow-adjacent text. */
+  .micro-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--dead);
+  }
+}
+
+/* ── Floating background cards (hero) ────────────────────────────────── */
+@keyframes float-in {
+  to {
+    opacity: 0.55;
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -0.6rem;
+  }
+}
+/* ── Word-by-word blur-in ─────────────────────────────────────────────── */
+.w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.55em);
+  filter: blur(6px);
+}
+.live .w {
+  animation: word 0.95s cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+}
+@keyframes word {
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
 }
 
 /* ── Ambient backdrop ───────────────────────────────────────────────────
@@ -148,6 +525,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-bloom {
+    animation: none !important;
+  }
+  .w {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
     animation: none !important;
   }
 }
