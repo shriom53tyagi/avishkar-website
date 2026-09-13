@@ -239,29 +239,16 @@ export function HomePage() {
       0,
       activePill.offsetLeft - container.clientWidth / 2 + activePill.clientWidth / 2
     );
-    // Animate scrollLeft by hand with rAF instead of scrollTo({ behavior:
-    // "smooth" }). Android Chrome's dynamic address-bar toolbar can
-    // misattribute an inner element's native smooth-scroll to the page
-    // itself, hiding the toolbar and growing the viewport — which reads
-    // exactly like the page "auto-scrolling" every time a stage changes.
-    // A hand-rolled rAF loop that only ever writes to
-    // `container.scrollLeft` never invokes that native smooth-scroll
-    // machinery, so it can't trigger the toolbar animation.
-    const start = container.scrollLeft;
-    const distance = target - start;
-    if (distance === 0) return;
-    const duration = 400;
-    const startTime = performance.now();
-    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
-    let frame: number;
-    const step_ = (now: number) => {
-      const elapsed = now - startTime;
-      const t = Math.min(1, elapsed / duration);
-      container.scrollLeft = start + distance * ease(t);
-      if (t < 1) frame = requestAnimationFrame(step_);
-    };
-    frame = requestAnimationFrame(step_);
-    return () => cancelAnimationFrame(frame);
+    // A single, instant write to scrollLeft — no native scrollTo(),
+    // no smooth-scroll, no per-frame writes across a rAF loop. On real
+    // Android Chrome a continuous animation (whether native smooth-scroll
+    // or a hand-rolled rAF loop) that repeatedly touches an inner
+    // scroll container's offset can still be misread by the compositor as
+    // page-level scroll activity, which hides the dynamic address-bar
+    // toolbar and grows the viewport — this is what showed up as the page
+    // "auto-scrolling" on every stage change. A single synchronous write
+    // has nothing ongoing for the compositor to misattribute.
+    if (container.scrollLeft !== target) container.scrollLeft = target;
   }, [step]);
 
   const onJoin = async (e: React.FormEvent) => {
