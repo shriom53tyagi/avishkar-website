@@ -8,6 +8,12 @@
 body {
   background: #f1f1ed;
   color: #14181a;
+  /* Prevent the browser's scroll-anchoring heuristic from "correcting" the
+     page's scroll position when a section's content changes height above
+     or near the current viewport (e.g. the how-it-works stage detail card
+     growing/shrinking as stages change) — that correction is what causes
+     an unwanted scroll jump whenever the stage carousel advances. */
+  overflow-anchor: none;
 }
 
 ::selection {
@@ -164,7 +170,8 @@ a {
   .av-stage-rail {
     flex-direction: row !important;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
     padding-bottom: 8px;
     gap: 8px !important;
     -ms-overflow-style: none;
@@ -176,7 +183,6 @@ a {
   .av-stage-rail-item {
     flex: 0 0 auto !important;
     white-space: nowrap;
-    scroll-snap-align: start;
     padding: 10px 16px !important;
     min-height: 44px;
   }
