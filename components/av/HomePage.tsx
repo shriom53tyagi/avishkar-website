@@ -164,6 +164,24 @@ const STAGES: Stage[] = [
 
 const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
 
+/**
+ * Some mobile browsers nudge the page's own vertical scroll position when
+ * a horizontally-scrolling element inside it changes (a tap on the stage
+ * rail, or the rail's own scrollLeft animating on auto-cycle) — even
+ * though nothing about the page layout actually changed. A `scroll` event
+ * listener reacts to that drift the instant the browser applies it and
+ * snaps back to the position captured just before, which is faster and
+ * more reliable than polling or a couple of requestAnimationFrame calls.
+ */
+function lockPageScroll(durationMs = 600) {
+  const y = window.scrollY;
+  const onScroll = () => {
+    if (window.scrollY !== y) window.scrollTo(0, y);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  setTimeout(() => window.removeEventListener("scroll", onScroll), durationMs);
+}
+
 export function HomePage() {
   const [word, setWord] = useState(0);
   const [step, setStep] = useState(0);
@@ -185,6 +203,7 @@ export function HomePage() {
 
   // Manual selection restarts auto-advance at a slower 9000ms cadence.
   const pickStep = (i: number) => {
+    lockPageScroll();
     setStep(i);
     setSlowMode(true);
   };
@@ -216,9 +235,33 @@ export function HomePage() {
     if (getComputedStyle(container).flexDirection !== "row") return;
     const activePill = container.children[step] as HTMLElement | undefined;
     if (!activePill) return;
-    const target =
-      activePill.offsetLeft - container.clientWidth / 2 + activePill.clientWidth / 2;
-    container.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+    const target = Math.max(
+      0,
+      activePill.offsetLeft - container.clientWidth / 2 + activePill.clientWidth / 2
+    );
+    // Animate scrollLeft by hand with rAF instead of scrollTo({ behavior:
+    // "smooth" }). Android Chrome's dynamic address-bar toolbar can
+    // misattribute an inner element's native smooth-scroll to the page
+    // itself, hiding the toolbar and growing the viewport — which reads
+    // exactly like the page "auto-scrolling" every time a stage changes.
+    // A hand-rolled rAF loop that only ever writes to
+    // `container.scrollLeft` never invokes that native smooth-scroll
+    // machinery, so it can't trigger the toolbar animation.
+    const start = container.scrollLeft;
+    const distance = target - start;
+    if (distance === 0) return;
+    const duration = 400;
+    const startTime = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+    let frame: number;
+    const step_ = (now: number) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      container.scrollLeft = start + distance * ease(t);
+      if (t < 1) frame = requestAnimationFrame(step_);
+    };
+    frame = requestAnimationFrame(step_);
+    return () => cancelAnimationFrame(frame);
   }, [step]);
 
   const onJoin = async (e: React.FormEvent) => {
@@ -515,6 +558,8 @@ export function HomePage() {
                   <div
                     key={s.n}
                     className="av-stage-rail-item"
+                    onPointerDown={() => lockPageScroll()}
+                    onTouchStart={() => lockPageScroll()}
                     onClick={() => pickStep(idx)}
                     style={{
                       cursor: "pointer",
