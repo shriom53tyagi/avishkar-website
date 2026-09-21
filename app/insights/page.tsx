@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { InsightsPage } from "@/components/av/InsightsPage";
+import { InsightsPage, type FeaturedPost, type Post } from "@/components/av/InsightsPage";
+import { listPublishedInsights, type Insight } from "@/lib/db";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -8,6 +11,31 @@ export const metadata: Metadata = {
   alternates: { canonical: "/insights" },
 };
 
-export default function Page() {
-  return <InsightsPage />;
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function toPost(insight: Insight): Post {
+  return {
+    slug: insight.slug,
+    title: insight.title,
+    cat: insight.kicker,
+    read: `${insight.readTimeMinutes} min`,
+    date: formatDate(insight.bylinePublishedAt),
+    art: insight.heroImageTagChipText ?? insight.heroImageAlt,
+    dek: insight.dek,
+    img: insight.heroImageUrl,
+  };
+}
+
+export default async function Page() {
+  const insights = await listPublishedInsights({});
+
+  const [first, ...rest] = insights;
+  const featured: FeaturedPost | null = first
+    ? { ...toPost(first), bylineName: first.bylineName }
+    : null;
+  const posts: Post[] = rest.map(toPost);
+
+  return <InsightsPage posts={posts} featured={featured} />;
 }

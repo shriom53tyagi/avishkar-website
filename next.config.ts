@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-    ],
+    // Insights hero images come from the Content Engine, which can point at
+    // any public HTTPS host it chooses — wildcard rather than a fixed list.
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
   poweredByHeader: false,
   compiler: {
