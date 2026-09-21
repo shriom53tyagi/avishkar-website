@@ -72,6 +72,36 @@ cp .env.example .env.local   # add NEXT_PUBLIC_CALENDLY_URL
 npm run dev
 ```
 
+## Insights (database-driven)
+
+`/insights` and `/insights/[slug]` are rendered from a Neon Postgres database
+instead of static content. Articles are published by the separate Avishkar
+Content Engine (`intelligence.avishkar.app`) via the API in
+`app/api/insights/`; there is no admin UI on this site.
+
+Setup:
+
+```bash
+# In .env.local:
+DATABASE_URL=postgres://user:password@ep-xxxx.neon.tech/dbname?sslmode=require
+INSIGHTS_PUBLISH_API_KEY=some-long-random-shared-secret
+
+npm run db:migrate
+```
+
+If either env var is missing, the app still starts and every other page works
+normally — the Insights pages will just show no articles, and the publish API
+returns 401/warns in the server log until both are set.
+
+See `db/test-guide.md` for exact curl commands to exercise the publish API,
+and `db/migrations/` for the schema. Pages use Next.js ISR
+(`revalidate = 60`), and the API calls `revalidatePath` on publish/update/
+delete so changes appear within about a second instead of waiting a minute.
+
+This app deploys to a long-running Node.js server (not Vercel) — build with
+`npm run build` and run `node .next/standalone/server.js` (or `npm start`),
+per `output: "standalone"` in `next.config.ts`.
+
 ## Checks
 
 ```bash

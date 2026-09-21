@@ -268,6 +268,59 @@ a {
   }
 }
 
+/* ── Article body: styles the trusted HTML fragment from the Content Engine ── */
+.prose {
+  font-size: 18.5px;
+  line-height: 1.7;
+  color: #23282a;
+}
+.prose > *:first-child {
+  margin-top: 0;
+}
+.prose p {
+  margin: 24px 0 0;
+}
+.prose h2 {
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.026em;
+  font-weight: 500;
+  margin: 48px 0 0;
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose blockquote {
+  margin: 36px 0 0;
+  padding: 26px 28px;
+  border-radius: 14px;
+  background: #14181a;
+  color: #edf0ec;
+  font-size: 21px;
+  line-height: 1.45;
+  max-width: 44ch;
+}
+.prose blockquote cite {
+  display: block;
+  font-family: "DM Mono", monospace;
+  font-size: 11.5px;
+  font-style: normal;
+  color: #98a19e;
+  margin-top: 14px;
+}
+.prose ul,
+.prose ol {
+  margin: 22px 0 0;
+  padding-left: 22px;
+}
+.prose li {
+  margin-top: 10px;
+}
+.prose a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 :root {
   color-scheme: light;
 
