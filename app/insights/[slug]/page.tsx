@@ -1,12 +1,45 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArticlePage } from "@/components/av/ArticlePage";
+import { ArticlePage, type Article, type RelatedPost } from "@/components/av/ArticlePage";
+import { getInsightBySlug, listPublishedInsights, type Insight } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
-const SLUG = "the-practice-operating-system-nobody-sold-you";
+export const revalidate = 60;
 
 export function generateStaticParams() {
-  return [{ slug: SLUG }];
+  return [];
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function toArticle(insight: Insight): Article {
+  return {
+    slug: insight.slug,
+    title: insight.title,
+    kicker: insight.kicker,
+    readTimeMinutes: insight.readTimeMinutes,
+    dek: insight.dek,
+    heroImageUrl: insight.heroImageUrl,
+    heroImageAlt: insight.heroImageAlt,
+    heroImageTagChipText: insight.heroImageTagChipText,
+    bylineName: insight.bylineName,
+    date: formatDate(insight.bylinePublishedAt),
+    sections: insight.sections.map((s) => ({ id: s.id, heading: s.heading })),
+    sources: insight.sources,
+    bodyHtml: insight.bodyHtml,
+  };
+}
+
+function toRelated(insight: Insight): RelatedPost {
+  return {
+    slug: insight.slug,
+    cat: insight.kicker,
+    read: `${insight.readTimeMinutes} min`,
+    title: insight.title,
+    date: formatDate(insight.bylinePublishedAt),
+  };
 }
 
 export async function generateMetadata({
@@ -15,19 +48,19 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  if (slug !== SLUG) return {};
+  const insight = await getInsightBySlug(slug);
+  if (!insight) return {};
+
   return {
-    title: "The practice operating system nobody sold you",
-    description:
-      "Most growing practices assemble their technology one urgent decision at a time. A framework for deciding what to keep, what to connect, and what to build — before the next location makes it harder.",
-    alternates: { canonical: `/insights/${SLUG}` },
+    title: insight.title,
+    description: insight.dek,
+    alternates: { canonical: `/insights/${slug}` },
     openGraph: {
-      title: "The practice operating system nobody sold you",
-      description:
-        "Most growing practices assemble their technology one urgent decision at a time. A framework for deciding what to keep, what to connect, and what to build — before the next location makes it harder.",
-      url: `${SITE_URL}/insights/${SLUG}`,
+      title: insight.title,
+      description: insight.dek,
+      url: `${SITE_URL}/insights/${slug}`,
       type: "article",
-      publishedTime: "2026-09-04",
+      publishedTime: insight.bylinePublishedAt.toISOString(),
     },
   };
 }
@@ -38,6 +71,10 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (slug !== SLUG) notFound();
-  return <ArticlePage />;
+  const insight = await getInsightBySlug(slug);
+  if (!insight) notFound();
+
+  const relatedInsights = await listPublishedInsights({ limit: 3, excludeSlug: slug });
+
+  return <ArticlePage article={toArticle(insight)} related={relatedInsights.map(toRelated)} />;
 }

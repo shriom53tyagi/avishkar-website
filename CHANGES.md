@@ -4,7 +4,7 @@ Worked entirely within the existing Next.js 15 (App Router) + React 19 + Tailwin
 Framer Motion + lucide-react stack. No new framework, styling system, or state
 library was introduced. All new UI reuses the existing design tokens (`surface`,
 `glass`, `text-gradient-cyan`, ink/cyan/violet/emerald colors), the `cn()` helper,
-and the established `"use client"` + Framer Motion patterns.
+and the established `"use client"` + Framer Motion patterns
 
 ## New files
 
