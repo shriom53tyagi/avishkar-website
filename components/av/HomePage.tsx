@@ -7,6 +7,17 @@ import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
 
 const WORDS = ["aesthetics.", "medspas.", "wellness.", "modern practices."];
 
+export type LatestInsight = {
+  slug: string;
+  art: string;
+  img: string;
+  cat: string;
+  read: string;
+  title: string;
+  dek: string;
+  date: string;
+};
+
 type Stage = {
   n: string;
   label: string;
@@ -182,7 +193,7 @@ function lockPageScroll(durationMs = 600) {
   setTimeout(() => window.removeEventListener("scroll", onScroll), durationMs);
 }
 
-export function HomePage() {
+export function HomePage({ latestInsights }: { latestInsights: LatestInsight[] }) {
   const [word, setWord] = useState(0);
   const [step, setStep] = useState(0);
   const [view, setView] = useState<"today" | "avishkar">("today");
@@ -1049,20 +1060,16 @@ export function HomePage() {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginTop: 44 }}>
-          {[
-            ["practice imagery", "https://images.unsplash.com/photo-1764727291644-5dcb0b1a0375?auto=format&fit=crop&w=1200&q=80", "Operations", "6 min", "The real cost of a five-tool front desk", "We timed the handoffs in three multi-room practices. The pattern was remarkably consistent — and expensive.", "Aug 28, 2026"],
-            ["treatment room detail", "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80", "AI in aesthetics", "8 min", "Where automation belongs — and where it doesn't", "A practical line between the messages a model should draft and the ones a nurse must read.", "Aug 14, 2026"],
-            ["membership dashboard", "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80", "Growth", "5 min", "Memberships are a data problem, not a pricing one", "Why retention programs stall when billing, booking and the chart don't share a definition of a member.", "Jul 31, 2026"],
-          ].map(([art, img, cat, read, title, dek, date]) => (
-            <Link href="/insights" key={title} style={{ flex: "1 1 300px", minWidth: 0, display: "block" }}>
+          {latestInsights.map((p) => (
+            <Link href={`/insights/${p.slug}`} key={p.slug} style={{ flex: "1 1 300px", minWidth: 0, display: "block" }}>
               <div style={{ position: "relative", height: 168, borderRadius: 14, border: "1px solid rgba(20,24,26,.12)", overflow: "hidden", display: "flex", alignItems: "flex-end", padding: 14 }}>
-                <Image src={img} alt="" fill sizes="(max-width: 768px) 100vw, 380px" style={{ objectFit: "cover" }} />
-                <span style={{ position: "relative", ...mono, fontSize: 10.5, color: "#586060", background: "rgba(248,248,245,.85)", padding: "4px 9px", borderRadius: 999 }}>{art}</span>
+                <Image src={p.img} alt="" fill sizes="(max-width: 768px) 100vw, 380px" style={{ objectFit: "cover" }} />
+                <span style={{ position: "relative", ...mono, fontSize: 10.5, color: "#586060", background: "rgba(248,248,245,.85)", padding: "4px 9px", borderRadius: 999 }}>{p.art}</span>
               </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 16, ...mono, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>{cat}<span style={{ color: "#5E6664" }}>· {read}</span></div>
-              <div style={{ fontSize: 20, fontWeight: 500, lineHeight: 1.3, marginTop: 10, letterSpacing: "-.018em" }}>{title}</div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: "#4E5654", margin: "8px 0 0" }}>{dek}</p>
-              <div style={{ fontSize: 12.5, color: "#5E6664", marginTop: 12 }}>{date}</div>
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 16, ...mono, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>{p.cat}<span style={{ color: "#5E6664" }}>· {p.read}</span></div>
+              <div style={{ fontSize: 20, fontWeight: 500, lineHeight: 1.3, marginTop: 10, letterSpacing: "-.018em" }}>{p.title}</div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: "#4E5654", margin: "8px 0 0" }}>{p.dek}</p>
+              <div style={{ fontSize: 12.5, color: "#5E6664", marginTop: 12 }}>{p.date}</div>
             </Link>
           ))}
         </div>
