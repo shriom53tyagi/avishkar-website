@@ -1,10 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { SITE_URL } from "@/lib/site";
+import styles from "./ArticlePage.module.css";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+/**
+ * Article page — ported 1:1 from reference/avishkar-article.html
+ * (`.progress`, `.art-hero`, `.cover`, `.art-body`/`.toc`/`.share`,
+ * `.prose`, `.related`).
+ *
+ * The reference's `.prose` sample blocks (paragraphs, h2, list, link,
+ * blockquote, figure+caption, callout) only demonstrate styling — the
+ * real article body renders from `article.bodyHtml` via
+ * `dangerouslySetInnerHTML`, with each top-level block given the
+ * reference's `.reveal` stagger-in treatment by a DOM pass after render
+ * (matching the reference's own `.prose .reveal` markup, which is
+ * generated the same way server-side there). No callout is invented —
+ * the reference's `.callout` styling in ArticlePage.module.css only
+ * applies if a real article's body_html happens to contain a
+ * `.callout`-classed element already; the data model has no such field
+ * today, so none renders unless present in real content.
+ *
+ * The reference has no equivalent of this page's existing "Want this
+ * framework applied to your practice?" mid-page CTA — kept per the task
+ * instruction, styled with the page's own patterns (see .cta below).
+ */
 
 export type ArticleSection = {
   id: string;
@@ -40,31 +62,37 @@ export type Article = {
   bodyHtml: string;
 };
 
-export function ArticlePage({
-  article,
-  related,
-}: {
-  article: Article;
-  related: RelatedPost[];
-}) {
-  const [pct, setPct] = useState(0);
-  const pctRef = useRef(0);
+function readReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function ArticlePage({ article, related }: { article: Article; related: RelatedPost[] }) {
+  const [isIn, setIsIn] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [activeTocId, setActiveTocId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [revealedRelated, setRevealedRelated] = useState<Set<string>>(new Set());
+
+  const proseRef = useRef<HTMLDivElement>(null);
+  const coverImgWrapRef = useRef<HTMLDivElement>(null);
+  const relatedRef = useRef<HTMLDivElement>(null);
+
+  const shareUrl = `${SITE_URL}/insights/${article.slug}`;
 
   useEffect(() => {
-    const onScroll = () => {
-      const el = document.scrollingElement || document.documentElement;
-      const max = el.scrollHeight - el.clientHeight;
-      const next = max > 0 ? Math.min(100, (el.scrollTop / max) * 100) : 0;
-      if (Math.abs(next - pctRef.current) > 0.4) {
-        pctRef.current = next;
-        setPct(next);
-      }
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsIn(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Keep --header-h in sync with the shared navbar's real height (the
+  // progress bar sits just below it, matching the reference's fixed nav
+  // offset).
   useEffect(() => {
     const header = document.querySelector("header");
     if (!header) return;
@@ -77,63 +105,196 @@ export function ArticlePage({
     return () => ro.disconnect();
   }, []);
 
+  // Reading progress + gentle cover parallax — reference's un-gated
+  // rAF loop, but paused while the prose column is off-screen.
+  useEffect(() => {
+    const prose = proseRef.current;
+    if (!prose) return;
+    const reduce = readReducedMotion();
+    let onScreen = true;
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => (onScreen = e.isIntersecting)), {
+      rootMargin: "600px",
+    });
+    io.observe(prose);
+
+    let rafId: number;
+    const loop = () => {
+      if (onScreen) {
+        const r = prose.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
+        setProgress(p);
+        if (!reduce && coverImgWrapRef.current) {
+          coverImgWrapRef.current.style.setProperty("--cs", String(1 + Math.min(window.scrollY, 800) / 8000));
+        }
+      }
+      rafId = requestAnimationFrame(loop);
+    };
+    loop();
+    return () => {
+      cancelAnimationFrame(rafId);
+      io.disconnect();
+    };
+  }, []);
+
+  // Give each top-level prose block the reference's `.reveal` stagger-in
+  // treatment, then observe them to rise in as they scroll into view.
+  useEffect(() => {
+    const prose = proseRef.current;
+    if (!prose) return;
+    const blocks = [...prose.children] as HTMLElement[];
+    blocks.forEach((el) => el.classList.add(styles.reveal));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, k) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            setTimeout(() => el.classList.add(styles.isIn), k * 80);
+            io.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    blocks.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [article.bodyHtml]);
+
+  // Related cards rise in as they scroll into view.
+  useEffect(() => {
+    const container = relatedRef.current;
+    if (!container) return;
+    const cards = [...container.querySelectorAll<HTMLElement>("[data-slug]")];
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, k) => {
+          if (entry.isIntersecting) {
+            const slug = (entry.target as HTMLElement).dataset.slug;
+            if (!slug) return;
+            setTimeout(() => setRevealedRelated((prev) => new Set(prev).add(slug)), k * 80);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    cards.forEach((c) => io.observe(c));
+    return () => io.disconnect();
+  }, [related]);
+
+  // Table of contents follows the section being read.
+  useEffect(() => {
+    if (article.sections.length === 0) return;
+    const spy = () => {
+      let cur: string | null = null;
+      for (const s of article.sections) {
+        const el = document.getElementById(s.id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.35) cur = s.id;
+      }
+      setActiveTocId(cur);
+    };
+    window.addEventListener("scroll", spy, { passive: true });
+    spy();
+    return () => window.removeEventListener("scroll", spy);
+  }, [article.sections]);
+
+  const onCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      // ignore — clipboard may be unavailable
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1400);
+  };
+
   return (
-    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <div style={{ height: 3, background: "rgba(20,24,26,.08)", position: "sticky", top: "var(--header-h, 73px)", zIndex: 49 }}>
-        <div style={{ height: "100%", background: "#2F6B5F", width: `${pct}%` }} />
+    <main className={`${styles.art} ${isIn ? styles.isIn : ""}`} data-article-page>
+      <div className={styles.progress}>
+        <div className={styles.progressBar} style={{ transform: `scaleX(${progress})` }} />
       </div>
 
-      <article style={{ maxWidth: 1240, margin: "0 auto", padding: "72px 32px 0" }}>
-        <Link href="/insights" style={{ ...mono, fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", color: "#586060" }}>← All insights</Link>
-        <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 28, ...mono, fontSize: 11.5, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>
-          {article.kicker}<span style={{ color: "#5E6664" }}>· {article.readTimeMinutes} min read</span>
-        </div>
-        <h1 className="av-rise" style={{ fontSize: "clamp(34px, 4.8vw, 66px)", lineHeight: 1.03, letterSpacing: "-.035em", fontWeight: 500, margin: "18px 0 0", maxWidth: "24ch", textWrap: "balance" }}>
-          {article.title}
+      <header className={styles.hero}>
+        <Link href="/insights" className={`${styles.back} ${styles.fade}`}>
+          <svg viewBox="0 0 16 16">
+            <path d="M13 8H3M7 4L3 8l4 4" />
+          </svg>
+          All insights
+        </Link>
+        <p className={`${styles.meta} ${styles.fade}`} style={{ ["--d" as string]: ".1s" }}>
+          <span className={styles.mDark}>{article.kicker}</span>
+          <span>{article.readTimeMinutes} min read</span>
+          <span>{article.date}</span>
+        </p>
+        <h1 className={styles.title}>
+          <span className={styles.ln}>
+            <span>{article.title}</span>
+          </span>
         </h1>
-        <p style={{ fontSize: "clamp(17px,1.5vw,21px)", lineHeight: 1.55, color: "#4E5654", maxWidth: "58ch", margin: "22px 0 0", textWrap: "pretty" }}>
+        <p className={`${styles.dek} ${styles.fade}`} style={{ ["--d" as string]: ".4s" }}>
           {article.dek}
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 18, alignItems: "center", marginTop: 32, paddingBottom: 32, borderBottom: "1px solid rgba(20,24,26,.12)", fontSize: 13.5, color: "#6E7674" }}>
-          <span style={{ width: 34, height: 34, borderRadius: "50%", background: "#DCE3DC", display: "block" }} />
-          <span style={{ color: "#14181A", fontWeight: 500 }}>{article.bylineName}</span>
-          <span>{article.date}</span>
-        </div>
+      </header>
 
-        <div style={{ position: "relative", marginTop: 40, borderRadius: 18, border: "1px solid rgba(20,24,26,.12)", minHeight: 360, overflow: "hidden", display: "flex", alignItems: "flex-end", padding: 18 }}>
-          <Image
-            src={article.heroImageUrl}
-            alt={article.heroImageAlt}
-            fill
-            sizes="(max-width: 1240px) 100vw, 1176px"
-            priority
-            style={{ objectFit: "cover" }}
-          />
-          {article.heroImageTagChipText && (
-            <span style={{ position: "relative", ...mono, fontSize: 11, color: "#586060", background: "rgba(248,248,245,.88)", padding: "6px 12px", borderRadius: 999 }}>{article.heroImageTagChipText}</span>
+      <div className={styles.cover} ref={coverImgWrapRef}>
+        <Image src={article.heroImageUrl} alt={article.heroImageAlt} fill sizes="(max-width: 900px) 100vw, 1176px" priority style={{ objectFit: "cover" }} />
+        {article.heroImageTagChipText && <span className={styles.coverTag}>{article.heroImageTagChipText}</span>}
+      </div>
+
+      <div className={styles.body}>
+        <aside className={styles.toc}>
+          {article.sections.length > 0 && (
+            <>
+              <p>On this page</p>
+              <ol>
+                {article.sections.map((s) => (
+                  <li key={s.id}>
+                    <a href={`#${s.id}`} className={activeTocId === s.id ? styles.isOn : ""}>
+                      {s.heading}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </>
           )}
-        </div>
+          <div className={styles.share}>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on LinkedIn"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z" />
+              </svg>
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Share on X"
+            >
+              <svg viewBox="0 0 24 24">
+                <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z" />
+              </svg>
+            </a>
+            <button type="button" onClick={onCopyLink} className={copied ? styles.copied : ""} aria-label="Copy link">
+              <svg viewBox="0 0 24 24">
+                <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
+              </svg>
+            </button>
+          </div>
+        </aside>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 56, marginTop: 56, alignItems: "flex-start" }}>
-          <aside className="av-article-toc" style={{ flex: "1 1 200px", minWidth: 0, position: "sticky", top: 120 }}>
-            <div style={{ ...mono, fontSize: 10.5, letterSpacing: ".12em", textTransform: "uppercase", color: "#5E6664" }}>In this piece</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 14, fontSize: 14 }}>
-              {article.sections.map((s) => (
-                <a key={s.id} href={`#${s.id}`} style={{ color: "#4E5654" }}>{s.heading}</a>
-              ))}
-            </div>
-          </aside>
+        <div className={styles.prose} ref={proseRef} dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+      </div>
 
-          <div
-            className="prose"
-            style={{ flex: "3 1 560px", minWidth: 0, maxWidth: "68ch" }}
-            dangerouslySetInnerHTML={{ __html: article.bodyHtml }}
-          />
-        </div>
-
-        {article.sources.length > 0 && (
-          <div style={{ marginTop: 56, paddingTop: 24, borderTop: "1px solid rgba(20,24,26,.12)" }}>
-            <div style={{ ...mono, fontSize: 10.5, letterSpacing: ".12em", textTransform: "uppercase", color: "#5E6664" }}>Sources</div>
+      {article.sources.length > 0 && (
+        <div className={styles.body} style={{ paddingTop: 0, gridTemplateColumns: "17rem minmax(0, 44rem) 1fr" }}>
+          <div />
+          <div>
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", textTransform: "uppercase", color: "#8a8683" }}>Sources</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14, fontSize: 14 }}>
               {article.sources.map((s) => (
                 <a key={s.sourceUrl} href={s.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#4E5654" }}>
@@ -142,31 +303,50 @@ export function ArticlePage({
               ))}
             </div>
           </div>
-        )}
-      </article>
+        </div>
+      )}
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-        <div style={{ borderRadius: 20, background: "#14181A", color: "#EDF0EC", padding: "clamp(32px,4.4vw,56px)" }}>
-          <h2 style={{ fontSize: "clamp(26px,3vw,40px)", lineHeight: 1.06, letterSpacing: "-.03em", fontWeight: 500, margin: 0, maxWidth: "24ch" }}>Want this framework applied to your practice?</h2>
-          <p style={{ fontSize: 16, lineHeight: 1.6, color: "#B2BAB7", margin: "14px 0 0", maxWidth: "50ch" }}>We&apos;ll walk your stack with you and come back with a keep / connect / build map. Thirty minutes, no deck.</p>
-          <Link href="/contact" className="av-contact-btn" style={{ display: "inline-block", fontSize: 15.5, fontWeight: 500, padding: "15px 30px", borderRadius: 999, background: "#F1F1ED", color: "#14181A", marginTop: 28 }}>Talk to Avishkar</Link>
+      {/*
+        Existing "Want this framework applied..." CTA — not in the
+        reference, kept per the task instruction and styled with the
+        page's own patterns.
+      */}
+      <section className={styles.cta}>
+        <div className={styles.ctaInner}>
+          <h2>Want this framework applied to your practice?</h2>
+          <p>We&apos;ll walk your stack with you and come back with a keep / connect / build map. Thirty minutes, no deck.</p>
+          <Link href="/contact" className={styles.ctaBtn}>
+            Talk to Avishkar
+          </Link>
         </div>
       </section>
 
       {related.length > 0 && (
-        <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-          <div style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>Keep reading</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 24, marginTop: 28 }}>
+        <section className={styles.related}>
+          <div className={styles.relatedHead}>
+            <h2>Keep reading</h2>
+            <Link href="/insights">All insights →</Link>
+          </div>
+          <div className={styles.cards} ref={relatedRef}>
             {related.map((r) => (
-              <Link href={`/insights/${r.slug}`} key={r.slug} style={{ flex: "1 1 300px", minWidth: 0, display: "block", borderTop: "1px solid rgba(20,24,26,.14)", paddingTop: 20 }}>
-                <div style={{ display: "flex", gap: 10, ...mono, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>{r.cat}<span style={{ color: "#5E6664" }}>· {r.read}</span></div>
-                <div style={{ fontSize: 19, fontWeight: 500, lineHeight: 1.3, marginTop: 10, letterSpacing: "-.018em" }}>{r.title}</div>
-                <div style={{ fontSize: 12.5, color: "#5E6664", marginTop: 10 }}>{r.date}</div>
+              <Link
+                href={`/insights/${r.slug}`}
+                key={r.slug}
+                data-slug={r.slug}
+                className={`${styles.icard} ${revealedRelated.has(r.slug) ? styles.isIn : ""}`}
+              >
+                <div className={styles.meta}>
+                  <span>{r.cat}</span>
+                  <span>{r.read}</span>
+                </div>
+                <h3>
+                  <span>{r.title}</span>
+                </h3>
               </Link>
             ))}
           </div>
         </section>
       )}
-    </div>
+    </main>
   );
 }

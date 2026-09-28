@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Schibsted_Grotesk, DM_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Caveat } from "next/font/google";
 import "./globals.css";
-import { AvHeader } from "@/components/av/AvHeader";
-import { AvFooter } from "@/components/av/AvFooter";
+import { AvNavbar } from "@/components/av/AvNavbar";
+import { AvPageShell } from "@/components/av/AvPageShell";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { organizationSchema } from "@/lib/schema";
 import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
 import { SITE_URL } from "@/lib/site";
+import { listPublishedInsights } from "@/lib/db";
 
 /**
  * Suppresses React 19 hydration-mismatch warnings caused by external tools
@@ -96,17 +97,36 @@ const SUPPRESS_HYDRATION_NOISE = `
 })();
 `;
 
-const sans = Schibsted_Grotesk({
+/**
+ * Site-wide type: Inter Tight (text) + JetBrains Mono (labels/metadata),
+ * standing in for the licensed Haffer Xh / Haffer Mono until those font
+ * files are available (see /public/fonts). Swapping them in later means
+ * changing only this block — every consumer reads the --font-sans /
+ * --font-mono variables, never a font name directly.
+ */
+const sans = Inter_Tight({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const mono = DM_Mono({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+/**
+ * Handwritten-note accent used across the new homepage (reference:
+ * `font-family: "Caveat", "Segoe Print", cursive`). Only touched by
+ * elements that opt into `var(--font-script)` explicitly.
+ */
+const script = Caveat({
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -152,16 +172,27 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F1F1ED",
+  // Mirrors --color-bg (app/globals.css); the browser chrome color can't
+  // read a CSS variable, so it's kept in sync here by hand.
+  themeColor: "#f4f4f4",
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const latestInsights = (await listPublishedInsights({ limit: 5 })).map((insight) => ({
+    slug: insight.slug,
+    title: insight.title,
+  }));
+
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${sans.variable} ${mono.variable} ${script.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
         {/* Without JS the reveal animation never runs, so force its end state. */}
@@ -171,10 +202,18 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
         <JsonLd data={organizationSchema} />
-        <div className="relative z-10" style={{ maxWidth: "100%", overflowX: "hidden" }}>
-          <AvHeader />
-          <main>{children}</main>
-          <AvFooter />
+        {/*
+          `overflow-x: clip` (not `hidden`) — `hidden` on one axis forces
+          the other axis to `auto`, which turns this div into a new
+          scroll container and breaks `position: sticky` for every
+          descendant that sticks against the viewport (the how-we-work
+          step stack, the contact/about sticky sidebars, the insights
+          filter bar, the article TOC). `clip` still prevents horizontal
+          overflow without creating that scroll context.
+        */}
+        <div className="relative z-10" style={{ maxWidth: "100%", overflowX: "clip" }}>
+          <AvNavbar latestInsights={latestInsights} />
+          <AvPageShell>{children}</AvPageShell>
         </div>
         <CookieConsentLoader />
       </body>

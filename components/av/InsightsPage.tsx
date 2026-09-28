@@ -1,9 +1,21 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
+import styles from "./InsightsPage.module.css";
+
+/**
+ * Insights index — ported 1:1 from reference/avishkar-insights.html
+ * (`.ins-hero`, `.filters`/`.ftabs`/`.search`, `.feat`, `.cards`/`.icard`).
+ *
+ * The reference's `.ph` colored placeholder swatches stand in for a real
+ * cover image; every article here has a real `heroImageUrl`, so `next/image`
+ * renders the real cover in their place. The reference's static article
+ * counter/6-card placeholder grid is replaced by this page's existing
+ * live filter/search logic, now driving the reference's animation.
+ */
 
 export type Post = {
   slug: string;
@@ -22,15 +34,12 @@ export type FeaturedPost = Post & {
 
 const CATS = ["All", "Operations", "Patient experience", "Growth", "AI in aesthetics", "Technology", "Wellness"];
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+function readReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
 
-export function InsightsPage({
-  posts,
-  featured,
-}: {
-  posts: Post[];
-  featured: FeaturedPost | null;
-}) {
+export function InsightsPage({ posts, featured }: { posts: Post[]; featured: FeaturedPost | null }) {
+  const [isIn, setIsIn] = useState(false);
   const [cat, setCat] = useState("All");
   const [query, setQuery] = useState("");
   const [email, setEmail] = useState("");
@@ -38,13 +47,85 @@ export function InsightsPage({
   const [subscribeError, setSubscribeError] = useState("");
   const [subscribePending, setSubscribePending] = useState(false);
 
+  useEffect(() => {
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsIn(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
+
   const q = query.trim().toLowerCase();
-  const filtered = posts.filter(
-    (p) =>
-      (cat === "All" || p.cat === cat) &&
-      (!q || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(q))
+  const filtered = useMemo(
+    () =>
+      posts.filter(
+        (p) => (cat === "All" || p.cat === cat) && (!q || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(q)),
+      ),
+    [posts, cat, q],
   );
   const showFeature = cat === "All" && !q && !!featured;
+  const totalCount = posts.length + (featured ? 1 : 0);
+
+  // Grid cards rise in as they scroll into view (reference: threshold .15,
+  // staggered by 90ms). Runs once per card.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const hasVisibleCards = filtered.length > 0;
+  useEffect(() => {
+    const container = gridRef.current;
+    if (!container) return;
+    const cards = [...container.querySelectorAll<HTMLElement>("[data-slug]")];
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, k) => {
+          if (entry.isIntersecting) {
+            const slug = (entry.target as HTMLElement).dataset.slug;
+            if (!slug) return;
+            setTimeout(() => setRevealed((prev) => new Set(prev).add(slug)), k * 90);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    cards.forEach((c) => io.observe(c));
+    return () => io.disconnect();
+  }, [hasVisibleCards]);
+
+  // Filter/search change: fade the leaving cards out, then swap the set.
+  const [leavingSlugs, setLeavingSlugs] = useState<Set<string>>(new Set());
+  const applyFilter = (nextCat: string, nextQuery: string) => {
+    const reduce = readReducedMotion();
+    if (reduce) {
+      setCat(nextCat);
+      setQuery(nextQuery);
+      return;
+    }
+    const nq = nextQuery.trim().toLowerCase();
+    const leaving = new Set(
+      posts
+        .filter((p) => !((nextCat === "All" || p.cat === nextCat) && (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq))))
+        .map((p) => p.slug),
+    );
+    setLeavingSlugs(leaving);
+    setTimeout(() => {
+      setCat(nextCat);
+      setQuery(nextQuery);
+      setLeavingSlugs(new Set());
+    }, 280);
+  };
+
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const onSearchChange = (value: string) => {
+    setQuery(value);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => applyFilter(cat, value), 180);
+  };
+
+  useEffect(() => () => clearTimeout(searchTimer.current), []);
 
   const onSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,138 +146,141 @@ export function InsightsPage({
   };
 
   return (
-    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-        <div className="av-rise" style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>Insights</div>
-        <h1 className="av-rise" style={{ fontSize: "clamp(38px, 5.6vw, 76px)", lineHeight: 1, letterSpacing: "-.036em", fontWeight: 500, margin: "20px 0 0", maxWidth: "20ch", textWrap: "balance" }}>
-          Insights for the modern practice.
+    <main className={`${styles.ins} ${isIn ? styles.isIn : ""}`} data-insights-page>
+      <div className={styles.guide} aria-hidden="true" />
+
+      <section className={styles.hero}>
+        <p className={`${styles.eyebrow} ${styles.fade}`}>
+          <span>Insights</span>
+          <span>{totalCount} articles</span>
+        </p>
+        <h1 className={styles.title}>
+          {["Insights for the", "modern practice."].map((line, i) => (
+            <span className={styles.ln} key={i}>
+              <span>{line}</span>
+            </span>
+          ))}
         </h1>
-        <p style={{ fontSize: "clamp(16.5px,1.4vw,19px)", lineHeight: 1.6, color: "#4E5654", maxWidth: "58ch", margin: "22px 0 0", textWrap: "pretty" }}>
-          Field notes on aesthetics, medspa operations, wellness, and the technology underneath — written by the people building it, for the people running the practice.
+        <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
+          Field notes on aesthetics, medspa operations, wellness, and the technology underneath, written by the
+          people building it, for the people running the practice.
+        </p>
+        <p className={`${styles.note} ${styles.script}`} aria-hidden="true">
+          <span>
+            Fresh from
+            <br />
+            the field!
+          </span>
         </p>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "44px 32px 0" }}>
-        <div className="av-insights-filter-bar" style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,26,.12)", paddingBottom: 18 }}>
-          <div className="av-cat-pills" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {CATS.map((name) => {
-              const active = name === cat;
-              return (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => setCat(name)}
-                  className="av-cat-pill"
-                  style={{
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                    fontSize: 13.5,
-                    padding: "8px 15px",
-                    borderRadius: 999,
-                    transition: "all .3s ease",
-                    background: active ? "#14181A" : "transparent",
-                    color: active ? "#F1F1ED" : "#4E5654",
-                    border: active ? "1px solid #14181A" : "1px solid rgba(20,24,26,.18)",
-                  }}
-                >
-                  {name}
-                </button>
-              );
-            })}
-          </div>
-          <div className="av-search-box" style={{ display: "flex", alignItems: "center", gap: 10, border: "1px solid rgba(20,24,26,.16)", borderRadius: 999, padding: "9px 16px", background: "#F8F8F5", minWidth: 220 }}>
-            <span style={{ ...mono, fontSize: 12, color: "#5E6664" }}>⌕</span>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search insights"
-              style={{ flex: 1, minWidth: 0, border: "none", outline: "none", background: "transparent", fontFamily: "inherit", fontSize: 14, color: "#14181A" }}
-            />
-          </div>
+      <div className={`${styles.filters} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }}>
+        <div className={styles.ftabs} role="tablist" aria-label="Filter by topic">
+          {CATS.map((name) => (
+            <button
+              type="button"
+              key={name}
+              className={cat === name ? styles.isActive : ""}
+              aria-pressed={cat === name}
+              onClick={() => applyFilter(name, query)}
+            >
+              {name}
+            </button>
+          ))}
         </div>
-      </section>
+        <label className={styles.search}>
+          <span className={styles.srOnly}>Search insights</span>
+          <svg viewBox="0 0 16 16">
+            <circle cx="7" cy="7" r="5" />
+            <path d="M11 11l3.5 3.5" />
+          </svg>
+          <input
+            type="search"
+            placeholder="Search insights"
+            value={query}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+        </label>
+      </div>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "40px 32px 0" }}>
+      <div className={styles.body}>
         {showFeature && featured && (
-          <Link
-            href={`/insights/${featured.slug}`}
-            style={{ display: "flex", flexWrap: "wrap", gap: 36, alignItems: "stretch", border: "1px solid rgba(20,24,26,.12)", borderRadius: 20, background: "#FDFDFB", padding: 22, boxShadow: "0 40px 80px -66px rgba(20,24,26,.55)" }}
-          >
-            <div style={{ position: "relative", flex: "1.15 1 360px", minWidth: 0, borderRadius: 14, border: "1px solid rgba(20,24,26,.1)", minHeight: 300, overflow: "hidden", display: "flex", alignItems: "flex-end", padding: 16 }}>
-              <Image
-                src={featured.img}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 500px"
-                style={{ objectFit: "cover" }}
-              />
-              <span style={{ position: "relative", ...mono, fontSize: 10.5, color: "#586060", background: "rgba(248,248,245,.88)", padding: "5px 10px", borderRadius: 999 }}>{featured.art}</span>
+          <Link href={`/insights/${featured.slug}`} className={`${styles.feat} ${styles.fade}`} style={{ ["--d" as string]: ".6s" }}>
+            <div className={styles.featImg}>
+              <Image src={featured.img} alt="" fill sizes="(max-width: 900px) 100vw, 560px" style={{ objectFit: "cover" }} />
             </div>
-            <div style={{ flex: "1 1 340px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "10px 10px 10px 0" }}>
-              <div style={{ display: "flex", gap: 12, alignItems: "center", ...mono, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>
-                Featured<span style={{ color: "#5E6664" }}>· {featured.cat} · {featured.read}</span>
+            <div className={styles.featBody}>
+              <div className={styles.meta}>
+                <span className={styles.mLime}>Featured</span>
+                <span className={styles.mDark}>{featured.cat}</span>
+                <span className={styles.mDark}>{featured.read}</span>
               </div>
-              <h2 style={{ fontSize: "clamp(26px,3.2vw,42px)", lineHeight: 1.08, letterSpacing: "-.03em", fontWeight: 500, margin: "16px 0 0", maxWidth: "22ch" }}>{featured.title}</h2>
-              <p style={{ fontSize: 16, lineHeight: 1.6, color: "#4E5654", margin: "16px 0 0", maxWidth: "48ch", textWrap: "pretty" }}>
-                {featured.dek}
-              </p>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 24, fontSize: 13, color: "#6E7674" }}>
-                <span style={{ width: 30, height: 30, borderRadius: "50%", background: "#DCE3DC" }} />
-                {featured.bylineName} · {featured.date}
-              </div>
+              <h2>{featured.title}</h2>
+              <p>{featured.dek}</p>
+              <span className={styles.read}>
+                Read the article
+                <svg viewBox="0 0 16 16">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </span>
             </div>
           </Link>
         )}
-      </section>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 32px 0" }}>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
-          <div style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>
+        <div className={styles.gridHead}>
+          <h2>Latest insights</h2>
+          <span>
             {filtered.length} {filtered.length === 1 ? "article" : "articles"}
-          </div>
-          <div style={{ ...mono, fontSize: 12, color: "#5E6664" }}>Newest first</div>
+          </span>
         </div>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 24, marginTop: 28 }}>
-          {filtered.map((p) => (
-            <Link href={`/insights/${p.slug}`} key={p.slug} style={{ flex: "1 1 330px", maxWidth: "100%", minWidth: 0, display: "block", borderTop: "1px solid rgba(20,24,26,.14)", paddingTop: 20 }}>
-              <div style={{ position: "relative", height: 178, borderRadius: 14, border: "1px solid rgba(20,24,26,.12)", overflow: "hidden", display: "flex", alignItems: "flex-end", padding: 14 }}>
-                <Image
-                  src={p.img}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 100vw, 380px"
-                  style={{ objectFit: "cover" }}
-                />
-                <span style={{ position: "relative", ...mono, fontSize: 10.5, color: "#586060", background: "rgba(248,248,245,.85)", padding: "4px 9px", borderRadius: 999 }}>{p.art}</span>
-              </div>
-              <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 16, ...mono, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "#2F6B5F" }}>
-                {p.cat}<span style={{ color: "#5E6664" }}>· {p.read}</span>
-              </div>
-              <div style={{ fontSize: 20, fontWeight: 500, lineHeight: 1.3, marginTop: 10, letterSpacing: "-.018em" }}>{p.title}</div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: "#4E5654", margin: "8px 0 0" }}>{p.dek}</p>
-              <div style={{ fontSize: 12.5, color: "#5E6664", marginTop: 12 }}>{p.date}</div>
-            </Link>
-          ))}
+        <div className={styles.cards} ref={gridRef}>
+          {posts.map((p) => {
+            const nq = query.trim().toLowerCase();
+            const matches = (cat === "All" || p.cat === cat) && (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq));
+            const isLeaving = leavingSlugs.has(p.slug);
+            if (!matches && !isLeaving) return null;
+            return (
+              <Link
+                href={`/insights/${p.slug}`}
+                key={p.slug}
+                data-slug={p.slug}
+                className={`${styles.icard} ${revealed.has(p.slug) ? styles.isIn : ""} ${isLeaving ? styles.isOut : ""}`}
+              >
+                <div className={styles.cardImg}>
+                  <Image src={p.img} alt="" fill sizes="(max-width: 900px) 100vw, 380px" style={{ objectFit: "cover" }} />
+                  <span className={styles.cardArrow}>
+                    <svg viewBox="0 0 16 16">
+                      <path d="M3 8h10M9 4l4 4-4 4" />
+                    </svg>
+                  </span>
+                </div>
+                <div className={styles.meta}>
+                  <span>{p.cat}</span>
+                  <span>{p.read}</span>
+                </div>
+                <h3>
+                  <span>{p.title}</span>
+                </h3>
+                <p>{p.dek}</p>
+              </Link>
+            );
+          })}
         </div>
 
-        {filtered.length === 0 && (
-          <div style={{ border: "1px dashed rgba(20,24,26,.22)", borderRadius: 14, padding: 40, textAlign: "center", color: "#6E7674", fontSize: 15 }}>
-            Nothing matches that yet. Try another category or search term.
-          </div>
-        )}
-      </section>
+        <div className={`${styles.empty} ${filtered.length === 0 ? styles.show : ""}`}>
+          <p>Nothing here yet.</p>
+          <p>Try another topic or a different search.</p>
+        </div>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "96px 32px 0" }}>
-        <div style={{ borderRadius: 20, background: "#14181A", color: "#EDF0EC", padding: "clamp(32px,4.4vw,56px)", display: "flex", flexWrap: "wrap", gap: 40, alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ fontSize: "clamp(26px,3vw,40px)", lineHeight: 1.06, letterSpacing: "-.03em", fontWeight: 500, margin: 0, maxWidth: "22ch" }}>One considered note a month. Nothing else.</h2>
-            <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "#B2BAB7", margin: "14px 0 0", maxWidth: "46ch" }}>Operations, technology, and what we&apos;re learning building for aesthetic practices.</p>
+        <div className={styles.subscribe}>
+          <div>
+            <h2>One considered note a month. Nothing else.</h2>
+            <p>Operations, technology, and what we&apos;re learning building for aesthetic practices.</p>
           </div>
           {!subscribed ? (
-            <div style={{ flex: "1 1 340px", minWidth: 0 }}>
-              <form onSubmit={onSubscribe} style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            <div className={styles.subForm}>
+              <form onSubmit={onSubscribe}>
                 <input
                   type="email"
                   required
@@ -206,29 +290,18 @@ export function InsightsPage({
                     if (subscribeError) setSubscribeError("");
                   }}
                   placeholder="you@yourpractice.com"
-                  className="av-subscribe-input"
-                  style={{ flex: "1 1 200px", minWidth: 0, fontFamily: "inherit", fontSize: 15, padding: "14px 18px", borderRadius: 999, border: "1px solid rgba(255,255,255,.22)", background: "rgba(255,255,255,.05)", color: "#F1F1ED", outline: "none" }}
                 />
-                <button
-                  type="submit"
-                  disabled={subscribePending}
-                  className="av-join-btn"
-                  style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "none", background: "#2F6B5F", color: "#F8F8F5", cursor: subscribePending ? "default" : "pointer", opacity: subscribePending ? 0.7 : 1 }}
-                >
+                <button type="submit" disabled={subscribePending}>
                   {subscribePending ? "Sending…" : "Subscribe"}
                 </button>
               </form>
-              {subscribeError && (
-                <div style={{ ...mono, fontSize: 11.5, color: "#E5A0A0", marginTop: 10 }}>{subscribeError}</div>
-              )}
+              {subscribeError && <div className={styles.subError}>{subscribeError}</div>}
             </div>
           ) : (
-            <div style={{ flex: "1 1 300px", border: "1px solid rgba(111,163,148,.35)", background: "rgba(47,107,95,.14)", borderRadius: 14, padding: "18px 20px", fontSize: 16 }}>
-              Subscribed. Next issue goes out at the start of the month.
-            </div>
+            <div className={styles.subDone}>Subscribed. Next issue goes out at the start of the month.</div>
           )}
         </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 }

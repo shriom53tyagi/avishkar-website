@@ -74,7 +74,7 @@ export function WhatWeDo({ showHeading = true }: { showHeading?: boolean }) {
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-5 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{c.title}</h3>
+                  <h3 className="mt-5 text-h3 h-section text-ink">{c.title}</h3>
                   <p className="mt-2 flex-1 text-small leading-relaxed text-ink-muted">
                     {c.description}
                   </p>

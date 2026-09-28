@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avishkar — Navbar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #f4f4f4;
+    --nav: #201d1d;          /* bar + open panel */
+    --card: #2a2727;         /* inner cards */
+    --line: #3a3636;         /* dividers */
+    --pill: #3d3a3a;         /* Login pill + social circles */
+    --pill-hover: #4a4646;
+    --text: #efeeec;
+    --muted: rgba(239,238,236,.55);
+    --lime: #a1ff62;         /* Join */
+    --lime-text: #131313;
+    --purple: #6840ff;       /* NEW badge / label */
+    --ease: cubic-bezier(.65,.05,0,1);
+    --font: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --closed-w: 50rem;
+    --gutter: 1.5rem;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: var(--font); color: #131313; min-height: 200vh; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ================= Shell: the part that GROWS ================= */
+  .nav { position: fixed; top: 1.5rem; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; pointer-events: none; }
+  .nav__box {
+    pointer-events: auto;
+    width: min(var(--closed-w), calc(100vw - 2rem));
+    background: var(--nav); color: var(--text);
+    border-radius: .375rem;
+    /* CLOSE sequence: height collapses first, then width shrinks */
+    transition: width .6s var(--ease) .3s, border-radius .6s var(--ease) .3s;
+  }
+  .nav.is-open .nav__box {
+    width: calc(100vw - 2 * var(--gutter));
+    border-radius: .75rem;
+    /* OPEN sequence: width widens first */
+    transition: width .6s var(--ease), border-radius .6s var(--ease);
+  }
+
+  /* ================= Top bar ================= */
+  .bar {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    height: 4.5rem; padding: 0 .5rem 0 1.25rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color .4s var(--ease);
+  }
+  .nav.is-open .bar { border-color: var(--line); transition-delay: .3s; }
+
+  .toggle { justify-self: start; display: inline-flex; align-items: center; gap: .875rem; height: 2.75rem; font-size: 1.375rem; font-weight: 500; letter-spacing: -.02em; }
+  .burger { position: relative; width: 1.75rem; height: .625rem; }
+  .burger i { position: absolute; left: 0; width: 100%; height: 1.5px; background: currentColor;
+    transition: transform .6s var(--ease), top .6s var(--ease), width .6s var(--ease); }
+  .burger i:first-child { top: 0; }
+  .burger i:last-child  { top: calc(100% - 1.5px); }
+  .nav.is-open .burger i { top: calc(50% - .75px); width: 1.125rem; }
+  .nav.is-open .burger i:first-child { transform: rotate(45deg); }
+  .nav.is-open .burger i:last-child  { transform: rotate(-45deg); }
+
+  .logo { justify-self: center; font-size: 2rem; font-weight: 700; letter-spacing: -.05em; line-height: 1; }
+
+  .actions { justify-self: end; display: flex; align-items: center; gap: .125rem; }
+  .btn { display: inline-flex; align-items: center; height: 3.5rem; padding: 0 1.5rem; font-size: 1.375rem; font-weight: 500; letter-spacing: -.02em;
+    transition: background-color .5s var(--ease), border-radius .5s var(--ease); }
+  .btn--login { background: var(--pill); border-radius: 2rem; }
+  .btn--login:hover { background: var(--pill-hover); }
+  .btn--join { background: var(--lime); color: var(--lime-text); border-radius: .25rem; }
+  .btn--join:hover { border-radius: 2rem; }
+
+  /* text-roll hover */
+  .roll { display: inline-flex; overflow: hidden; height: 1.2em; line-height: 1.2; }
+  .roll__in { display: flex; flex-direction: column; transition: transform .6s var(--ease); }
+  .roll__in > span { height: 1.2em; }
+  a:hover .roll__in, button:hover .roll__in { transform: translateY(-50%); }
+
+  /* ================= Panel: height grows ================= */
+  .panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .6s var(--ease); }
+  .nav.is-open .panel { grid-template-rows: 1fr; transition: grid-template-rows .7s var(--ease) .2s; }
+  .panel__clip { overflow: hidden; min-height: 0; }
+  .panel__grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; padding: 2rem; }
+
+  /* staggered content reveal */
+  .reveal { opacity: 0; transform: translateY(1.5rem); transition: opacity .3s var(--ease), transform .5s var(--ease); }
+  .nav.is-open .reveal { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .8s var(--ease); transition-delay: calc(.4s + var(--i, 0) * .05s); }
+
+  .card { background: var(--card); border-radius: 1.25rem; padding: 3.25rem 3.25rem 2.5rem; display: flex; flex-direction: column; min-height: 36rem; }
+  .col  { padding: 3.25rem 3.25rem 2.5rem 3.25rem; display: flex; flex-direction: column; }
+  .label { font-family: var(--mono); font-size: .875rem; text-transform: uppercase; letter-spacing: .02em; color: var(--muted); margin-bottom: 2.25rem; }
+
+  .links { list-style: none; }
+  .links li { border-bottom: 1px solid var(--line); }
+  .links li:last-child { border-bottom: 0; }
+  .links a { display: flex; align-items: center; gap: .875rem; padding: 1.1rem 0; font-size: 2rem; font-weight: 500; letter-spacing: -.03em; }
+  .badge { font-family: var(--mono); font-size: .8125rem; background: var(--purple); color: #fff; padding: .15rem .45rem; border-radius: .125rem; letter-spacing: 0; }
+  .count { font-size: .9rem; color: var(--muted); align-self: flex-start; margin-top: .35rem; margin-left: -.5rem; }
+
+  .sublinks { margin-top: auto; display: flex; gap: 3.25rem; font-size: 1.375rem; font-weight: 500; }
+  .sublinks a { display: inline-flex; align-items: center; gap: .6rem; transition: color .3s; }
+  .sublinks a.dim { color: var(--muted); }
+  .sublinks a:hover { color: var(--text); }
+  .sublinks .badge { background: var(--pill); font-size: .6875rem; }
+
+  .socials { margin-top: auto; display: flex; gap: .25rem; }
+  .socials a { display: grid; place-items: center; width: 3.25rem; height: 3.25rem; background: var(--pill); border-radius: 50%;
+    transition: border-radius .5s var(--ease), background-color .5s var(--ease); }
+  .socials a:hover { border-radius: .25rem; background: var(--pill-hover); }
+  .socials svg { width: 1.375rem; height: 1.375rem; fill: currentColor; }
+
+  .feature { align-items: center; text-align: center; }
+  .tag { display: inline-flex; font-family: var(--mono); font-size: .9375rem; text-transform: uppercase; margin-bottom: 4rem; }
+  .tag span:first-child { background: #131313; padding: .2rem .5rem; }
+  .tag span:last-child  { background: var(--purple); padding: .2rem .5rem; border-radius: 0 .5rem .5rem 0; }
+  .feature h3 { font-size: 3.5rem; font-weight: 500; letter-spacing: -.045em; line-height: 1.05; }
+  .art { position: relative; width: 20rem; height: 12.5rem; margin: 2rem auto 0; background: #1f1c1c; border-radius: 6.25rem; }
+  .art i { position: absolute; top: 2rem; width: 8.5rem; height: 5.5rem; border-radius: .25rem; }
+  .art i:nth-child(1) { left: 8.8rem; top: 3.2rem; background: #efeeec; height: 6rem; width: 7rem; }
+  .art i:nth-child(2) { left: 7.4rem; top: 2.6rem; background: #d8d2c4; }
+  .art i:nth-child(3) { left: 4rem; background: linear-gradient(135deg, #3b4a2e, #6840ff); }
+  .more { margin-top: -1.75rem; position: relative; background: var(--text); color: #131313; height: 3.25rem; padding: 0 1.5rem; display: inline-flex; align-items: center; font-size: 1.375rem; font-weight: 500; border-radius: .125rem;
+    transition: border-radius .5s var(--ease); }
+  .more:hover { border-radius: 2rem; }
+
+
+
+  /* ================= Insights strip (lime marquee under the bar) ================= */
+  .nav { flex-direction: column; align-items: center; }
+  .strip {
+    pointer-events: auto;
+    width: min(var(--closed-w), calc(100vw - 2rem)); height: 1.625rem; margin-top: .375rem;
+    background: var(--lime); color: var(--lime-text); border-radius: .25rem; overflow: hidden;
+    display: flex; align-items: center;
+    font-family: var(--mono); font-size: .875rem; font-weight: 500; text-transform: uppercase; letter-spacing: .02em;
+    transition: opacity .4s var(--ease) .5s, transform .6s var(--ease) .5s;
+  }
+  .nav.is-open .strip { opacity: 0; transform: translateY(-.5rem); pointer-events: none; transition: opacity .2s var(--ease), transform .3s var(--ease); }
+  .strip__track { display: flex; width: max-content; animation: strip-scroll 40s linear infinite; }
+  .strip:hover .strip__track { animation-play-state: paused; }
+  .strip__group { display: flex; flex-shrink: 0; }
+  .strip__item { display: inline-flex; align-items: center; white-space: nowrap; }
+  .strip__item:hover span { text-decoration: underline; text-underline-offset: 2px; }
+  .strip__star { margin: 0 1.75rem; font-size: 1rem; line-height: 1; }
+  @keyframes strip-scroll { to { transform: translateX(-50%); } }
+  @media (max-width: 767px) { .strip { font-size: .75rem; height: 1.5rem; } }
+  @media (prefers-reduced-motion: reduce) { .strip__track { animation: none; } }
+
+  /* page dim */
+  .scrim { position: fixed; inset: 0; background: rgba(19,19,19,.35); opacity: 0; visibility: hidden; z-index: 99;
+    transition: opacity .6s var(--ease), visibility 0s linear .6s; }
+  .nav.is-open ~ .scrim { opacity: 1; visibility: visible; transition: opacity .6s var(--ease); }
+
+  /* ================= Responsive ================= */
+  @media (max-width: 1200px) {
+    .feature { display: none; }
+    .panel__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 767px) {
+    :root { --gutter: .5rem; }
+    .nav { top: .5rem; }
+    .toggle .roll, .btn--login { display: none; }
+    .bar { height: 3.75rem; padding-left: 1rem; }
+    .logo { font-size: 1.5rem; }
+    .btn { height: 2.75rem; font-size: 1.0625rem; padding: 0 1rem; }
+    .panel__grid { grid-template-columns: 1fr; gap: 0; padding: .5rem; }
+    .card, .col { min-height: 0; padding: 1.75rem 1.5rem; }
+    .links a { font-size: 1.5rem; padding: .85rem 0; }
+    .sublinks { margin-top: 1.5rem; font-size: 1.125rem; }
+    .socials { margin-top: 1.5rem; }
+    .panel__clip { max-height: calc(100dvh - 5rem); overflow-y: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" data-nav>
+  <div class="nav__box">
+    <div class="bar">
+      <button class="toggle" data-nav-toggle aria-expanded="false" aria-controls="nav-panel">
+        <span class="burger" aria-hidden="true"><i></i><i></i></span>
+        <span class="roll"><span class="roll__in"><span>Menu</span><span>Menu</span></span></span>
+        <span class="sr-only">Toggle menu</span>
+      </button>
+
+      <a href="/" class="logo" aria-label="Avishkar home">Avishkar</a>
+
+      <div class="actions">
+        <a href="/login" class="btn btn--login"><span class="roll"><span class="roll__in"><span>Login</span><span>Login</span></span></span></a>
+        <a href="/contact" class="btn btn--join"><span class="roll"><span class="roll__in"><span>Book a demo</span><span>Book a demo</span></span></span></a>
+      </div>
+    </div>
+
+    <div class="panel" id="nav-panel">
+      <div class="panel__clip">
+        <nav class="panel__grid" aria-label="Main">
+
+          <div class="card reveal" style="--i:0">
+            <p class="label">Our products</p>
+            <ul class="links">
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Platform</span><span>Platform</span></span></span></a></li>
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Lead generation</span><span>Lead generation</span></span></span></a></li>
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Intelligence</span><span>Intelligence</span></span></span><span class="badge">NEW</span></a></li>
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Integrations</span><span>Integrations</span></span></span></a></li>
+            </ul>
+            <div class="sublinks">
+              <a href="#">Case studies</a>
+              <a href="#" class="dim">Changelog <span class="badge">NEW</span></a>
+            </div>
+          </div>
+
+          <div class="col reveal" style="--i:1">
+            <p class="label">Explore</p>
+            <ul class="links">
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Insights</span><span>Insights</span></span></span></a></li>
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>About us</span><span>About us</span></span></span></a></li>
+              <li><a href="#"><span class="roll"><span class="roll__in"><span>Contact</span><span>Contact</span></span></span></a></li>
+            </ul>
+            <div class="socials">
+              <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+              <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.95a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.06-3.5.16-5.4 2.06-5.54 5.54C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.16 3.48 2.06 5.38 5.54 5.54 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c3.47-.16 5.39-2.06 5.54-5.54.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.15-3.47-2.06-5.38-5.54-5.54-1-.06-1.3-.06-3.9-.06zm0 1.7c2.55 0 2.85 0 3.85.06 2.6.12 3.8 1.35 3.93 3.93.05 1 .05 1.3.05 3.81s0 2.85-.05 3.85c-.12 2.57-1.33 3.8-3.93 3.93-1 .05-1.3.05-3.85.05s-2.85 0-3.85-.05c-2.6-.12-3.8-1.36-3.93-3.93-.05-1-.06-1.3-.06-3.85s0-2.84.06-3.85C4.34 5.6 5.55 4.37 8.15 4.26c1-.05 1.3-.06 3.85-.06z"/></svg></a>
+              <a href="#" aria-label="X"><svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z"/></svg></a>
+            </div>
+          </div>
+
+          <div class="card feature reveal" style="--i:2">
+            <p class="tag"><span>Latest</span><span>Insight</span></p>
+            <h3>Featured article title</h3>
+            <div class="art" aria-hidden="true"><i></i><i></i><i></i></div>
+            <a href="#" class="more"><span class="roll"><span class="roll__in"><span>Read more</span><span>Read more</span></span></span></a>
+          </div>
+
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div class="strip" aria-label="Latest insights">
+    <div class="strip__track">
+      <div class="strip__group"><a class="strip__item" href="#"><span>New insight: Insight title one</span><span class="strip__star" aria-hidden="true">✱</span></a><a class="strip__item" href="#"><span>New insight: Insight title two</span><span class="strip__star" aria-hidden="true">✱</span></a><a class="strip__item" href="#"><span>New insight: Insight title three</span><span class="strip__star" aria-hidden="true">✱</span></a><a class="strip__item" href="#"><span>New insight: Insight title one</span><span class="strip__star" aria-hidden="true">✱</span></a><a class="strip__item" href="#"><span>New insight: Insight title two</span><span class="strip__star" aria-hidden="true">✱</span></a><a class="strip__item" href="#"><span>New insight: Insight title three</span><span class="strip__star" aria-hidden="true">✱</span></a></div>
+      <div class="strip__group" aria-hidden="true"><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title one</span><span class="strip__star" aria-hidden="true">✱</span></a><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title two</span><span class="strip__star" aria-hidden="true">✱</span></a><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title three</span><span class="strip__star" aria-hidden="true">✱</span></a><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title one</span><span class="strip__star" aria-hidden="true">✱</span></a><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title two</span><span class="strip__star" aria-hidden="true">✱</span></a><a tabindex="-1" class="strip__item" href="#"><span>New insight: Insight title three</span><span class="strip__star" aria-hidden="true">✱</span></a></div>
+    </div>
+  </div>
+</header>
+<div class="scrim" data-nav-scrim></div>
+
+<script>
+  (() => {
+    const nav = document.querySelector('[data-nav]');
+    const toggle = nav.querySelector('[data-nav-toggle]');
+    const scrim = document.querySelector('[data-nav-scrim]');
+    const setOpen = (open) => {
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    scrim.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+  })();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+/* Ported 1:1 from reference/avishkar-hero.html .foot block (CSS ~783-845). */
+
+.foot {
+  padding: 7rem 2.5rem 2.25rem;
+  overflow: hidden;
+}
+.top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+.foot h4 {
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.nl {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.6rem;
+  max-width: 47rem;
+}
+.nl input[type="text"],
+.nl input[type="email"] {
+  height: 3.4rem;
+  padding: 0 1.4rem;
+  background: #e8e6e3;
+  border: 0;
+  border-radius: 0.2rem;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+.nl input::placeholder {
+  color: #9a9692;
+}
+.nl input:focus {
+  outline: 2px solid var(--color-text);
+  outline-offset: 0;
+}
+.nlAgree {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.nlAgree input {
+  appearance: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: #e8e6e3;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.3s;
+}
+.nlAgree input:checked {
+  background: var(--color-purple);
+}
+.nlAgree input:checked::after {
+  content: "";
+  width: 0.9rem;
+  height: 0.5rem;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.nlAgree a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.nl .btn {
+  grid-row: 1;
+  grid-column: 3;
+  height: 3.4rem;
+  white-space: nowrap;
+  background: var(--color-text);
+  color: #efeeec;
+  border-radius: 0.2rem;
+  font-size: 1.25rem;
+  transition: border-radius 0.5s var(--ease);
+}
+.nl .btn:hover {
+  border-radius: 2rem;
+}
+.nlDone {
+  display: none;
+  margin-top: 1.5rem;
+  font-size: 1.25rem;
+}
+.foot.isDone .nl {
+  display: none;
+}
+.foot.isDone .nlDone {
+  display: block;
+}
+.cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.cols h5 {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #8a8683;
+  margin-bottom: 1rem;
+}
+.cols ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 1.25rem;
+  letter-spacing: -0.015em;
+}
+.cols a {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.5s var(--ease);
+}
+.cols a:hover {
+  background-size: 100% 1px;
+}
+.cols .badge {
+  font-size: 0.625rem;
+  background: #e6e4e1;
+  color: var(--color-text);
+  vertical-align: 0.2em;
+  margin-left: 0.4rem;
+}
+.actions {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-top: 3.5rem;
+}
+.actions .pair {
+  display: flex;
+  gap: 2px;
+}
+.actions .btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  height: 3.4rem;
+  padding: 0 1.5rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  transition: background-color 0.5s var(--ease), border-radius 0.5s var(--ease);
+}
+.btnDark {
+  background: var(--color-text);
+  color: #efeeec;
+  border-radius: 2rem;
+}
+.btnCoral {
+  background: var(--color-coral);
+  color: #fff;
+  border-radius: 0.2rem;
+}
+.btnCoral:hover {
+  border-radius: 2rem;
+}
+.social {
+  display: flex;
+  gap: 2px;
+}
+.social a {
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  background: #e6e4e1;
+  border-radius: 50%;
+  transition: border-radius 0.5s var(--ease), background-color 0.3s;
+}
+.social a:hover {
+  border-radius: 0.25rem;
+  background: #dcdad6;
+}
+.social svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: var(--color-text);
+}
+
+.bigmark {
+  margin: 5rem -2.5rem 0;
+  overflow: hidden;
+}
+.bigmarkTrack {
+  display: flex;
+  width: max-content;
+  animation: strip-scroll 40s linear infinite;
+}
+.bigmark span {
+  font-size: 25vw;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  line-height: 0.78;
+  padding-right: 0.18em;
+  color: var(--color-text);
+  white-space: nowrap;
+  transform: translateY(40%);
+  transition: transform 1.4s var(--ease);
+  display: inline-block;
+}
+.bigmark.isIn span {
+  transform: none;
+}
+.bigmarkClip {
+  overflow: hidden;
+  padding: 0.02em 0 0.06em;
+}
+@keyframes strip-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bigmarkTrack {
+    animation: none;
+  }
+}
+
+.bar {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+.pills {
+  display: flex;
+  gap: 2px;
+}
+.pills a,
+.pills span {
+  padding: 0.2rem 0.5rem;
+  background: var(--color-text);
+  color: #efeeec;
+  border-radius: 0.25rem;
+  transition: border-radius 0.4s var(--ease);
+}
+.pills a:hover {
+  border-radius: 1rem;
+}
+.pillsPurple span {
+  background: var(--color-purple);
+  color: #fff;
+}
+.bar > :last-child {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.roll {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.2em;
+  line-height: 1.2;
+}
+.rollIn {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s var(--ease);
+}
+.rollIn > span {
+  height: 1.2em;
+}
+a:hover .rollIn,
+button:hover .rollIn {
+  transform: translateY(-50%);
+}
+
+@media (max-width: 900px) {
+  .foot {
+    padding: 5rem 1.25rem 2rem;
+  }
+  .top {
+    grid-template-columns: 1fr;
+  }
+  .nl {
+    grid-template-columns: 1fr;
+  }
+  .nl .btn {
+    grid-row: auto;
+    grid-column: auto;
+  }
+  .actions {
+    grid-column: 1;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .cols ul {
+    font-size: 1.0625rem;
+  }
+  .bar {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+  .bar > :last-child {
+    justify-self: start;
+  }
+}

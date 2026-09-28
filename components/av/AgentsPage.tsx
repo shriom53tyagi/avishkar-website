@@ -1,68 +1,138 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AvAgentLibrary } from "@/components/av/AvAgentLibrary";
 import { AGENTS, AGENT_CATEGORIES, DEVELOPING_AGENTS, LIVE_AGENTS } from "@/lib/agents";
+import styles from "./AgentsPage.module.css";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+/**
+ * Agents page — ported 1:1 from reference/avishkar-agents.html (`.ag-hero`,
+ * `.stats` counters, `AvAgentLibrary`'s filters/live-card/dev-grid).
+ *
+ * The reference has no equivalent of this page's existing closing "This is
+ * one part of the work." section — kept per the task's instruction, styled
+ * with the page's own patterns (see .closing below).
+ */
 
-const FORMS = [
-  "An integration between systems",
-  "Workflow automation",
-  "An internal tool",
-  "A reporting system",
-  "An AI agent",
-  "A custom application",
-];
+function readReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function useCountUp(target: number, start: boolean) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    if (readReducedMotion()) {
+      setValue(target);
+      return;
+    }
+    let rafId: number;
+    const t0 = performance.now();
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / 1200);
+      setValue(Math.round(target * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [start, target]);
+  return value;
+}
 
 export function AgentsPage() {
+  const [isIn, setIsIn] = useState(false);
+  const [countStart, setCountStart] = useState(false);
+
+  useEffect(() => {
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsIn(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
+
+  // Hero counters start 600ms after mount, matching the reference's
+  // `setTimeout(..., 600)`.
+  useEffect(() => {
+    const t = setTimeout(() => setCountStart(true), 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  const liveCount = useCountUp(LIVE_AGENTS.length, countStart);
+  const devCount = useCountUp(DEVELOPING_AGENTS.length, countStart);
+
   return (
-    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-        <div className="av-rise" style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>Work you can see</div>
-        <h1 className="av-rise" style={{ fontSize: "clamp(36px, 5.2vw, 68px)", lineHeight: 1.02, letterSpacing: "-.036em", fontWeight: 500, margin: "20px 0 0", maxWidth: "22ch", textWrap: "balance" }}>
-          Agents we&apos;ve built for practice teams.
+    <main className={`${styles.ag} ${isIn ? styles.isIn : ""}`} data-agents-page>
+      <div className={styles.guide} aria-hidden="true" />
+
+      <section className={styles.hero}>
+        <p className={`${styles.eyebrow} ${styles.fade}`}>
+          <span>Work you can see</span>
+          <span>Agents</span>
+        </p>
+        <h1 className={styles.title}>
+          {["Agents we've built", "for practice teams."].map((line, i) => (
+            <span className={styles.ln} key={i}>
+              <span>{line}</span>
+            </span>
+          ))}
         </h1>
-        <p style={{ fontSize: "clamp(16.5px,1.4vw,19px)", lineHeight: 1.6, color: "#4E5654", maxWidth: "62ch", margin: "22px 0 0", textWrap: "pretty" }}>
-          A current look at our work. Agents are not everything we build, but they are a clear way to see how we think: start from the workflow, connect to the systems already in place, and ship something the team can use.
+        <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
+          A current look at our work. Agents are not everything we build, but they are a clear way to see how we
+          think: start from the workflow, connect to the systems already in place, and ship something the team can
+          use.
         </p>
-        <p style={{ fontSize: 13.5, color: "#6E7674", margin: "18px 0 0" }}>
-          {LIVE_AGENTS.length} available to explore · {DEVELOPING_AGENTS.length} in development
-        </p>
-      </section>
-
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "64px 32px 0" }}>
-        <AvAgentLibrary agents={AGENTS} categories={[...AGENT_CATEGORIES]} />
-      </section>
-
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "96px 32px 140px" }}>
-        <div style={{ borderTop: "1px solid rgba(20,24,26,.12)", paddingTop: 48, display: "flex", flexWrap: "wrap", gap: 56 }}>
-          <div style={{ flex: "1.6 1 420px", minWidth: 0 }}>
-            <h2 style={{ fontSize: "clamp(24px,2.8vw,36px)", lineHeight: 1.1, letterSpacing: "-.028em", fontWeight: 500, margin: 0, maxWidth: "18ch" }}>This is one part of the work.</h2>
-            <p style={{ fontSize: 16.5, lineHeight: 1.6, color: "#4E5654", margin: "16px 0 0", maxWidth: "58ch" }}>
-              Avishkar builds technology around how a practice already operates — integrations, automation, internal tools, reporting, and custom software. Agents are the piece we can publish. If your problem doesn&apos;t look like one of these, that&apos;s normal. Bring it anyway.
-            </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
-              <Link href="/contact?intent=custom" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
-                Don&apos;t see what you need?
-              </Link>
-              <Link href="/how-we-work" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
-                How we work
-              </Link>
-            </div>
+        <div className={`${styles.stats} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }}>
+          <div className={`${styles.stat} ${styles.statLive}`}>
+            <i className={styles.dot} />
+            <b>{liveCount}</b>
+            <span>
+              Available
+              <br />
+              to explore
+            </span>
           </div>
-
-          <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-            <div style={{ ...mono, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>What that turns into</div>
-            <ul style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 0, listStyle: "none", padding: 0 }}>
-              {FORMS.map((f) => (
-                <li key={f} style={{ borderTop: "1px solid rgba(20,24,26,.14)", padding: "12px 0", fontSize: 14.5, color: "#14181A" }}>
-                  {f}
-                </li>
-              ))}
-            </ul>
+          <div className={styles.stat}>
+            <i className={`${styles.dot} ${styles.dotDev}`} />
+            <b>{devCount}</b>
+            <span>
+              In
+              <br />
+              development
+            </span>
           </div>
         </div>
       </section>
-    </div>
+
+      <AvAgentLibrary agents={AGENTS} categories={[...AGENT_CATEGORIES]} />
+
+      {/*
+        Existing "This is one part of the work." closing section — not in
+        the reference, kept per the task instruction and styled with the
+        page's own patterns.
+      */}
+      <section className={styles.closing}>
+        <div className={styles.closingInner}>
+          <h2>This is one part of the work.</h2>
+          <p>
+            Avishkar builds technology around how a practice already operates — integrations, automation, internal
+            tools, reporting, and custom software. Agents are the piece we can publish. If your problem doesn&apos;t
+            look like one of these, that&apos;s normal. Bring it anyway.
+          </p>
+          <div className={styles.closingActions}>
+            <Link href="/contact?intent=custom" className={styles.closingDark}>
+              Don&apos;t see what you need?
+            </Link>
+            <Link href="/how-we-work" className={styles.closingOutline}>
+              How we work
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

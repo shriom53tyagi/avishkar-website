@@ -1,0 +1,652 @@
+/* Ported 1:1 from reference/avishkar-hero.html .lib block (CSS ~554-670, 636-670). */
+
+.lib {
+  position: relative;
+  padding: 3rem 0 2rem;
+}
+.guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--color-rule);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.6s var(--ease);
+}
+.lib.isIn .guide {
+  transform: none;
+}
+.title {
+  position: relative;
+  text-align: center;
+  font-weight: 500;
+  font-size: clamp(2.75rem, 6.4vw, 6.5rem);
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  padding: 0 1.5rem;
+}
+.title .ln {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.title .ln > span {
+  display: inline-block;
+  transform: translateY(110%) rotate(3deg);
+  transform-origin: 0 100%;
+  transition: transform 1.2s var(--ease);
+}
+.title .ln:nth-child(2) > span {
+  transition-delay: 0.09s;
+}
+.lib.isIn .title .ln > span {
+  transform: none;
+}
+.sub {
+  position: relative;
+  margin-top: 2.25rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition: opacity 0.8s var(--ease) 0.3s, transform 1s var(--ease) 0.3s;
+}
+.lib.isIn .sub {
+  opacity: 1;
+  transform: none;
+}
+
+.tabsBar {
+  position: sticky;
+  top: 8.4rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: 2.75rem 1rem 0;
+  pointer-events: none;
+}
+.tabs {
+  display: flex;
+  gap: 3px;
+  pointer-events: auto;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+.tabs button {
+  flex-shrink: 0;
+  height: 3.3rem;
+  padding: 0 1.5rem;
+  background: #e6e4e1;
+  border-radius: 0.25rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: background-color 0.5s var(--ease), color 0.5s var(--ease), border-radius 0.5s var(--ease);
+  opacity: 0;
+  transform: translateY(1rem) scale(0.9);
+}
+.tabs button:hover {
+  background: #dcdad6;
+}
+.tabs button.isActive {
+  background: var(--color-text);
+  color: #efeeec;
+  border-radius: 2rem;
+}
+.lib.tabsIn .tabs button {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s var(--ease), transform 0.8s var(--ease), background-color 0.5s var(--ease),
+    color 0.5s var(--ease), border-radius 0.5s var(--ease);
+  transition-delay: calc(var(--t) * 0.06s), calc(var(--t) * 0.06s), 0s, 0s, 0s;
+}
+.lib.tabsDone .tabs button {
+  transition-delay: 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .title .ln > span,
+  .sub,
+  .tabs button,
+  .guide {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+.arcWrap {
+  position: relative;
+}
+.arc {
+  position: relative;
+  height: 50rem;
+  overflow: hidden;
+  margin-top: 1rem;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(#000 90%, transparent);
+  mask-image: linear-gradient(#000 90%, transparent);
+}
+.arcRing {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.arcTicks {
+  position: absolute;
+  color: #cfccc8;
+  pointer-events: none;
+}
+.arcTicks line {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.arcSlot {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.lcard {
+  position: absolute;
+  width: 36rem;
+  height: 41rem;
+  left: -18rem;
+  border-radius: 1.5rem;
+  padding: 3.5rem 2.5rem 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+.lcard.isActive {
+  cursor: default;
+}
+.lcardDark {
+  background: #161414;
+  color: #efeeec;
+}
+.lcardPurple {
+  background: var(--color-purple);
+  color: #fff;
+}
+.lcardLight {
+  background: #e3e1de;
+  color: var(--color-text);
+}
+.lcardLime {
+  background: var(--color-lime);
+  color: #131313;
+}
+.lcardTag {
+  display: flex;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+.lcardTag span {
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+.lcardLight .lcardTag span,
+.lcardLime .lcardTag span {
+  background: rgba(0, 0, 0, 0.08);
+}
+.lcardTag span + span {
+  background: rgba(255, 255, 255, 0.18);
+}
+.lcard :global(.mark) {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: 2.5rem;
+  color: currentColor;
+}
+.lcard :global(.mark__spokes line) {
+  stroke-dashoffset: 0;
+}
+.lcard.isActive :global(.mark) {
+  animation: turn 16s linear infinite;
+}
+@keyframes turn {
+  to {
+    rotate: 360deg;
+  }
+}
+.lcard h3 {
+  margin-top: 1.5rem;
+  font-size: 5rem;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+.lcard p {
+  margin-top: 1.4rem;
+  max-width: 26rem;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  opacity: 0.85;
+}
+.lcardVis {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  margin-top: 2.25rem;
+}
+.lcardBtn {
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  height: 3.4rem;
+  padding: 0 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  color: var(--color-text);
+  border-radius: 0.2rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: border-radius 0.5s var(--ease);
+  z-index: 2;
+}
+.lcardLight .lcardBtn {
+  background: var(--color-text);
+  color: #efeeec;
+}
+.lcardLime .lcardBtn {
+  background: var(--color-text);
+  color: var(--color-lime);
+}
+.lcardBtn:hover {
+  border-radius: 2rem;
+}
+
+/* card visuals */
+.fan {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+}
+.fan i {
+  position: absolute;
+  left: -6rem;
+  width: 12rem;
+  height: 8.5rem;
+  border-radius: 0.6rem;
+  background: #242121;
+  border: 1px solid #332f2f;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transform-origin: 50% 300%;
+  transition: transform 0.8s var(--ease);
+}
+.fan i b {
+  height: 0.35rem;
+  border-radius: 0.2rem;
+  background: currentColor;
+  opacity: 0.25;
+}
+.fan i b:first-child {
+  opacity: 0.7;
+  width: 45%;
+}
+.fan i:nth-child(1) {
+  transform: rotate(-16deg);
+}
+.fan i:nth-child(2) {
+  transform: rotate(-5deg);
+}
+.fan i:nth-child(3) {
+  transform: rotate(6deg);
+}
+.fan i:nth-child(4) {
+  transform: rotate(17deg);
+}
+.lcard.isActive .fan i:nth-child(1) {
+  transform: rotate(-22deg);
+}
+.lcard.isActive .fan i:nth-child(4) {
+  transform: rotate(23deg);
+}
+.mail {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  width: 22rem;
+  margin-left: -11rem;
+  background: #fff;
+  color: var(--color-text);
+  border-radius: 0.75rem;
+  padding: 1rem 1.1rem;
+  text-align: left;
+  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.5);
+}
+.mailFrom {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.mailFrom i {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--color-text);
+}
+.mailSubj {
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.mail b {
+  display: block;
+  height: 0.35rem;
+  border-radius: 0.2rem;
+  background: #201d1d;
+  opacity: 0.12;
+  margin-top: 0.5rem;
+}
+.mailStack {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 20rem;
+  height: 7rem;
+  margin-left: -10rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-0.9rem) scale(0.94);
+}
+.score {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  width: 22rem;
+  margin-left: -11rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  text-align: left;
+}
+.score div {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 1.6rem;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.score em {
+  height: 0.5rem;
+  border-radius: 0.3rem;
+  background: rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.score em::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--color-text);
+  border-radius: 0.3rem;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.2s var(--ease);
+}
+.lcard.isActive .score em::after {
+  transform: scaleX(1);
+}
+.score strong {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+.checks {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  width: 20rem;
+  margin-left: -10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+.checks div {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.checks i {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 0.3rem;
+  border: 1.5px solid var(--color-text);
+  flex-shrink: 0;
+  position: relative;
+  transition: background-color 0.3s;
+}
+.lcard.isActive .checks i {
+  animation: tick 4s var(--ease) infinite;
+  animation-delay: calc(var(--k) * 0.5s);
+}
+@keyframes tick {
+  0%,
+  10% {
+    background: transparent;
+  }
+  20%,
+  85% {
+    background: var(--color-text);
+  }
+  100% {
+    background: transparent;
+  }
+}
+.bench {
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  width: 24rem;
+  margin-left: -12rem;
+}
+.bench svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.bench :global(.grid) {
+  stroke: #332f2f;
+  stroke-width: 1;
+}
+.bench :global(.you) {
+  fill: none;
+  stroke: var(--color-lime);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s var(--ease);
+}
+.bench :global(.avg) {
+  fill: none;
+  stroke: rgba(239, 238, 236, 0.4);
+  stroke-width: 2;
+  stroke-dasharray: 5 6;
+}
+.lcard.isActive .bench :global(.you) {
+  stroke-dashoffset: 0;
+}
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.dragCur {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: -2.25rem 0 0 -2.25rem;
+  border-radius: 50%;
+  background: var(--color-text);
+  color: #efeeec;
+  display: grid;
+  place-items: center;
+  font-size: 1.125rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 20;
+  transform: scale(0);
+  transition: transform 0.4s var(--ease);
+}
+.dragCur::before,
+.dragCur::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--color-text);
+  transition: transform 0.4s var(--ease);
+}
+.dragCur::before {
+  left: -2.4rem;
+}
+.dragCur::after {
+  right: -2.4rem;
+}
+
+.arcNav {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 0.5rem;
+}
+.arcNav button {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 50%;
+  background: var(--color-text);
+  color: #efeeec;
+  display: grid;
+  place-items: center;
+  transition: transform 0.6s var(--ease), background-color 0.3s;
+}
+.arcNav button:hover {
+  transform: scale(1.08);
+  background: #000;
+}
+.arcNav svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.6s var(--ease);
+}
+.arcNav button:global(.arcPrev):hover svg {
+  transform: translateX(-3px);
+}
+.arcNav button:global(.arcNext):hover svg {
+  transform: translateX(3px);
+}
+@media (max-width: 767px) {
+  .arcNav button {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+}
+.arc.showCur .dragCur {
+  transform: scale(1);
+}
+.arc:focus-visible {
+  outline-offset: -6px;
+}
+.arc.isDrag .dragCur {
+  transform: scale(0.85);
+}
+.arc.isDrag .dragCur::before {
+  transform: translateX(-0.6rem);
+}
+.arc.isDrag .dragCur::after {
+  transform: translateX(0.6rem);
+}
+@media (hover: none) {
+  .dragCur {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .tabsBar {
+    top: 6.25rem;
+    justify-content: flex-start;
+  }
+  .tabs button {
+    height: 2.75rem;
+    font-size: 1.0625rem;
+    padding: 0 1rem;
+  }
+  .arc {
+    height: 36rem;
+  }
+  .sub {
+    font-size: 1.125rem;
+  }
+}
+
+/* text-roll hover, local to this section's card buttons (mirrors AvNavbar's .roll). */
+.roll {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.2em;
+  line-height: 1.2;
+}
+.rollIn {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s var(--ease);
+}
+.rollIn > span {
+  height: 1.2em;
+}
+.lcardBtn:hover .rollIn {
+  transform: translateY(-50%);
+}

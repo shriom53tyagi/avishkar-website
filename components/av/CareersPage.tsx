@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+const mono: CSSProperties = { fontFamily: "var(--font-mono)" };
 const CONTACT_EMAIL = "info@avishkar.app";
 
 const VALUES = [
@@ -112,7 +112,7 @@ export function CareersPage() {
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Resume")}`}
             className="av-hero-btn-dark"
-            style={{ display: "inline-block", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED", marginTop: 28 }}
+            style={{ display: "inline-block", fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "var(--color-text)", color: "var(--color-bg)", marginTop: 28 }}
           >
             Email {CONTACT_EMAIL}
           </a>
