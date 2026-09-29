@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+const mono: CSSProperties = { fontFamily: "var(--font-mono)" };
 const CONTACT_EMAIL = "info@avishkar.app";
 
 const SECTIONS = [

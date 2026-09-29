@@ -3,7 +3,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+const mono: CSSProperties = { fontFamily: "var(--font-mono)" };
 const CONTACT_EMAIL = "info@avishkar.app";
 
 const PILLARS = [
@@ -94,10 +94,10 @@ export function SecurityPage() {
             Send it over. We&apos;d rather answer specific questions about your environment than publish generic assurances.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+            <a href={`mailto:${CONTACT_EMAIL}`} className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "var(--color-text)", color: "var(--color-bg)" }}>
               Email the team
             </a>
-            <Link href="/contact" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
+            <Link href="/contact" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "var(--color-text)" }}>
               Book a 30-min conversation
             </Link>
           </div>

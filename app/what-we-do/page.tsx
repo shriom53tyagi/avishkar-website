@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { WhatWeDo } from "@/components/sections/WhatWeDo";
-import { PageHeader } from "@/components/ui/PageHeader";
+import { WhatWeDoPage } from "@/components/av/WhatWeDoPage";
 
 export const metadata: Metadata = {
   title: "What We Do",
@@ -14,15 +13,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function WhatWeDoPage() {
-  return (
-    <>
-      <PageHeader
-        eyebrow="What we do"
-        title="Diagnose first. Deploy only where it pays."
-        description="Every engagement starts with a structured audit — not a sales pitch for automation. Agents are switched on only once the numbers prove they're worth it."
-      />
-      <WhatWeDo showHeading={false} />
-    </>
-  );
+export default function Page() {
+  return <WhatWeDoPage />;
 }

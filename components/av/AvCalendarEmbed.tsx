@@ -100,7 +100,7 @@ export function AvCalendarEmbed() {
   if (state === "no-consent") {
     return (
       <Fallback>
-        <p style={{ fontSize: 15.5, fontWeight: 600, color: "#14181A", margin: 0 }}>The booking calendar needs cookies</p>
+        <p style={{ fontSize: 15.5, fontWeight: 600, color: "var(--color-text)", margin: 0 }}>The booking calendar needs cookies</p>
         <p style={{ fontSize: 14.5, color: "#4E5654", marginTop: 8 }}>
           Accept cookies to load the calendar, or email us and we&apos;ll find a time.
         </p>
@@ -119,7 +119,7 @@ export function AvCalendarEmbed() {
             borderRadius: 999,
             border: "1px solid rgba(20,24,26,.2)",
             background: "transparent",
-            color: "#14181A",
+            color: "var(--color-text)",
           }}
         >
           Update cookie preferences
@@ -131,7 +131,7 @@ export function AvCalendarEmbed() {
   if (state === "error") {
     return (
       <Fallback>
-        <p style={{ fontSize: 15.5, fontWeight: 600, color: "#14181A", margin: 0 }}>Open the booking calendar</p>
+        <p style={{ fontSize: 15.5, fontWeight: 600, color: "var(--color-text)", margin: 0 }}>Open the booking calendar</p>
         <p style={{ fontSize: 14.5, color: "#4E5654", marginTop: 8 }}>
           {CALENDLY_URL
             ? "The embedded calendar could not load — it may be blocked by a browser extension. Use the link below."
@@ -150,8 +150,8 @@ export function AvCalendarEmbed() {
               fontWeight: 500,
               padding: "12px 22px",
               borderRadius: 999,
-              background: "#14181A",
-              color: "#F1F1ED",
+              background: "var(--color-text)",
+              color: "var(--color-bg)",
             }}
           >
             Open calendar in a new tab

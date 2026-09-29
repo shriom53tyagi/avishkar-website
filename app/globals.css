@@ -2,18 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Site-wide visual foundation ─────────────────────────────────────────
+   One token set, used by every page and by the navbar (components/av/AvNavbar
+   .module.css aliases its own --nav/--card/--lime/etc. names to these so
+   existing navbar code keeps working unchanged). Ported to match the navbar
+   we built from reference/navbar.html — the rest of the site is brought in
+   line with it here, rather than the other way around. */
+:root {
+  --color-bg: #f4f4f4; /* page background */
+  --color-text: #201d1d; /* primary text */
+  --color-dark: #201d1d; /* dark surfaces (nav, footer, CTA bands) */
+  --color-dark-card: #2a2727; /* cards/panels on a dark surface */
+  --color-lime: #a1ff62; /* primary CTA */
+  --color-purple: #6840ff; /* badges, highlights */
+  --color-green: #2fa83a; /* "connected/synced" status dots */
+  --color-coral: #ff4c24; /* footer "Book a demo" button */
+  --color-rule: #e4e2df; /* hairline dividers/guides on the homepage */
+  /* --color-text at ~55% opacity, for secondary/muted copy. */
+  --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+  /* Same idea, for muted text sitting on a dark surface (--color-dark). */
+  --color-muted-on-dark: rgba(239, 238, 236, 0.55);
+  /* Shared snappy ease, matching AvNavbar.module.css's local --ease. */
+  --ease: cubic-bezier(0.65, 0.05, 0, 1);
+}
+
 /* ── Avishkar brand (2026 redesign) ─────────────────────────────────────
    Global rules ported verbatim from the Avishkar.dc.html / Insights.dc.html /
-   Article.dc.html mockups. */
+   Article.dc.html mockups, now reading from the tokens above instead of
+   their own hex literals. */
 body {
-  background: #f1f1ed;
-  color: #14181a;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   /* Prevent the browser's scroll-anchoring heuristic from "correcting" the
      page's scroll position when a section's content changes height above
      or near the current viewport (e.g. the how-it-works stage detail card
      growing/shrinking as stages change) — that correction is what causes
      an unwanted scroll jump whenever the stage carousel advances. */
   overflow-anchor: none;
+}
+
+/* Display heading (hero h1). */
+.h-display {
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+/* h2/h3-weight headings. */
+.h-section {
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+/* Body copy. */
+.text-body {
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+/* Mono, uppercase eyebrow/label — section kickers, metadata. */
+.label-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+/* Small inline keyword chip: a few % darker than --color-bg. */
+.keyword-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--color-bg) 94%, black);
 }
 
 ::selection {
@@ -119,16 +185,16 @@ a {
     background: #2f6b5f !important;
   }
   .av-hero-btn-outline:hover {
-    border-color: #14181a !important;
+    border-color: var(--color-text) !important;
     background: rgba(20, 24, 26, 0.04) !important;
   }
   .av-outline-btn:hover {
-    border-color: #14181a !important;
+    border-color: var(--color-text) !important;
     background: rgba(20, 24, 26, 0.04) !important;
   }
   .av-contact-btn:hover {
     background: #2f6b5f !important;
-    color: #f1f1ed !important;
+    color: var(--color-bg) !important;
   }
   .av-join-btn:hover {
     background: #3a7c6e !important;
@@ -294,7 +360,7 @@ a {
   margin: 36px 0 0;
   padding: 26px 28px;
   border-radius: 14px;
-  background: #14181a;
+  background: var(--color-text);
   color: #edf0ec;
   font-size: 21px;
   line-height: 1.45;
@@ -302,7 +368,7 @@ a {
 }
 .prose blockquote cite {
   display: block;
-  font-family: "DM Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11.5px;
   font-style: normal;
   color: #98a19e;
@@ -337,7 +403,7 @@ a {
   padding: 18px 20px;
 }
 .prose .qa-num {
-  font-family: "DM Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px;
   color: #2f6b5f;
   flex: none;
@@ -357,7 +423,7 @@ a {
   margin: 36px 0 0;
   padding: 26px 28px;
   border-radius: 14px;
-  background: #14181a;
+  background: var(--color-text);
   color: #edf0ec;
 }
 .prose blockquote.pull .q {
@@ -366,7 +432,7 @@ a {
   max-width: 44ch;
 }
 .prose blockquote.pull .cite {
-  font-family: "DM Mono", monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 11.5px;
   color: #98a19e;
   margin-top: 14px;
@@ -375,21 +441,25 @@ a {
 :root {
   color-scheme: light;
 
-  --porcelain: #fbfaf7;
-  --stone: #f4f1ea;
+  /* Legacy names kept (still read by .eyebrow/.card/.chip/.say/.micro-label
+     below and by Tailwind's shadow tokens) but pointed at the shared
+     --color-* palette instead of their own brass/porcelain hues, so pages
+     still using this class family (e.g. /what-we-do, /results) match. */
+  --porcelain: var(--color-bg);
+  --stone: var(--color-bg);
   --sand: #efe9dd;
-  --stone-2: rgba(8, 145, 178, 0.2);
-  --ink: #0f172a;
-  --ink-soft: #4b5563;
-  --dead: #8a8578;
-  --brass: #0891b2;
-  --brass-dk: #0e7490;
-  --brass-lt: #3fb0c9;
-  --accent: #059669;
-  --accent-lt: #d1fae5;
-  --shadow-sm: 0 1px 3px rgba(8, 145, 178, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 16px -2px rgba(8, 145, 178, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 8px 32px -4px rgba(8, 145, 178, 0.14), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --stone-2: rgba(32, 29, 29, 0.2);
+  --ink: var(--color-text);
+  --ink-soft: var(--color-muted);
+  --dead: var(--color-muted);
+  --brass: var(--color-purple);
+  --brass-dk: var(--color-purple);
+  --brass-lt: var(--color-purple);
+  --accent: var(--color-purple);
+  --accent-lt: color-mix(in srgb, var(--color-purple) 15%, var(--color-bg));
+  --shadow-sm: 0 1px 3px rgba(32, 29, 29, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(32, 29, 29, 0.1), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px -4px rgba(32, 29, 29, 0.14), 0 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 @layer base {
@@ -399,9 +469,13 @@ a {
     text-rendering: optimizeLegibility;
   }
 
+  /*
+   * font-size/line-height/feature-settings only — background, color and
+   * font-family for `body` are set once, unlayered, above (this rule would
+   * lose to that one on those properties anyway, since Tailwind's @layer
+   * rules always yield to unlayered CSS regardless of source order).
+   */
   body {
-    background: theme("colors.canvas");
-    color: theme("colors.ink.DEFAULT");
     font-size: theme("fontSize.body[0]");
     line-height: 1.65;
     font-feature-settings: "cv11", "ss01";
@@ -428,20 +502,22 @@ a {
 }
 
 @layer components {
-  /* Brass-tinted pill for section kickers. */
+  /* Section-kicker pill: the site-wide eyebrow/label style (--font-mono,
+     uppercase, small, tracked out — see .label-mono above), in a pill. */
   .eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 5px 13px;
     border-radius: 999px;
-    background: rgba(8, 145, 178, 0.08);
-    border: 1px solid rgba(8, 145, 178, 0.18);
+    background: rgba(32, 29, 29, 0.06);
+    border: 1px solid rgba(32, 29, 29, 0.14);
+    font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.68rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--brass);
+    color: var(--color-text);
   }
 
   /* Card surface used for any panel/card across the site. */
@@ -452,13 +528,13 @@ a {
     box-shadow: var(--shadow-md);
   }
 
-  /* Clamped Fraunces display headline. <em> renders brass; <i> renders italic. */
+  /* Clamped display headline. <em> renders the accent color; <i> italic. */
   .say {
-    font-family: var(--font-serif), Georgia, serif;
-    font-weight: 300;
+    font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
     font-size: clamp(2.2rem, 4.35vw, 4.7rem);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    line-height: 1;
+    letter-spacing: -0.05em;
     max-width: 20ch;
   }
   .say.wide {

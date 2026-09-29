@@ -1,0 +1,330 @@
+/* Ported 1:1 from reference/avishkar-hero.html .wheel block (CSS ~338-397). */
+
+.wheel {
+  position: relative;
+  height: 42rem;
+  overflow: hidden;
+  margin-top: -1rem;
+  -webkit-mask-image: linear-gradient(#000 75%, transparent);
+  mask-image: linear-gradient(#000 75%, transparent);
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+.wheel.isDrag {
+  cursor: grabbing;
+}
+.guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--color-rule);
+}
+.ring {
+  position: absolute;
+  left: 50%;
+  top: calc(6rem + 1500px);
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+.ringTicks {
+  position: absolute;
+  left: -1500px;
+  top: -1500px;
+  width: 3000px;
+  height: 3000px;
+  color: #cfccc8;
+  pointer-events: none;
+}
+.ringTicks line {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.slot {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.wcard {
+  position: absolute;
+  left: -12rem;
+  top: -1500px;
+  width: 24rem;
+  padding: 0.55rem 0.55rem 0;
+  background: var(--color-text);
+  color: #efeeec;
+  border-radius: 0.5rem;
+  box-shadow: 0 30px 50px -35px rgba(0, 0, 0, 0.45);
+  transform: translateY(4rem) scale(0.9);
+  opacity: 0;
+  transition: transform 0.9s var(--ease), opacity 0.6s var(--ease);
+}
+.wheel.isIn .wcard {
+  transform: none;
+  opacity: 1;
+  transition-delay: calc(var(--d) * 0.06s);
+}
+.wheel.isIn .wcard:hover {
+  transform: translateY(-1rem) scale(1.03);
+  transition-delay: 0s;
+}
+.wcardScreen {
+  position: relative;
+  height: 15rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+.wcardTitle {
+  display: block;
+  padding: 1rem 0.6rem 1.1rem;
+  font-size: 1.1875rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* mock screens (placeholders until real product shots) */
+.sc {
+  position: absolute;
+  inset: 0;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+.sc :global(.ln) {
+  height: 0.4rem;
+  border-radius: 0.2rem;
+  background: currentColor;
+  opacity: 0.18;
+}
+.scScribe {
+  background: #e8e3d8;
+  color: #2c2a26;
+}
+.scScribe :global(.tag) {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.scScribe :global(.big) {
+  font-size: 1.6rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.3rem;
+}
+.scVoice {
+  background: #000;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.bars {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  height: 4rem;
+}
+.bars i {
+  width: 5px;
+  border-radius: 3px;
+  background: var(--color-lime);
+  height: 20%;
+  animation: eq 1.1s ease-in-out infinite;
+  animation-delay: calc(var(--k) * -0.13s);
+}
+@keyframes eq {
+  50% {
+    height: 100%;
+  }
+}
+.scVoice :global(.call) {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.scSync {
+  background: #2447f5;
+  color: #fff;
+  justify-content: space-between;
+}
+.scSync :global(.big) {
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+.syncRow span {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.3rem;
+}
+.syncRow em {
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, #fff 0 6px, transparent 6px 12px);
+  background-size: 12px 1px;
+  animation: flowx 0.6s linear infinite;
+}
+@keyframes flowx {
+  to {
+    background-position: 12px 0;
+  }
+}
+.scEmr {
+  background: #fbfaf8;
+  color: var(--color-text);
+  flex-direction: row;
+  gap: 0.75rem;
+}
+.scEmr :global(.side) {
+  width: 26%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-right: 0.6rem;
+  border-right: 1px solid #e6e3df;
+}
+.scEmr :global(.main) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.scEmr :global(.pill) {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  background: var(--color-purple);
+  color: #fff;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.2rem;
+}
+.scEmr :global(.box) {
+  flex: 1;
+  border-radius: 0.3rem;
+  background: #f0eeea;
+}
+.scLeads {
+  background: var(--color-lime);
+  color: #131313;
+  justify-content: flex-end;
+}
+.scLeads :global(.big) {
+  font-size: 4rem;
+  font-weight: 600;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+.scLeads :global(.tag) {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+.scIntel {
+  background: var(--color-purple);
+  color: #fff;
+  justify-content: flex-end;
+}
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.45rem;
+  height: 70%;
+}
+.chart i {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 0.2rem 0.2rem 0 0;
+  height: var(--h);
+  transform-origin: bottom;
+  animation: grow 2.6s var(--ease) infinite alternate;
+  animation-delay: calc(var(--k) * 0.12s);
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0.55);
+  }
+}
+.scBook {
+  background: #fff;
+  color: var(--color-text);
+}
+.cal {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal i {
+  border-radius: 0.2rem;
+  background: #f1efec;
+}
+.cal i:global(.on) {
+  background: var(--color-text);
+}
+.cal i:global(.new) {
+  background: var(--color-lime);
+  animation: pop 2s var(--ease) infinite;
+}
+@keyframes pop {
+  0%,
+  60%,
+  100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.7);
+  }
+}
+.scRev {
+  background: #0b0b0b;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+}
+.scRev :global(.big) {
+  font-size: 3.25rem;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+.scRev :global(.tag) {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+@media (max-width: 767px) {
+  .wheel {
+    height: 30rem;
+  }
+  .ring {
+    top: calc(4rem + 1500px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bars i,
+  .chart i,
+  .cal i.new,
+  .syncRow em {
+    animation: none;
+  }
+}

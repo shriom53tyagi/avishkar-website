@@ -22,7 +22,7 @@ export function PageHeader({
       <Container>
         <div className="max-w-measure">
           {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
-          <h1 className="text-h1 font-serif font-light tracking-[-0.02em] text-ink">{title}</h1>
+          <h1 className="text-h1 h-display text-ink">{title}</h1>
           {description && (
             <p className="mt-5 text-lead text-ink-muted">{description}</p>
           )}

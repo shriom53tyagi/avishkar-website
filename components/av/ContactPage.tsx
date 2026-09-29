@@ -1,11 +1,27 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AvCalendarEmbed } from "@/components/av/AvCalendarEmbed";
+import styles from "./ContactPage.module.css";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+/**
+ * Contact / Book a demo page — ported 1:1 from
+ * reference/avishkar-contact.html (`.talk` intro + two-column grid).
+ *
+ * The reference's `.embed` is a dashed placeholder frame; per the task,
+ * the page's existing Calendly embed (AvCalendarEmbed) goes inside it
+ * unchanged, filling the frame.
+ *
+ * The reference only shows the default "Book a 30-minute conversation"
+ * copy — this page's existing `?intent=custom` variant ("Tell us what
+ * you're trying to solve") is preserved as-is, just carried into the
+ * reference's markup/animation instead of the old plain layout.
+ */
+
 const CONTACT_EMAIL = "info@avishkar.app";
 
+// This page's real prep-list content — the reference shows only the first
+// 3 items as a demonstration; all 4 of this page's existing items are kept.
 const PREP = [
   "The workflow that frustrates you most right now",
   "Who on the team touches it, and how often",
@@ -14,73 +30,125 @@ const PREP = [
 ];
 
 export function ContactPage({ custom }: { custom: boolean }) {
+  const talkRef = useRef<HTMLElement>(null);
+  const [isIn, setIsIn] = useState(false);
+
+  useEffect(() => {
+    // Reference: `requestAnimationFrame(() => requestAnimationFrame(() => page.classList.add('is-in')))`
+    // — two rAFs so the entrance transition is guaranteed to run from the
+    // pre-`is-in` styles rather than the browser coalescing it away.
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsIn(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
+
+  const title = custom ? "Tell us what you're trying to solve." : "Book a 30-minute conversation.";
+  const titleLines = custom ? ["Tell us what you're", "trying to solve."] : ["Book a 30-minute", "conversation."];
+
   return (
-    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-        <div className="av-rise" style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>Talk to us</div>
-        <h1
-          className="av-rise"
-          style={{
-            fontSize: "clamp(36px, 5.2vw, 68px)",
-            lineHeight: 1.02,
-            letterSpacing: "-.036em",
-            fontWeight: 500,
-            margin: "20px 0 0",
-            maxWidth: "20ch",
-            textWrap: "balance",
-          }}
-        >
-          {custom ? "Tell us what you're trying to solve." : "Book a 30-minute conversation."}
-        </h1>
-        <p style={{ fontSize: "clamp(16.5px,1.4vw,19px)", lineHeight: 1.6, color: "#4E5654", maxWidth: "58ch", margin: "22px 0 0", textWrap: "pretty" }}>
-          {custom
-            ? "The agents on our site are examples of current work, not a catalogue. Describe the problem and we'll tell you honestly what we'd build around it."
-            : "Thirty minutes on the workflow you want to improve. We'll ask about the systems involved and where the time goes, then tell you where technology could help — and where it wouldn't."}
+    <main className={`${styles.talk} ${isIn ? styles.isIn : ""}`} data-talk ref={talkRef}>
+      <div className={styles.guide} aria-hidden="true" />
+
+      <header className={styles.head}>
+        <p className={`${styles.eyebrow} ${styles.fade}`}>
+          <span>Talk to us</span>
+          <span>30 min</span>
         </p>
-      </section>
+        <h1 className={styles.title} aria-label={title}>
+          {titleLines.map((line, i) => (
+            <span className={styles.ln} key={i}>
+              <span>{line}</span>
+            </span>
+          ))}
+        </h1>
+        {custom ? (
+          <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
+            The agents on our site are examples of current work, not a catalogue. Describe the problem and
+            we&apos;ll tell you honestly what we&apos;d build around it.
+          </p>
+        ) : (
+          <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
+            Thirty minutes on the workflow you want to improve. We&apos;ll ask about the{" "}
+            <span className={styles.chip}>systems</span> involved and where the{" "}
+            <span className={styles.chip}>time</span> goes, then tell you where technology could help, and where
+            it wouldn&apos;t.
+          </p>
+        )}
+        <p className={styles.note} aria-hidden="true">
+          <span>Pick any slot!</span>
+          <svg viewBox="0 0 48 56">
+            <path pathLength={1} d="M40 2 C 44 22, 30 42, 6 50 M6 50 L 15 43 M6 50 L 16 54" />
+          </svg>
+        </p>
+      </header>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "56px 32px 140px" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 56, alignItems: "flex-start" }}>
-          <div style={{ flex: "1.4 1 480px", minWidth: 0 }}>
-            <h2 style={{ fontSize: "clamp(22px,2vw,28px)", lineHeight: 1.15, letterSpacing: "-.02em", fontWeight: 500, margin: 0 }}>Pick a time</h2>
-            <p style={{ fontSize: 14.5, color: "#4E5654", margin: "8px 0 0" }}>
-              Straight to the calendar. If nothing fits, email us and we&apos;ll find a slot.
-            </p>
-            <div style={{ marginTop: 24 }}>
-              <AvCalendarEmbed />
+      <div className={styles.grid}>
+        <section className={`${styles.calCard} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }} aria-labelledby="pick">
+          <div className={styles.calCardHead}>
+            <div>
+              <h2 id="pick">Pick a time</h2>
+              <p>Straight to the calendar. If nothing fits, email us and we&apos;ll find a slot.</p>
             </div>
+            <span className={styles.dur}>
+              <i />
+              30 minutes
+            </span>
           </div>
+          <div className={styles.embed}>
+            <AvCalendarEmbed />
+          </div>
+        </section>
 
-          <div style={{ flex: "1 1 320px", minWidth: 0 }}>
-            <h2 style={{ fontSize: "clamp(22px,2vw,28px)", lineHeight: 1.15, letterSpacing: "-.02em", fontWeight: 500, margin: 0 }}>Prefer email?</h2>
-            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: "#4E5654", margin: "8px 0 0" }}>
-              Write to{" "}
-              <a
-                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                  custom ? "A problem we're trying to solve" : "30-minute conversation"
-                )}`}
-                style={{ color: "#2F6B5F", textDecoration: "underline", textUnderlineOffset: 4 }}
-              >
-                {CONTACT_EMAIL}
-              </a>{" "}
-              with a couple of lines about the workflow. We usually reply within one business day.
+        <aside className={styles.side}>
+          <section
+            className={`${styles.sideCard} ${styles.sideCardDark} ${styles.fade}`}
+            style={{ ["--d" as string]: ".62s" }}
+            aria-labelledby="email"
+          >
+            <h2 id="email">Prefer email?</h2>
+            <p>Write to us with a couple of lines about the workflow.</p>
+            <a
+              className={styles.mailBtn}
+              href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+                custom ? "A problem we're trying to solve" : "30-minute conversation",
+              )}`}
+            >
+              {CONTACT_EMAIL}
+              <svg viewBox="0 0 16 16">
+                <path d="M4 12L12 4M6 4h6v6" />
+              </svg>
+            </a>
+            <p className={styles.reply}>
+              <i />
+              We usually reply within one business day
             </p>
+          </section>
 
-            <h2 style={{ fontSize: "clamp(22px,2vw,28px)", lineHeight: 1.15, letterSpacing: "-.02em", fontWeight: 500, margin: "48px 0 0" }}>Worth having ready</h2>
-            <ul style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 12, listStyle: "none", padding: 0 }}>
-              {PREP.map((item) => (
-                <li key={item} style={{ borderTop: "1px solid rgba(20,24,26,.14)", paddingTop: 12, fontSize: 14.5, color: "#4E5654" }}>
-                  {item}
+          <section
+            className={`${styles.sideCard} ${styles.sideCardLight} ${styles.fade}`}
+            style={{ ["--d" as string]: ".74s" }}
+            aria-labelledby="ready"
+          >
+            <h2 id="ready">Worth having ready</h2>
+            <ol className={styles.ready}>
+              {PREP.map((item, i) => (
+                <li key={item} style={{ ["--r" as string]: i }}>
+                  <span>{item}</span>
                 </li>
               ))}
-            </ul>
-
-            <p style={{ marginTop: 32, fontSize: 13.5, color: "#6E7674" }}>
-              No preparation is required. Nothing in the conversation obliges you to buy anything, and we won&apos;t ask for system access to have it.
+            </ol>
+            <p className={styles.readyFootnote}>
+              No preparation is required. Nothing in the conversation obliges you to buy anything, and we
+              won&apos;t ask for system access to have it.
             </p>
-          </div>
-        </div>
-      </section>
-    </div>
+          </section>
+        </aside>
+      </div>
+    </main>
   );
 }

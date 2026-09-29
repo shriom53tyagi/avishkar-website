@@ -4,6 +4,12 @@ import type { Config } from "tailwindcss";
  * Restrained token set: two neutral surfaces, a three-step ink ramp, one
  * accent, and two state colors. Anything that needs a sixth color is a design
  * problem, not a token problem.
+ *
+ * `canvas`/`ink`/`accent`/`line` read the same --color-* custom properties
+ * as the rest of the site (app/globals.css) so pages still on this Tailwind
+ * token set (e.g. /what-we-do, /results) share one palette with everything
+ * else instead of their own. `surface`/`alt`/`sand`/`positive`/`attention`
+ * are supporting/status colors outside that shared set and are unchanged.
  */
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
@@ -14,24 +20,24 @@ const config: Config = {
         mono: ["var(--font-mono)", "monospace"],
       },
       colors: {
-        canvas: "#FBFAF7",
+        canvas: "var(--color-bg)",
         surface: "#FCFBFA",
         alt: "#F4F1EA",
         sand: "#EFE9DD",
         ink: {
-          DEFAULT: "#0F172A",
-          muted: "#4B5563",
-          subtle: "#8A8578",
+          DEFAULT: "var(--color-text)",
+          muted: "var(--color-muted)",
+          subtle: "var(--color-muted)",
         },
         line: {
-          DEFAULT: "rgba(8,145,178,.20)",
-          strong: "rgba(8,145,178,.32)",
+          DEFAULT: "rgba(32,29,29,.20)",
+          strong: "rgba(32,29,29,.32)",
         },
         accent: {
-          DEFAULT: "#0891B2",
-          hover: "#0E7490",
-          light: "#3FB0C9",
-          tint: "#E8F4F7",
+          DEFAULT: "var(--color-purple)",
+          hover: "var(--color-purple)",
+          light: "var(--color-purple)",
+          tint: "color-mix(in srgb, var(--color-purple) 10%, var(--color-bg))",
         },
         positive: {
           DEFAULT: "#059669",

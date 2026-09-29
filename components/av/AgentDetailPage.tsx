@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { Agent } from "@/lib/agents";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+const mono: CSSProperties = { fontFamily: "var(--font-mono)" };
 
 const DETAIL_NOTE =
   "This agent is one example of how we work. Avishkar also builds integrations, automation, internal tools, and reporting inside the systems a practice already runs.";
@@ -26,15 +26,15 @@ export function AgentDetailPage({ agent, related }: { agent: Agent; related: Age
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
           {live && agent.demoUrl ? (
             <>
-              <a href={agent.demoUrl} className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+              <a href={agent.demoUrl} className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "var(--color-text)", color: "var(--color-bg)" }}>
                 Try agent
               </a>
-              <Link href="/contact" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
+              <Link href="/contact" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "var(--color-text)" }}>
                 Book a 30-min conversation
               </Link>
             </>
           ) : (
-            <Link href="/contact" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+            <Link href="/contact" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "var(--color-text)", color: "var(--color-bg)" }}>
               Book a 30-min conversation
             </Link>
           )}
@@ -90,10 +90,10 @@ export function AgentDetailPage({ agent, related }: { agent: Agent; related: Age
               : "This one is in development. If it's the problem you're trying to solve, tell us — that's how work gets prioritized."}
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
-            <Link href="/contact" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+            <Link href="/contact" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "var(--color-text)", color: "var(--color-bg)" }}>
               Book a 30-min conversation
             </Link>
-            <Link href="/agents" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
+            <Link href="/agents" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "var(--color-text)" }}>
               Explore agents
             </Link>
           </div>

@@ -1,94 +1,349 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import styles from "./AboutPage.module.css";
 
-const mono: CSSProperties = { fontFamily: "'DM Mono', monospace" };
+/**
+ * About page — ported 1:1 from reference/avishkar-about.html (`.ab-hero`,
+ * `.story`, `.who`/`.band`, `.think`).
+ *
+ * The reference's "Four things we hold to." cards use bracket-placeholder
+ * titles/text ("[Principle 1 title]" etc.) — replaced below with this
+ * page's real PRINCIPLES, in order, onto the dark/purple/light/lime cards.
+ *
+ * The reference has no equivalent of this page's existing "Bring us the
+ * problem." closing CTA section — kept per the task's instruction, styled
+ * with the same mono-label/big-heading/fade-up pattern as the rest of the
+ * page (see .closing in AboutPage.module.css), listed in the port summary
+ * for review.
+ *
+ * The "Who we work with" band's marquee text ("Medspas ✱ Aesthetic
+ * practices ✱ Clinics ✱ Healthcare teams") is this page's existing
+ * AUDIENCE sentence split into marquee items, not new copy.
+ */
 
-const HEADLINE = "We build technology for practices.";
-const SUB =
-  "Avishkar is a technology company built around practice operations: the leads, the schedule, the consultations, the follow-up, and the systems that hold all of it.";
-const BODY = [
-  "Most practices don't have a technology problem in the abstract. They have a specific workflow that costs the team hours a week, a report nobody can produce, or data sitting in a system that won't give it up. The software market answers that with another platform to adopt.",
-  "We work the other way around. We start from the workflow, connect to whatever systems are already in place, and build the smallest thing that solves the problem properly — an integration, an internal tool, a report, an agent. Then we measure whether it actually helped.",
-];
+const HEADLINE_LINES = ["We build technology", "for practices."];
+const LEAD_CHIPS = ["the leads", "the schedule", "the consultations", "the follow-up"];
+
+const BODY_PROBLEM =
+  "Most practices don't have a technology problem in the abstract. They have a specific workflow that costs the team hours a week, a report nobody can produce, or data sitting in a system that won't give it up. The software market answers that with another platform to adopt.";
+
+const BODY_TURN_CHIPS = ["an integration", "an internal tool", "a report", "an agent"];
+
 const AUDIENCE = "Built for medspas, aesthetic practices, clinics, and healthcare teams.";
+const BAND_ITEMS = ["Medspas", "Aesthetic practices", "Clinics", "Healthcare teams"];
 
 const PRINCIPLES = [
   {
+    variant: styles.pcardDark,
     title: "The workflow comes first",
     body: "We don't ask a practice to change how it works to suit software. The build fits the practice.",
+    rot: "-2deg",
   },
   {
+    variant: styles.pcardPurple,
     title: "Start small, prove it",
     body: "One scoped problem, solved properly, beats a platform rollout nobody asked for.",
+    rot: "1.5deg",
   },
   {
+    variant: styles.pcardLight,
     title: "Plain answers",
     body: "If technology isn't the right answer to a problem, we'll tell you that in the first conversation.",
+    rot: "-1deg",
   },
   {
+    variant: styles.pcardLime,
     title: "Your systems stay yours",
     body: "We work inside the tools you already run. Nothing gets ripped out and replaced.",
+    rot: "2deg",
   },
 ];
 
-export function AboutPage() {
+function readReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** A paragraph whose words light up (opacity 1) as it scrolls through the viewport. */
+function LitParagraph({ text }: { text: string }) {
+  const words = text.split(" ");
+  const ref = useRef<HTMLParagraphElement>(null);
+  const onScreenRef = useRef(true);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) onScreenRef.current = entry.isIntersecting;
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const reduce = readReducedMotion();
+    const wordEls = [...el.querySelectorAll<HTMLElement>("span")];
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+
+    let rafId: number;
+    const loop = () => {
+      if (onScreenRef.current) {
+        const r = el.getBoundingClientRect();
+        const p = reduce ? 1 : clamp((window.innerHeight * 0.8 - r.top) / (r.height + window.innerHeight * 0.3));
+        const n = Math.round(p * wordEls.length);
+        wordEls.forEach((w, i) => w.classList.toggle(styles.on, i < n));
+      }
+      rafId = requestAnimationFrame(loop);
+    };
+    loop();
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   return (
-    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "88px 32px 0" }}>
-        <div className="av-rise" style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>About</div>
-        <h1 className="av-rise" style={{ fontSize: "clamp(36px, 5.2vw, 68px)", lineHeight: 1.02, letterSpacing: "-.036em", fontWeight: 500, margin: "20px 0 0", maxWidth: "20ch", textWrap: "balance" }}>
-          {HEADLINE}
+    <p className={styles.lit} ref={ref}>
+      {words.map((w, i) => (
+        <span key={i}>{w} </span>
+      ))}
+    </p>
+  );
+}
+
+export function AboutPage() {
+  const aboutRef = useRef<HTMLElement>(null);
+  const [isIn, setIsIn] = useState(false);
+  const [leadHotIndex, setLeadHotIndex] = useState(-1);
+  const turnRef = useRef<HTMLDivElement>(null);
+  const [turnIn, setTurnIn] = useState(false);
+  const [turnHotIndex, setTurnHotIndex] = useState(-1);
+  const thinkRef = useRef<HTMLDivElement>(null);
+  const [thinkIn, setThinkIn] = useState(false);
+
+  // Page entrance (double-rAF, matching the reference).
+  useEffect(() => {
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setIsIn(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
+
+  // Lead chips flash lime in turn, one at a time, starting 1.8s after
+  // mount, every 900ms — a single shared interval walking the 4 chips in a
+  // round-robin, matching the reference's `leadChips[k++ % leadChips.length]`.
+  useEffect(() => {
+    if (readReducedMotion()) return;
+    let interval: ReturnType<typeof setInterval> | undefined;
+    let hotTimeout: ReturnType<typeof setTimeout> | undefined;
+    const startTimeout = setTimeout(() => {
+      let k = 0;
+      interval = setInterval(() => {
+        setLeadHotIndex(k++ % LEAD_CHIPS.length);
+        hotTimeout = setTimeout(() => setLeadHotIndex(-1), 700);
+      }, 900);
+    }, 1800);
+    return () => {
+      clearTimeout(startTimeout);
+      if (interval) clearInterval(interval);
+      if (hotTimeout) clearTimeout(hotTimeout);
+    };
+  }, []);
+
+  // "We work the other way around." — reveal + chips flashing lime once on entry.
+  useEffect(() => {
+    const el = turnRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setTurnIn(true);
+            obs.disconnect();
+          }
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!turnIn) return;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    BODY_TURN_CHIPS.forEach((_, i) => {
+      timeouts.push(setTimeout(() => setTurnHotIndex(i), 900 + i * 150));
+    });
+    return () => timeouts.forEach(clearTimeout);
+  }, [turnIn]);
+
+  // "Four things we hold to." reveal once on entry.
+  useEffect(() => {
+    const el = thinkRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setThinkIn(true);
+            obs.disconnect();
+          }
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <main className={`${styles.about} ${isIn ? styles.isIn : ""}`} data-about ref={aboutRef}>
+      <div className={styles.guide} aria-hidden="true" />
+
+      <section className={styles.hero}>
+        <p className={`${styles.eyebrow} ${styles.fade}`}>
+          <span>About</span>
+          <span>Avishkar</span>
+        </p>
+        <h1 className={styles.title}>
+          {HEADLINE_LINES.map((line, i) => (
+            <span className={styles.ln} key={i}>
+              <span>{line}</span>
+            </span>
+          ))}
         </h1>
-        <p style={{ fontSize: "clamp(16.5px,1.4vw,19px)", lineHeight: 1.6, color: "#4E5654", maxWidth: "58ch", margin: "22px 0 0", textWrap: "pretty" }}>
-          {SUB}
+        <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
+          Avishkar is a technology company built around practice operations:{" "}
+          {LEAD_CHIPS.map((c, i) => (
+            <span key={c}>
+              <span
+                className={`${styles.chip} ${i === leadHotIndex ? styles.hot : ""}`}
+                style={{ ["--i" as string]: i }}
+              >
+                {c}
+              </span>
+              {i < LEAD_CHIPS.length - 1 ? ", " : ""}
+            </span>
+          ))}
+          , and the systems that hold all of it.
         </p>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "64px 32px 0" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 56 }}>
-          <div style={{ flex: "1.6 1 420px", minWidth: 0, display: "flex", flexDirection: "column", gap: 22 }}>
-            {BODY.map((p) => (
-              <p key={p.slice(0, 24)} style={{ fontSize: 17, lineHeight: 1.65, color: "#4E5654", margin: 0, maxWidth: "62ch" }}>
-                {p}
-              </p>
-            ))}
-          </div>
-          <div style={{ flex: "1 1 260px", minWidth: 0, borderLeft: "1px solid rgba(20,24,26,.14)", paddingLeft: 28 }}>
-            <div style={{ ...mono, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>Who we work with</div>
-            <p style={{ fontSize: 16, lineHeight: 1.6, color: "#14181A", margin: "14px 0 0" }}>{AUDIENCE}</p>
+      <section className={styles.story}>
+        <div className={styles.storySide}>
+          <p className={styles.storyLabel}>The problem</p>
+          <p className={`${styles.storyNote} ${styles.script}`} aria-hidden="true">
+            Sound familiar?
+          </p>
+        </div>
+        <div>
+          <LitParagraph text={BODY_PROBLEM} />
+          <div className={`${styles.turn} ${turnIn ? styles.isIn : ""}`} ref={turnRef}>
+            <h2>We work the other way around.</h2>
+            <p>
+              We start from the workflow, connect to whatever systems are already in place, and build the
+              smallest thing that solves the problem properly:{" "}
+              {BODY_TURN_CHIPS.map((c, i) => (
+                <span key={c}>
+                  <span className={`${styles.chip} ${i === turnHotIndex ? styles.hot : ""}`}>{c}</span>
+                  {i < BODY_TURN_CHIPS.length - 1 ? ", " : ""}
+                </span>
+              ))}
+              . Then we measure whether it actually helped.
+            </p>
           </div>
         </div>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "96px 32px 0" }}>
-        <div style={{ ...mono, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#586060" }}>How we think</div>
-        <h2 style={{ fontSize: "clamp(24px,2.8vw,36px)", lineHeight: 1.1, letterSpacing: "-.028em", fontWeight: 500, margin: "14px 0 0" }}>Four things we hold to.</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "36px 48px", marginTop: 40 }}>
-          {PRINCIPLES.map((p) => (
-            <div key={p.title} style={{ flex: "1 1 380px", minWidth: 0, borderTop: "1px solid rgba(20,24,26,.14)", paddingTop: 20 }}>
-              <h3 style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em", margin: 0 }}>{p.title}</h3>
-              <p style={{ fontSize: 14.5, lineHeight: 1.6, color: "#4E5654", margin: "8px 0 0", maxWidth: "50ch" }}>{p.body}</p>
-            </div>
+      <section className={styles.who} aria-labelledby="who">
+        <div className={styles.whoHead}>
+          <p className={styles.storyLabel} id="who">
+            Who we work with
+          </p>
+          <p>{AUDIENCE}</p>
+        </div>
+        <div className={styles.band} aria-hidden="true">
+          <div className={styles.bandTrack}>
+            <BandGroup />
+            <BandGroup />
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.think} ${thinkIn ? styles.isIn : ""}`} aria-labelledby="think">
+        <p className={styles.eyebrow}>
+          <span>How we think</span>
+          <span>04</span>
+        </p>
+        <h2 id="think">
+          Four things
+          <br />
+          we hold to.
+        </h2>
+        <div className={styles.thinkGrid} ref={thinkRef}>
+          {PRINCIPLES.map((p, i) => (
+            <article
+              key={p.title}
+              className={`${styles.pcard} ${p.variant}`}
+              style={{ ["--i" as string]: i, ["--rot" as string]: p.rot }}
+            >
+              <span className={styles.pcardBig} aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className={styles.pcardNum}>
+                <span>{String(i + 1).padStart(2, "0")}</span>
+              </span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      <section style={{ maxWidth: 1240, margin: "0 auto", padding: "96px 32px 140px" }}>
-        <div style={{ borderTop: "1px solid rgba(20,24,26,.12)", paddingTop: 48 }}>
-          <h2 style={{ fontSize: "clamp(24px,2.8vw,36px)", lineHeight: 1.1, letterSpacing: "-.028em", fontWeight: 500, margin: 0, maxWidth: "18ch" }}>Bring us the problem.</h2>
-          <p style={{ fontSize: 16.5, lineHeight: 1.6, color: "#4E5654", margin: "14px 0 0", maxWidth: "56ch" }}>
-            The best first conversation is a specific one: a workflow, a report you can&apos;t get, or a system that won&apos;t give up its data.
+      {/*
+        Existing "Bring us the problem." CTA — not in the reference, kept
+        per the task instruction and styled with the page's own patterns
+        (mono label absent here since the reference's closing sections
+        don't use one either; heading/body/fade-up match .turn above).
+      */}
+      <section className={styles.closing}>
+        <div className={styles.closingInner}>
+          <h2>Bring us the problem.</h2>
+          <p>
+            The best first conversation is a specific one: a workflow, a report you can&apos;t get, or a system
+            that won&apos;t give up its data.
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 28 }}>
-            <Link href="/contact" className="av-hero-btn-dark" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, background: "#14181A", color: "#F1F1ED" }}>
+          <div className={styles.closingActions}>
+            <Link href="/contact" className={styles.closingDark}>
               Book a 30-min conversation
             </Link>
-            <Link href="/agents" className="av-hero-btn-outline" style={{ fontSize: 15, fontWeight: 500, padding: "14px 26px", borderRadius: 999, border: "1px solid rgba(20,24,26,.2)", color: "#14181A" }}>
+            <Link href="/agents" className={styles.closingOutline}>
               See our work
             </Link>
           </div>
         </div>
       </section>
+    </main>
+  );
+}
+
+function BandGroup() {
+  return (
+    <div className={styles.bandGrp}>
+      {BAND_ITEMS.map((item) => (
+        <span key={item}>
+          {item}
+          <b aria-hidden="true">✱</b>
+        </span>
+      ))}
     </div>
   );
 }
