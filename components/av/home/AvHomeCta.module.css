@@ -410,11 +410,14 @@
     padding: 2rem 1rem 0;
   }
   .cta {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     min-height: 0;
   }
   .left {
     padding: 7rem 1.25rem 3rem;
+  }
+  .left h2 {
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
   }
   .modes {
     right: 1rem;
@@ -428,12 +431,28 @@
     left: 1.25rem;
     top: 1.5rem;
   }
+  .note {
+    margin-left: 0;
+  }
   .pv {
     position: relative;
-    left: 1.25rem;
+    left: 0;
     top: 0;
-    width: 56rem;
-    height: 30rem;
-    margin-bottom: -1rem;
+    width: auto;
+    height: auto;
+    margin: 0 1.25rem -1rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pvSide {
+    display: none;
+  }
+  .pvGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pvThumb {
+    height: 5rem;
+  }
+  .pvTitle {
+    font-size: 1.6rem;
   }
 }

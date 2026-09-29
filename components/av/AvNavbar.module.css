@@ -26,7 +26,7 @@
   --ease: cubic-bezier(0.65, 0.05, 0, 1);
   --font: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
   --mono: var(--font-mono), ui-monospace, monospace;
-  --closed-w: 50rem;
+  --closed-w: 54rem;
   --gutter: 1.5rem;
 
   font-family: var(--font);
@@ -152,26 +152,46 @@
   align-items: center;
   gap: 0.125rem;
 }
+.actions .btn {
+  white-space: nowrap;
+}
 .btn {
   display: inline-flex;
   align-items: center;
-  height: 3.5rem;
-  padding: 0 1.5rem;
-  font-size: 1.375rem;
+  height: 3rem;
+  padding: 0 1.25rem;
+  font-size: 1.1875rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   transition: background-color 0.5s var(--ease), border-radius 0.5s var(--ease);
 }
+/* Early Access sits a touch smaller than Book a demo (the primary action)
+   so the two read as a clear hierarchy rather than two equal buttons. */
 .btnLogin {
+  height: 2.75rem;
+  padding: 0 1.125rem;
+  font-size: 1.0625rem;
   background: var(--pill);
   border-radius: 2rem;
 }
 .btnLogin:hover {
   background: var(--pill-hover);
 }
+/*
+ * `.nav a { color: inherit }` (specificity 0,1,1) otherwise beats a plain
+ * `.btnJoin { color: ... }` (0,1,0), so "Book a demo" rendered in the
+ * navbar's light --text color instead of --lime-text. `.nav a.btnJoin`
+ * matches that specificity so the dark color actually wins, and the same
+ * rule is repeated for `.rollIn`'s two inner spans (the visible label
+ * text lives there, not directly on the link) so both the normal and
+ * hover state render dark.
+ */
+.nav a.btnJoin,
+.nav a.btnJoin .rollIn > span {
+  color: var(--lime-text);
+}
 .btnJoin {
   background: var(--lime);
-  color: var(--lime-text);
   border-radius: 0.25rem;
 }
 .btnJoin:hover {
@@ -435,6 +455,16 @@
   }
   .panelGrid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 768px) and (max-width: 1000px) {
+  .actions .btn {
+    padding: 0 1rem;
+    font-size: 1.0625rem;
+  }
+  .actions .btnLogin {
+    padding: 0 0.875rem;
+    font-size: 0.9375rem;
   }
 }
 @media (max-width: 767px) {

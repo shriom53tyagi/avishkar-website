@@ -451,8 +451,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                       <i />
                       The Avishkar Letter
                     </div>
-                    {/* TODO: placeholder subject line in the reference itself */}
-                    <p className={styles.mailSubj}>[Issue title goes here]</p>
+                    <p className={styles.mailSubj}>This month: the real cost of a five-tool front desk</p>
                     <b style={{ width: "92%" }} />
                     <b style={{ width: "80%" }} />
                     <b style={{ width: "86%" }} />
@@ -525,8 +524,12 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                 <p>Step-by-step guides your front desk can use tomorrow.</p>
                 <div className={styles.lcardVis} aria-hidden="true">
                   <div className={styles.checks}>
-                    {/* TODO: placeholder step copy in the reference itself */}
-                    {["[Playbook step one]", "[Playbook step two]", "[Playbook step three]", "[Playbook step four]"].map(
+                    {[
+                      "Reply to every new lead the same day",
+                      "Confirm each booking by text",
+                      "Send intake forms before the visit",
+                      "Book the next visit before they leave",
+                    ].map(
                       (step, k) => (
                         <div key={step}>
                           <i style={{ ["--k" as string]: k }} />

@@ -77,6 +77,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
   const [open, setOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const stripItems = buildStripItems(latestInsights);
+  const latestInsight = latestInsights[0] ?? null;
 
   useEffect(() => {
     setOpen(false);
@@ -120,9 +121,8 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
             </Link>
 
             <div className={styles.actions}>
-              {/* TODO: no /login page exists yet — points at /contact until one does. */}
-              <Link href="/contact" className={cn(styles.btn, styles.btnLogin)}>
-                <Roll>Login</Roll>
+              <Link href="/#early-access" className={cn(styles.btn, styles.btnLogin)}>
+                <Roll>Early Access</Roll>
               </Link>
               <Link href="/contact" className={cn(styles.btn, styles.btnJoin)}>
                 <Roll>Book a demo</Roll>
@@ -137,13 +137,13 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                   <p className={styles.label}>Our products</p>
                   <ul className={styles.links}>
                     <li>
-                      <Link href="/#how">
+                      <Link href="/what-we-do">
                         <Roll>What we do</Roll>
                       </Link>
                     </li>
                     <li>
-                      <Link href="/#capabilities">
-                        <Roll>Solutions</Roll>
+                      <Link href="/#why">
+                        <Roll>Why Avishkar</Roll>
                       </Link>
                     </li>
                     <li>
@@ -159,7 +159,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     </li>
                   </ul>
                   <div className={styles.sublinks}>
-                    <Link href="/#proof">Case studies</Link>
+                    <Link href="/results">Case studies</Link>
                     <Link href="/results">Results</Link>
                   </div>
                 </div>
@@ -204,26 +204,18 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                   </div>
                 </div>
 
-                {/*
-                  TODO: the reference's third column is a "featured article"
-                  card wired to live data. app/insights/page.tsx already
-                  computes a featured insight from the DB, but that's server
-                  data this client component doesn't have — rather than
-                  invent a plumbing path, this stays a static teaser linking
-                  to /insights until product decides how it should be fed.
-                */}
                 <div className={cn(styles.card, styles.feature, styles.reveal)} style={{ "--i": 2 } as React.CSSProperties}>
                   <p className={styles.tag}>
                     <span>Latest</span>
                     <span>Insight</span>
                   </p>
-                  <h3>Read our latest thinking</h3>
+                  <h3>{latestInsight ? latestInsight.title : "Read our latest thinking"}</h3>
                   <div className={styles.art} aria-hidden="true">
                     <i />
                     <i />
                     <i />
                   </div>
-                  <Link href="/insights" className={styles.more}>
+                  <Link href={latestInsight ? `/insights/${latestInsight.slug}` : "/insights"} className={styles.more}>
                     <Roll>Read more</Roll>
                   </Link>
                 </div>

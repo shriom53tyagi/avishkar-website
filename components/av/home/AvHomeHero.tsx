@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { AvMark } from "./shared/AvMark";
@@ -12,6 +13,14 @@ import styles from "./AvHomeHero.module.css";
  * (CSS ~162-334, markup ~948-1004, JS ~1202-1291).
  *
  * TODO: none — all hero copy/timing is real, ported as-is.
+ *
+ * The headline's mark (between "make" and "your") uses the real Avishkar
+ * logo (public/logo.png) instead of the placeholder AvMark SVG — the only
+ * one of AvMark's 4 call sites swapped so far; the node pill, library
+ * cards and CTA sidebar still use the animated placeholder. Because a
+ * raster image can't do the SVG's stroke-drawing entrance, it gets a
+ * simple fade/scale-in on `.hero.isIn` instead (see .titleLogo in
+ * AvHomeHero.module.css) rather than the spoke draw-in/hover-wiggle.
  */
 
 const TITLE_LEFT = ["We", "make"];
@@ -365,7 +374,7 @@ export function AvHomeHero() {
           ))}
         </span>
         <span>
-          <AvMark />
+          <Image src="/logo.png" alt="" width={96} height={52} className={styles.titleLogo} />
         </span>
         <span className={styles.side}>
           {TITLE_RIGHT.map((w, i) => (

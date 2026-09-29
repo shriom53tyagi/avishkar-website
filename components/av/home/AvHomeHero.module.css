@@ -62,6 +62,25 @@
   transform: none;
   opacity: 1;
 }
+/*
+ * The real logo in place of the animated AvMark SVG at this one call
+ * site — same footprint (0.88em) and vertical placement as .mark above,
+ * but a plain fade/scale-in (a raster image can't do the SVG's
+ * stroke-dashoffset draw-in).
+ */
+.titleLogo {
+  width: 0.88em;
+  height: auto;
+  flex-shrink: 0;
+  vertical-align: -0.08em;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: transform 1.4s var(--ease) 0.3s, opacity 0.4s 0.3s;
+}
+.hero.isIn .titleLogo {
+  transform: none;
+  opacity: 1;
+}
 .title :global(.mark__spokes line) {
   stroke: currentColor;
   stroke-width: 3.2;

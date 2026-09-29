@@ -138,17 +138,28 @@
   letter-spacing: -0.05em;
   line-height: 0.98;
 }
-.title :global(.w) > span {
+/*
+ * Word wrapper uses a CSS-module class (.word), not the reference's plain
+ * ".w" — app/globals.css already defines a site-wide, unrelated ".w" rule
+ * (a different, pre-existing "word-by-word blur-in" system gated on a
+ * ".live" ancestor) that was colliding with the reference's plain ".w"
+ * class name here: its `opacity: 0; filter: blur(6px)` applied but was
+ * never un-set (this section never gets a ".live" ancestor), permanently
+ * hiding the heading while leaving the rest of the section's non-".w"
+ * elements (badge, note, list rows) visible. Scoping to a module class
+ * avoids the collision; the markup/behavior is otherwise unchanged.
+ */
+.title :global(.word) > span {
   display: inline-block;
   transform: translateY(115%) rotate(4deg);
   transform-origin: 0 100%;
   transition: transform 1.2s var(--ease);
   transition-delay: calc(var(--i) * 0.025s);
 }
-.why.isIn .title :global(.w) > span {
+.why.isIn .title :global(.word) > span {
   transform: none;
 }
-.title :global(.w) {
+.title :global(.word) {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
@@ -234,5 +245,18 @@
 @media (prefers-reduced-motion: reduce) {
   .checker i {
     animation: none;
+  }
+  .corner,
+  .title :global(.word) > span,
+  .note span,
+  .list li::before,
+  .list h3,
+  .list p {
+    transform: none !important;
+    opacity: 1 !important;
+    clip-path: inset(0 0 0 0) !important;
+  }
+  .note path {
+    stroke-dashoffset: 0 !important;
   }
 }

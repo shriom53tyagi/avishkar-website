@@ -76,6 +76,7 @@ export function AvHomeWhy() {
     <section
       className={`${styles.why} ${isIn ? styles.isIn : ""}`}
       data-why
+      id="why"
       aria-labelledby="why-title"
       ref={whyRef}
     >
@@ -115,7 +116,7 @@ export function AvHomeWhy() {
       <div>
         <h2 className={styles.title} id="why-title">
           {TITLE_WORDS.map((w, i) => (
-            <span className="w" key={i}>
+            <span className="word" key={i}>
               <span style={{ ["--i" as string]: i }}>{w}</span>
             </span>
           )).reduce<React.ReactNode[]>((acc, el, i) => {

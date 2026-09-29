@@ -179,16 +179,18 @@ export function HowWeWorkPage() {
           No long discovery phase, no platform migration, no committee. We start with the workflow that frustrates
           you and build the smallest thing that fixes it.
         </p>
-        <Link href="/contact" className={`${styles.cta} ${styles.fade}`} style={{ ["--d" as string]: ".55s" }}>
-          Book a 30-min conversation
-        </Link>
-        <p className={`${styles.note} ${styles.script}`} aria-hidden="true">
-          <span>
-            That&apos;s it.
-            <br />
-            Three steps!
-          </span>
-        </p>
+        <span className={styles.ctaWrap}>
+          <Link href="/contact" className={`${styles.cta} ${styles.fade}`} style={{ ["--d" as string]: ".55s" }}>
+            Book a 30-min conversation
+          </Link>
+          <p className={`${styles.note} ${styles.script}`} aria-hidden="true">
+            <span>
+              That&apos;s it.
+              <br />
+              Three steps!
+            </span>
+          </p>
+        </span>
       </section>
 
       <section className={styles.steps} aria-labelledby="steps" ref={sectionRef}>
