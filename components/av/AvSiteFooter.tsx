@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import styles from "./AvSiteFooter.module.css";
+import { Roll } from "./Roll";
 
 /**
  * Site-wide footer — ported 1:1 from reference/avishkar-hero.html `.foot`
@@ -70,11 +71,7 @@ export function AvSiteFooter() {
             </label>
             <input id="nl-email" type="email" placeholder="yourname@practice.com" required />
             <button className={styles.btn} type="submit">
-              <span className={styles.roll}>
-                <span className={styles.rollIn}>
-                  <span>Get updates</span>
-                </span>
-              </span>
+              <Roll>Get updates</Roll>
             </button>
             <label className={styles.nlAgree}>
               <input type="checkbox" required />
@@ -141,19 +138,11 @@ export function AvSiteFooter() {
           </div>
           <div className={styles.actions}>
             <div className={styles.pair}>
-              <a href="/login" className={`${styles.btn} ${styles.btnDark}`}>
-                <span className={styles.roll}>
-                  <span className={styles.rollIn}>
-                    <span>Login</span>
-                  </span>
-                </span>
-              </a>
+              <Link href="/#early-access" className={`${styles.btn} ${styles.btnDark}`}>
+                <Roll>Early Access</Roll>
+              </Link>
               <Link href="/contact" className={`${styles.btn} ${styles.btnCoral}`}>
-                <span className={styles.roll}>
-                  <span className={styles.rollIn}>
-                    <span>Book a demo</span>
-                  </span>
-                </span>
+                <Roll>Book a demo</Roll>
               </Link>
             </div>
             <div className={styles.social}>

@@ -10,19 +10,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./AvNavbar.module.css";
+import { Roll } from "./Roll";
 import { cn } from "@/lib/utils";
-
-/** Text that duplicates on hover and slides up 50% (the reference's "roll"). */
-function Roll({ children }: { children: string }) {
-  return (
-    <span className={styles.roll}>
-      <span className={styles.rollIn}>
-        <span>{children}</span>
-        <span>{children}</span>
-      </span>
-    </span>
-  );
-}
 
 export type LatestInsightLink = {
   slug: string;
@@ -159,8 +148,8 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     </li>
                   </ul>
                   <div className={styles.sublinks}>
-                    <Link href="/results">Case studies</Link>
-                    <Link href="/results">Results</Link>
+                    <Link href="/security">Security</Link>
+                    <Link href="/">Home</Link>
                   </div>
                 </div>
 

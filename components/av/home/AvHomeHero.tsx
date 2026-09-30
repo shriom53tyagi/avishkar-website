@@ -7,6 +7,7 @@ import type { CSSProperties } from "react";
 import { AvMark } from "./shared/AvMark";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import styles from "./AvHomeHero.module.css";
+import { Roll } from "../Roll";
 
 /**
  * Hero section — ported 1:1 from reference/avishkar-hero.html `.hero`
@@ -450,20 +451,10 @@ export function AvHomeHero() {
 
       <div className={styles.cta}>
         <Link href="/contact" className={`${styles.btn} ${styles.btnJoin}`}>
-          <span className={styles.roll}>
-            <span className={styles.rollIn}>
-              <span>Book a demo</span>
-              <span>Book a demo</span>
-            </span>
-          </span>
+          <Roll>Book a demo</Roll>
         </Link>
         <a href="#insights" className={`${styles.btn} ${styles.btnSoft}`}>
-          <span className={styles.roll}>
-            <span className={styles.rollIn}>
-              <span>See how</span>
-              <span>See how</span>
-            </span>
-          </span>
+          <Roll>See how</Roll>
         </a>
       </div>
 

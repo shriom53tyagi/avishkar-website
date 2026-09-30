@@ -497,24 +497,6 @@
 .btnJoin:hover {
   border-radius: 2rem;
 }
-.roll {
-  display: inline-flex;
-  overflow: hidden;
-  height: 1.2em;
-  line-height: 1.2;
-}
-.rollIn {
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.6s var(--ease);
-}
-.rollIn > span {
-  height: 1.2em;
-}
-a:hover .rollIn,
-button:hover .rollIn {
-  transform: translateY(-50%);
-}
 
 @media (max-width: 900px) {
   .oval {

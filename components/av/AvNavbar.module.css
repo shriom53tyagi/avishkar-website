@@ -181,13 +181,10 @@
  * `.nav a { color: inherit }` (specificity 0,1,1) otherwise beats a plain
  * `.btnJoin { color: ... }` (0,1,0), so "Book a demo" rendered in the
  * navbar's light --text color instead of --lime-text. `.nav a.btnJoin`
- * matches that specificity so the dark color actually wins, and the same
- * rule is repeated for `.rollIn`'s two inner spans (the visible label
- * text lives there, not directly on the link) so both the normal and
- * hover state render dark.
+ * matches that specificity so the dark color actually wins. The rolled copy
+ * is a text-shadow in currentColor, so it inherits the same color.
  */
-.nav a.btnJoin,
-.nav a.btnJoin .rollIn > span {
+.nav a.btnJoin {
   color: var(--lime-text);
 }
 .btnJoin {
@@ -198,25 +195,6 @@
   border-radius: 2rem;
 }
 
-/* text-roll hover */
-.roll {
-  display: inline-flex;
-  overflow: hidden;
-  height: 1.2em;
-  line-height: 1.2;
-}
-.rollIn {
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.6s var(--ease);
-}
-.rollIn > span {
-  height: 1.2em;
-}
-.nav a:hover .rollIn,
-.nav button:hover .rollIn {
-  transform: translateY(-50%);
-}
 
 /* ================= Panel: height grows ================= */
 .panel {
@@ -472,7 +450,7 @@
     --gutter: 0.5rem;
     top: 0.5rem;
   }
-  .toggle .roll,
+  .toggle [data-roll],
   .btnLogin {
     display: none;
   }
