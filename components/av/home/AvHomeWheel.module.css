@@ -25,7 +25,7 @@
 .ring {
   position: absolute;
   left: 50%;
-  top: calc(6rem + 1500px);
+  top: 0; /* vertical offset is applied via translateY in AvHomeWheel.tsx */
   width: 0;
   height: 0;
   will-change: transform;
@@ -315,9 +315,6 @@
 @media (max-width: 767px) {
   .wheel {
     height: 30rem;
-  }
-  .ring {
-    top: calc(4rem + 1500px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
