@@ -89,17 +89,33 @@ export function AvHomeCta() {
     const ticks = ticksRef.current;
     if (!cta || !ticks) return;
     const reduce = readReducedMotion();
+    // `cta`'s position/height only change on scroll or resize, not every
+    // frame — cached and re-measured only on those events instead of a
+    // forced-layout read on every rAF tick.
+    let ctaTop = cta.getBoundingClientRect().top;
+    let ctaHeight = cta.getBoundingClientRect().height;
+    const remeasure = () => {
+      const r = cta.getBoundingClientRect();
+      ctaTop = r.top;
+      ctaHeight = r.height;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const loop = () => {
       if (onScreenRef.current && !reduce) {
-        const r = cta.getBoundingClientRect();
-        const p = (window.innerHeight - r.top) / (window.innerHeight + r.height);
+        const p = (window.innerHeight - ctaTop) / (window.innerHeight + ctaHeight);
         ticks.style.transform = `rotate(${(p - 0.5) * 10}deg)`;
       }
       rafId = requestAnimationFrame(loop);
     };
     loop();
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
+    };
   }, []);
 
   return (

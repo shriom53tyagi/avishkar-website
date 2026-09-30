@@ -130,6 +130,13 @@ const script = Caveat({
   display: "swap",
 });
 
+// The root layout queries the DB for the navbar's latest-insights strip
+// and menu-panel feature card. Without an explicit revalidate, that query
+// ran fresh on every single page navigation site-wide (the layout is the
+// one component every route shares). The list barely changes minute to
+// minute, so it's cached and revalidated in the background instead.
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {

@@ -87,23 +87,36 @@ export function AvHomeIntro() {
     const reduce = readReducedMotion();
     const words = [...statement.querySelectorAll<HTMLElement>("span")];
 
+    // `statement`/`reel`'s position and size only change on scroll or
+    // resize, not every frame — both cached and re-measured only on those
+    // events instead of two forced-layout reads on every rAF tick.
+    let statementTop = statement.getBoundingClientRect().top;
+    let statementHeight = statement.getBoundingClientRect().height;
+    let reelTop = reel.getBoundingClientRect().top;
+    const remeasure = () => {
+      const sr = statement.getBoundingClientRect();
+      statementTop = sr.top;
+      statementHeight = sr.height;
+      reelTop = reel.getBoundingClientRect().top;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const update = () => {
       if (onScreenRef.current) {
         const vh = window.innerHeight;
-        const sr = statement.getBoundingClientRect();
-        const sp = reduce ? 1 : clamp01((vh * 0.85 - sr.top) / (sr.height + vh * 0.35));
+        const sp = reduce ? 1 : clamp01((vh * 0.85 - statementTop) / (statementHeight + vh * 0.35));
         const lit = Math.round(sp * words.length);
         words.forEach((w, i) => w.classList.toggle(styles.lit, i < lit));
 
-        const rr = reel.getBoundingClientRect();
-        const p = reduce ? 1 : easeOutCubic(clamp01((vh - rr.top) / (vh * 0.9)));
+        const p = reduce ? 1 : easeOutCubic(clamp01((vh - reelTop) / (vh * 0.9)));
         const off = (1 - p) * 18;
         L.style.transform = `translate(${-off}vw, -50%)`;
         R.style.transform = `translate(${off}vw, -50%)`;
         L.style.opacity = R.style.opacity = String(p);
         card.style.transform = `scale(${0.8 + 0.2 * p})`;
-        dial.style.transform = `rotate(${(vh - rr.top) * 0.06}deg)`;
+        dial.style.transform = `rotate(${(vh - reelTop) * 0.06}deg)`;
         if (p > 0.9) note.classList.add(styles.isIn);
       }
       rafId = requestAnimationFrame(update);
@@ -168,6 +181,8 @@ export function AvHomeIntro() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
       previewIo.disconnect();
       preview?.removeEventListener("loadedmetadata", onPreviewMeta);
       card.removeEventListener("click", onCardClick);

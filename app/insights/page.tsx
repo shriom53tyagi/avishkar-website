@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { InsightsPage, type FeaturedPost, type Post } from "@/components/av/InsightsPage";
 import { listPublishedInsights, type Insight } from "@/lib/db";
 
-export const revalidate = 60;
+// Cached and revalidated in the background every 5 minutes instead of
+// querying the DB on every request — content is the same either way,
+// just served from cache between revalidations.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Insights",

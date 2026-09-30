@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AvMark } from "./shared/AvMark";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { bez, easeOutQuart, clamp01 } from "./shared/easing";
+import { DEVELOPING_AGENTS, LIVE_AGENTS } from "@/lib/agents";
 import type { LatestInsight } from "../HomePage";
 import styles from "./AvHomeLibrary.module.css";
 import { Roll } from "../Roll";
@@ -21,15 +22,15 @@ import { Roll } from "../Roll";
  * NOTE: the task brief describes "6 cards" here, but the reference
  * markup itself (read directly, line ~1086) has exactly 5 cards / 5 tabs
  * (Insights, The Avishkar Letter, Practice Audits, Playbooks,
- * Benchmarks) — ported as 5 to match the actual reference file, not the
+ * Benchmarks; Playbooks has since become Agents) — ported as 5 to match the actual reference file, not the
  * brief's summary. Flagged in the final report as a brief/reference
  * inconsistency, not a deviation from the reference itself.
  *
- * Card 0 ("Insights") is wired to the real `latestInsights` prop passed
- * down from HomePage → app/page.tsx (DB-backed). The other four cards
- * (Letter/Audits/Playbooks/Benchmarks) have no real data source in this
- * codebase and keep the reference's mock content, each marked with a
- * TODO at its placeholder site.
+ * Card 3 ("Agents") shows the real live / in-development counts from
+ * lib/agents. The Letter/Audits/Benchmarks cards have no real data source
+ * in this codebase and keep the reference's mock content, each marked with
+ * a TODO at its placeholder site. The `latestInsights` prop is no longer
+ * used: the Insights button now goes to /insights.
  */
 
 const EASE_IO = bez(0.65, 0.05, 0, 1);
@@ -69,9 +70,11 @@ function ArcTicks({ g }: { g: Geometry }) {
   );
 }
 
-const TABS = ["Insights", "The Avishkar Letter", "Practice Audits", "Playbooks", "Benchmarks"];
+const TABS = ["Insights", "The Avishkar Letter", "Practice Audits", "Agents", "Benchmarks"];
+// Where each card's button (and the active card itself) goes, by card index.
+const HREFS = ["/insights", "/coming-soon", "/coming-soon", "/agents", "/coming-soon"];
 
-export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsight[] }) {
+export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
   const libRef = useRef<HTMLElement>(null);
   const arcRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
@@ -88,8 +91,6 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
   const [geometry, setGeometry] = useState<Geometry>(() =>
     layoutFor(typeof window === "undefined" ? 1440 : window.innerWidth),
   );
-
-  const insightCard = latestInsights[0];
 
   useEffect(() => {
     const lib = libRef.current;
@@ -192,6 +193,11 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
       t.addEventListener("click", fn);
       return fn;
     });
+    // A click on a side (non-active) card centres it and never navigates,
+    // even if it lands on the card's own button. A click on the active card
+    // goes to its destination: the button's own click does that natively,
+    // anywhere else on the card forwards to the button's Link. A drag never
+    // navigates (see `moved` below).
     const cardClicks = cards.map((c, i) => {
       const fn = (e: MouseEvent) => {
         if (moved > 6) {
@@ -201,7 +207,9 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
         if (i !== active) {
           e.preventDefault();
           goTo(i);
+          return;
         }
+        if (!(e.target as Element).closest("a")) links[i]?.click();
       };
       c.addEventListener("click", fn as EventListener);
       return fn;
@@ -232,25 +240,43 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
     arc.addEventListener("pointerenter", onEnter);
     arc.addEventListener("pointerleave", onLeave);
 
+    // The pointer is captured only once a drag is confirmed (moved past a
+    // 6px threshold), not on every pointerdown. Capturing on pointerdown
+    // unconditionally routed the very next click through the capturing
+    // element's event path even for a plain tap, which is what delayed a
+    // normal card-button/link click. A drag is now: pointerdown records
+    // the start position without capturing → pointermove past 6px starts
+    // the drag proper and captures the pointer at that point → release
+    // (pointerup/cancel) ends it exactly as before, still snapping/
+    // flinging to the nearest card.
+    let dragStart: { x: number; pos: number; pointerId: number } | null = null;
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
       tween = null;
       moved = 0;
-      drag = { x: e.clientX, pos, samples: [{ p: pos, t: performance.now() }] };
-      arc.classList.add(styles.isDrag);
-      arc.setPointerCapture(e.pointerId);
+      dragStart = { x: e.clientX, pos, pointerId: e.pointerId };
     };
     const onPointerMove = (e: PointerEvent) => {
-      const r = arc.getBoundingClientRect();
-      cur.style.left = e.clientX - r.left + "px";
-      cur.style.top = e.clientY - r.top + "px";
-      if (!drag) return;
+      if (arcRectCache) {
+        cur.style.left = e.clientX - arcRectCache.left + "px";
+        cur.style.top = e.clientY - arcRectCache.top + "px";
+      }
+      if (!dragStart) return;
+      const dx = e.clientX - dragStart.x;
+      if (!drag) {
+        if (Math.abs(dx) <= 6) return;
+        // Drag confirmed: start capturing from here on.
+        drag = { x: dragStart.x, pos: dragStart.pos, samples: [{ p: dragStart.pos, t: performance.now() }] };
+        arc.classList.add(styles.isDrag);
+        arc.setPointerCapture(dragStart.pointerId);
+      }
       moved = Math.max(moved, Math.abs(e.clientX - drag.x));
       pos = drag.pos - (e.clientX - drag.x) / pxPerCard();
       drag.samples.push({ p: pos, t: performance.now() });
       if (drag.samples.length > 6) drag.samples.shift();
     };
     const release = () => {
+      dragStart = null;
       if (!drag) return;
       const a = drag.samples[0];
       const b = drag.samples[drag.samples.length - 1];
@@ -265,6 +291,17 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
     arc.addEventListener("pointermove", onPointerMove);
     arc.addEventListener("pointerup", release);
     arc.addEventListener("pointercancel", release);
+
+    // Cache the arc's bounding rect for the drag cursor instead of reading
+    // layout on every pointermove; re-measure only on resize/scroll.
+    let arcRectCache: DOMRect | null = arc.getBoundingClientRect();
+    const remeasureArcRect = () => {
+      arcRectCache = arc.getBoundingClientRect();
+    };
+    window.addEventListener("resize", remeasureArcRect, { passive: true });
+    window.addEventListener("scroll", remeasureArcRect, { passive: true });
+
+    const ticks = arc.querySelector<SVGSVGElement>(`.${styles.arcTicks}`);
 
     let revealT0: number | null = reduce ? -1e9 : null;
     const revealIo = new IntersectionObserver(
@@ -304,7 +341,6 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
             cards[i].style.transform = r < 1 ? `translateY(${(1 - r) * 60}px) scale(${0.9 + 0.1 * r})` : "";
           }
         });
-        const ticks = arc.querySelector<SVGSVGElement>(`.${styles.arcTicks}`);
         if (ticks) ticks.style.transform = `rotate(${-pos * g.step}deg)`;
         const a = mod(Math.round(pos));
         if (a !== active) {
@@ -337,6 +373,8 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
       arc.removeEventListener("pointermove", onPointerMove);
       arc.removeEventListener("pointerup", release);
       arc.removeEventListener("pointercancel", release);
+      window.removeEventListener("resize", remeasureArcRect);
+      window.removeEventListener("scroll", remeasureArcRect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geometry]);
@@ -387,7 +425,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
           <div className={styles.arcRing} ref={ringRef}>
             <ArcTicks g={g} />
 
-            {/* Card 0: Insights — wired to real latestInsights data */}
+            {/* Card 0: Insights */}
             <div className={styles.arcSlot} ref={(el) => { slotRefs.current[0] = el; }}>
               <article
                 className={`${styles.lcard} ${styles.lcardDark}`}
@@ -412,15 +450,9 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                     ))}
                   </div>
                 </div>
-                {insightCard ? (
-                  <Link href={`/insights/${insightCard.slug}`} className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
-                    <Roll>Read insights</Roll>
-                  </Link>
-                ) : (
-                  <Link href="/insights" className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
-                    <Roll>Read insights</Roll>
-                  </Link>
-                )}
+                <Link href={HREFS[0]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
+                  <Roll>Read insights</Roll>
+                </Link>
               </article>
             </div>
 
@@ -451,9 +483,9 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                     <b style={{ width: "50%" }} />
                   </div>
                 </div>
-                <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[1] = el; }}>
+                <Link href={HREFS[1]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[1] = el; }}>
                   <Roll>Subscribe</Roll>
-                </a>
+                </Link>
               </article>
             </div>
 
@@ -488,13 +520,13 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                     ))}
                   </div>
                 </div>
-                <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[2] = el; }}>
+                <Link href={HREFS[2]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[2] = el; }}>
                   <Roll>See an audit</Roll>
-                </a>
+                </Link>
               </article>
             </div>
 
-            {/* Card 3: Playbooks — mock, no real data source */}
+            {/* Card 3: Agents — counts come from lib/agents */}
             <div className={styles.arcSlot} ref={(el) => { slotRefs.current[3] = el; }}>
               <article
                 className={`${styles.lcard} ${styles.lcardLime}`}
@@ -505,28 +537,25 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                   <span>Insights</span>
                 </span>
                 <AvMark />
-                <h3>Playbooks</h3>
-                <p>Step-by-step guides your front desk can use tomorrow.</p>
+                <h3>Agents</h3>
+                <p>Agents we&apos;ve built for practice teams, running today.</p>
                 <div className={styles.lcardVis} aria-hidden="true">
-                  <div className={styles.checks}>
-                    {[
-                      "Reply to every new lead the same day",
-                      "Confirm each booking by text",
-                      "Send intake forms before the visit",
-                      "Book the next visit before they leave",
-                    ].map(
-                      (step, k) => (
-                        <div key={step}>
-                          <i style={{ ["--k" as string]: k }} />
-                          {step}
-                        </div>
-                      ),
-                    )}
+                  <div className={styles.agStats}>
+                    <div className={`${styles.agStat} ${styles.agStatLive}`}>
+                      <i className={styles.agDot} />
+                      <b>{LIVE_AGENTS.length}</b>
+                      <span>live</span>
+                    </div>
+                    <div className={styles.agStat}>
+                      <i className={`${styles.agDot} ${styles.agDotDev}`} />
+                      <b>{DEVELOPING_AGENTS.length}</b>
+                      <span>in development</span>
+                    </div>
                   </div>
                 </div>
-                <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[3] = el; }}>
-                  <Roll>Get playbooks</Roll>
-                </a>
+                <Link href={HREFS[3]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[3] = el; }}>
+                  <Roll>See the agents</Roll>
+                </Link>
               </article>
             </div>
 
@@ -563,9 +592,9 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                     </div>
                   </div>
                 </div>
-                <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[4] = el; }}>
+                <Link href={HREFS[4]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[4] = el; }}>
                   <Roll>Compare yours</Roll>
-                </a>
+                </Link>
               </article>
             </div>
           </div>

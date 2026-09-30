@@ -169,7 +169,7 @@
   cursor: pointer;
 }
 .lcard.isActive {
-  cursor: default;
+  cursor: pointer;
 }
 .lcardDark {
   background: #161414;
@@ -418,51 +418,67 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
 }
-.checks {
+.agStats {
   position: absolute;
   left: 50%;
   top: 0.5rem;
-  width: 20rem;
-  margin-left: -10rem;
+  width: 17rem;
+  margin-left: -8.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   text-align: left;
 }
-.checks div {
+.agStat {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.65rem 0.8rem;
-  background: rgba(0, 0, 0, 0.07);
-  border-radius: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  gap: 0.9rem;
+  padding: 0.9rem 1.4rem 0.9rem 1rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid #e7e5e2;
+  color: var(--color-text);
 }
-.checks i {
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 0.3rem;
-  border: 1.5px solid var(--color-text);
+.agStat b {
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  min-width: 1.3ch;
+}
+.agStat span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6d6965;
+  line-height: 1.35;
+}
+.agStatLive {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: #efeeec;
+}
+.agStatLive span {
+  color: rgba(239, 238, 236, 0.6);
+}
+.agDot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--color-lime);
   flex-shrink: 0;
-  position: relative;
-  transition: background-color 0.3s;
 }
-.lcard.isActive .checks i {
-  animation: tick 4s var(--ease) infinite;
-  animation-delay: calc(var(--k) * 0.5s);
+.agDotDev {
+  background: var(--color-purple);
 }
-@keyframes tick {
-  0%,
-  10% {
-    background: transparent;
-  }
-  20%,
-  85% {
-    background: var(--color-text);
-  }
-  100% {
-    background: transparent;
+.lcard.isActive .agDot {
+  animation: agLive 1.6s ease-in-out infinite;
+}
+@keyframes agLive {
+  50% {
+    opacity: 0.3;
+    transform: scale(0.7);
   }
 }
 .bench {

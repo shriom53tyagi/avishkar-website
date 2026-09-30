@@ -129,11 +129,22 @@ export function WhatWeDoPage() {
     });
     io.observe(player);
 
+    // `player`'s position only changes on scroll or resize, not every
+    // frame — cached and re-measured only on those events instead of a
+    // forced-layout read on every rAF tick. The player's own scale
+    // (`--vs`) doesn't move its box (transform-origin is pinned to the
+    // bottom edge), so this stays accurate across the animation.
+    let playerTop = player.getBoundingClientRect().top;
+    const remeasure = () => {
+      playerTop = player.getBoundingClientRect().top;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const loop = () => {
       if (onScreen) {
-        const r = player.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (window.innerHeight - r.top) / (window.innerHeight * 0.8)));
+        const p = Math.min(1, Math.max(0, (window.innerHeight - playerTop) / (window.innerHeight * 0.8)));
         player.style.setProperty("--vs", String(0.88 + 0.12 * (1 - Math.pow(1 - p, 3))));
       }
       rafId = requestAnimationFrame(loop);
@@ -142,6 +153,8 @@ export function WhatWeDoPage() {
     return () => {
       cancelAnimationFrame(rafId);
       io.disconnect();
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
     };
   }, []);
 
