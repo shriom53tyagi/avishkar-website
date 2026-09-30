@@ -254,11 +254,17 @@ export function AvHomeWheel() {
     // compositor-only instead of forcing layout each frame.
     let scale = 1;
     let translateY = 0;
+    const applyTransform = () => {
+      ring.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rot}deg)`;
+    };
     const recomputeSizing = () => {
       const s = Math.min(1, window.innerWidth / 1440) * (window.innerWidth < 768 ? 0.8 : 1);
       scale = s;
       const remPx = (window.innerWidth < 768 ? 3 : 4.5) * 16; // rem → px, matches the CSS rem base
       translateY = remPx + 1500 * s;
+      // Positioned immediately (mount + resize), independent of the rAF
+      // loop, which is paused while the section is off-screen.
+      applyTransform();
     };
     recomputeSizing();
     window.addEventListener("resize", recomputeSizing, { passive: true });
@@ -273,7 +279,7 @@ export function AvHomeWheel() {
           vel *= 0.92;
           rot += (reduce ? 0 : -0.012) + vel;
         }
-        ring.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rot}deg)`;
+        applyTransform();
       }
       rafId = requestAnimationFrame(loop);
     };
