@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { clamp01, easeOutCubic } from "./shared/easing";
 import styles from "./AvHomeIntro.module.css";
@@ -10,12 +10,16 @@ import styles from "./AvHomeIntro.module.css";
  * ported 1:1 from reference/avishkar-hero.html `.intro` + sibling `.film`
  * (CSS ~398-456, markup ~1014-1038, JS ~1294-1336).
  *
- * TODO: `.reel__meta` description and the `01:38` runtime are placeholder
- * copy in the reference itself — kept verbatim below, see inline TODOs.
- * TODO: `avishkar-film.mp4` does not exist in /public (only
- * /public/hero-demo.mp4, a different asset) — kept as the reference's
- * exact `src`, not silently swapped, per task instructions.
+ * The card preview and the lightbox both play /hero-demo.mp4 (the same
+ * file the What we do page uses); the runtime is read from its metadata.
  */
+
+const FILM_SRC = "/hero-demo.mp4";
+
+function formatDuration(sec: number): string {
+  const total = Math.round(sec);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
 
 const STATEMENT =
   "Avishkar is the technology partner for medspas and clinics. We connect the tools you already pay for, so your data moves on its own and your team gets back to patients.";
@@ -53,6 +57,8 @@ export function AvHomeIntro() {
   const noteRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const previewRef = useRef<HTMLVideoElement>(null);
+  const [duration, setDuration] = useState<string | null>(null);
   const onScreenRef = useRef(true);
 
   useEffect(() => {
@@ -107,13 +113,46 @@ export function AvHomeIntro() {
     // film lightbox
     const film = filmRef.current;
     const video = videoRef.current;
+    const preview = previewRef.current;
+    let cardVisible = false;
+    let filmOpen = false;
+    const syncPreview = () => {
+      if (!preview || reduce) return;
+      if (cardVisible && !filmOpen) preview.play().catch(() => {});
+      else preview.pause();
+    };
+    const previewIo = new IntersectionObserver((entries) => {
+      for (const entry of entries) cardVisible = entry.isIntersecting;
+      syncPreview();
+    });
+    previewIo.observe(card);
+    // reduced motion: no autoplay, just show the first frame
+    const onPreviewMeta = () => {
+      if (!preview) return;
+      setDuration(formatDuration(preview.duration));
+      if (reduce) preview.currentTime = 0.001;
+    };
+    preview?.addEventListener("loadedmetadata", onPreviewMeta);
+    if (preview && preview.readyState >= 1) onPreviewMeta();
+
     const close = () => {
       film?.classList.remove(styles.isOpen);
-      video?.pause();
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+      filmOpen = false;
+      syncPreview();
     };
     const onCardClick = () => {
+      filmOpen = true;
+      syncPreview();
       film?.classList.add(styles.isOpen);
-      video?.play().catch(() => {});
+      if (video) {
+        video.currentTime = 0;
+        video.muted = false;
+        video.play().catch(() => {});
+      }
     };
     const closeBtn = film?.querySelector<HTMLButtonElement>("[data-film-close]");
     const onFilmClick = (e: MouseEvent) => {
@@ -129,6 +168,8 @@ export function AvHomeIntro() {
 
     return () => {
       cancelAnimationFrame(rafId);
+      previewIo.disconnect();
+      preview?.removeEventListener("loadedmetadata", onPreviewMeta);
       card.removeEventListener("click", onCardClick);
       closeBtn?.removeEventListener("click", close);
       film?.removeEventListener("click", onFilmClick);
@@ -160,18 +201,28 @@ export function AvHomeIntro() {
             ref={cardRef}
             aria-label="Play the Avishkar film"
           >
+            <video
+              className={styles.reelVideo}
+              ref={previewRef}
+              src={FILM_SRC}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+            <span className={styles.reelShade} aria-hidden="true" />
             <span className={styles.reelMeta}>
               <span>Avishkar · Film</span>
-              {/* TODO: placeholder copy in the reference itself — replace with real film description */}
-              <span>[Short line about the film, placeholder copy you can change later.]</span>
+              <span>A one-minute look at how Avishkar connects the tools your clinic already uses.</span>
             </span>
             <span className={styles.reelRow}>
               <span>
                 Avishkar in action
                 <b />
               </span>
-              {/* TODO: placeholder runtime in the reference itself — replace with the real film length */}
-              <time>01:38</time>
+              <time>{duration}</time>
             </span>
             <span className={styles.reelStrip} aria-hidden="true">
               {Array.from({ length: 8 }).map((_, i) => (
@@ -192,8 +243,7 @@ export function AvHomeIntro() {
         <button className={styles.filmClose} data-film-close>
           Close
         </button>
-        {/* TODO: avishkar-film.mp4 does not exist in /public — reference's exact src kept verbatim, not silently swapped for /hero-demo.mp4 */}
-        <video ref={videoRef} controls playsInline preload="none" src="/avishkar-film.mp4" />
+        <video ref={videoRef} controls playsInline preload="none" src={FILM_SRC} />
       </div>
     </>
   );

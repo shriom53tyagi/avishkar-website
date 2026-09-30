@@ -10,19 +10,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./AvNavbar.module.css";
+import { Roll } from "./Roll";
 import { cn } from "@/lib/utils";
-
-/** Text that duplicates on hover and slides up 50% (the reference's "roll"). */
-function Roll({ children }: { children: string }) {
-  return (
-    <span className={styles.roll}>
-      <span className={styles.rollIn}>
-        <span>{children}</span>
-        <span>{children}</span>
-      </span>
-    </span>
-  );
-}
 
 export type LatestInsightLink = {
   slug: string;
@@ -159,8 +148,8 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     </li>
                   </ul>
                   <div className={styles.sublinks}>
-                    <Link href="/results">Case studies</Link>
-                    <Link href="/results">Results</Link>
+                    <Link href="/security">Security</Link>
+                    <Link href="/">Home</Link>
                   </div>
                 </div>
 
@@ -189,8 +178,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                         <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z" />
                       </svg>
                     </a>
-                    {/* TODO: no Instagram account yet — placeholder from the reference. */}
-                    <a href="#" aria-label="Instagram (TODO: no account yet)">
+                    <a href="https://www.instagram.com/avishkar.app/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                       <svg viewBox="0 0 24 24">
                         <path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.95a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.06-3.5.16-5.4 2.06-5.54 5.54C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.16 3.48 2.06 5.38 5.54 5.54 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c3.47-.16 5.39-2.06 5.54-5.54.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.15-3.47-2.06-5.38-5.54-5.54-1-.06-1.3-.06-3.9-.06zm0 1.7c2.55 0 2.85 0 3.85.06 2.6.12 3.8 1.35 3.93 3.93.05 1 .05 1.3.05 3.81s0 2.85-.05 3.85c-.12 2.57-1.33 3.8-3.93 3.93-1 .05-1.3.05-3.85.05s-2.85 0-3.85-.05c-2.6-.12-3.8-1.36-3.93-3.93-.05-1-.06-1.3-.06-3.85s0-2.84.06-3.85C4.34 5.6 5.55 4.37 8.15 4.26c1-.05 1.3-.06 3.85-.06z" />
                       </svg>

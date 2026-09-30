@@ -7,6 +7,7 @@ import { readReducedMotion } from "./shared/useReducedMotion";
 import { bez, easeOutQuart, clamp01 } from "./shared/easing";
 import type { LatestInsight } from "../HomePage";
 import styles from "./AvHomeLibrary.module.css";
+import { Roll } from "../Roll";
 
 /**
  * Library radial card slider — ported 1:1 from reference/avishkar-hero.html
@@ -413,19 +414,11 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                 </div>
                 {insightCard ? (
                   <Link href={`/insights/${insightCard.slug}`} className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
-                    <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>Read insights</span>
-                      </span>
-                    </span>
+                    <Roll>Read insights</Roll>
                   </Link>
                 ) : (
                   <Link href="/insights" className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
-                    <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>Read insights</span>
-                      </span>
-                    </span>
+                    <Roll>Read insights</Roll>
                   </Link>
                 )}
               </article>
@@ -459,11 +452,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                   </div>
                 </div>
                 <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[1] = el; }}>
-                  <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>Subscribe</span>
-                      </span>
-                    </span>
+                  <Roll>Subscribe</Roll>
                 </a>
               </article>
             </div>
@@ -500,11 +489,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                   </div>
                 </div>
                 <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[2] = el; }}>
-                  <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>See an audit</span>
-                      </span>
-                    </span>
+                  <Roll>See an audit</Roll>
                 </a>
               </article>
             </div>
@@ -540,11 +525,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                   </div>
                 </div>
                 <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[3] = el; }}>
-                  <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>Get playbooks</span>
-                      </span>
-                    </span>
+                  <Roll>Get playbooks</Roll>
                 </a>
               </article>
             </div>
@@ -583,11 +564,7 @@ export function AvHomeLibrary({ latestInsights }: { latestInsights: LatestInsigh
                   </div>
                 </div>
                 <a href="#" className={styles.lcardBtn} ref={(el) => { linkRefs.current[4] = el; }}>
-                  <span className={styles.roll}>
-                      <span className={styles.rollIn}>
-                        <span>Compare yours</span>
-                      </span>
-                    </span>
+                  <Roll>Compare yours</Roll>
                 </a>
               </article>
             </div>

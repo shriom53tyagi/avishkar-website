@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { clamp01, easeOutCubic } from "./shared/easing";
 import styles from "./AvHomeOval.module.css";
+import { Roll } from "../Roll";
 
 /**
  * "Early access" oval — ported 1:1 from reference/avishkar-hero.html
@@ -281,12 +282,7 @@ export function AvHomeOval() {
             </label>
             <input id="early-email" type="email" required placeholder="you@yourpractice.com" />
             <button className={`${styles.btn} ${styles.btnJoin}`} type="submit">
-              <span className={styles.roll}>
-                <span className={styles.rollIn}>
-                  <span>Join the early access list</span>
-                  <span>Join the early access list</span>
-                </span>
-              </span>
+              <Roll>Join the early access list</Roll>
             </button>
           </form>
           <small>No newsletter. One note when there&apos;s something real to try.</small>
