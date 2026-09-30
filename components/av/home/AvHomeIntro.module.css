@@ -97,6 +97,18 @@
   transform: scale(1.05) !important;
   box-shadow: 0 40px 70px -40px rgba(0, 0, 0, 0.6);
 }
+.reelVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.reelShade {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
 .reelMeta {
   position: absolute;
   top: 0.75rem;
