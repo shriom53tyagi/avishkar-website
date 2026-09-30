@@ -68,7 +68,6 @@ function readReducedMotion() {
 
 export function ArticlePage({ article, related }: { article: Article; related: RelatedPost[] }) {
   const [isIn, setIsIn] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [activeTocId, setActiveTocId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [revealedRelated, setRevealedRelated] = useState<Set<string>>(new Set());
@@ -76,6 +75,11 @@ export function ArticlePage({ article, related }: { article: Article; related: R
   const proseRef = useRef<HTMLDivElement>(null);
   const coverImgWrapRef = useRef<HTMLDivElement>(null);
   const relatedRef = useRef<HTMLDivElement>(null);
+  // Written directly every rAF frame instead of through React state — the
+  // progress value only ever feeds one inline `transform: scaleX()`, so
+  // driving it via setState was forcing a full component re-render 60
+  // times a second for a change React never needed to know about.
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const shareUrl = `${SITE_URL}/insights/${article.slug}`;
 
@@ -117,12 +121,24 @@ export function ArticlePage({ article, related }: { article: Article; related: R
     });
     io.observe(prose);
 
+    // `prose`'s position/height only change on scroll or resize, not
+    // every frame — cached and re-measured only on those events instead
+    // of a forced-layout read on every rAF tick.
+    let proseTop = prose.getBoundingClientRect().top;
+    let proseHeight = prose.getBoundingClientRect().height;
+    const remeasure = () => {
+      const r = prose.getBoundingClientRect();
+      proseTop = r.top;
+      proseHeight = r.height;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const loop = () => {
       if (onScreen) {
-        const r = prose.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
-        setProgress(p);
+        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - proseTop) / proseHeight));
+        if (progressBarRef.current) progressBarRef.current.style.transform = `scaleX(${p})`;
         if (!reduce && coverImgWrapRef.current) {
           coverImgWrapRef.current.style.setProperty("--cs", String(1 + Math.min(window.scrollY, 800) / 8000));
         }
@@ -133,6 +149,8 @@ export function ArticlePage({ article, related }: { article: Article; related: R
     return () => {
       cancelAnimationFrame(rafId);
       io.disconnect();
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
     };
   }, []);
 
@@ -212,7 +230,7 @@ export function ArticlePage({ article, related }: { article: Article; related: R
   return (
     <main className={`${styles.art} ${isIn ? styles.isIn : ""}`} data-article-page>
       <div className={styles.progress}>
-        <div className={styles.progressBar} style={{ transform: `scaleX(${progress})` }} />
+        <div className={styles.progressBar} ref={progressBarRef} style={{ transform: "scaleX(0)" }} />
       </div>
 
       <header className={styles.hero}>

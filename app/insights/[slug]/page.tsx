@@ -4,7 +4,10 @@ import { ArticlePage, type Article, type RelatedPost } from "@/components/av/Art
 import { getInsightBySlug, listPublishedInsights, type Insight } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
-export const revalidate = 60;
+// Cached and revalidated in the background every 5 minutes instead of
+// querying the DB on every request — content is the same either way,
+// just served from cache between revalidations.
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return [];

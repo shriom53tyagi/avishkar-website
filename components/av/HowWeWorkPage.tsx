@@ -131,22 +131,31 @@ export function HowWeWorkPage() {
     const loop = () => {
       if (onScreen) {
         const steps = stepRefs.current;
+        // `position: sticky` tops can't be derived from scroll position
+        // alone (they depend on the browser's sticky-positioning layout
+        // pass), so these reads can't be cached across frames the way a
+        // simple scroll-linear parallax can — but every step's rect is
+        // read first, in one pass, before any style is written, so the
+        // browser never has to interleave a read with a write it just
+        // made (which would force a second synchronous layout per step).
+        const rects = steps.map((stepEl) => stepEl?.getBoundingClientRect() ?? null);
+        const heights = steps.map((stepEl) => (stepEl?.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0);
+
         steps.forEach((stepEl, i) => {
           if (!stepEl) return;
           const card = stepEl.firstElementChild as HTMLElement | null;
           if (!card) return;
-          const next = steps[i + 1];
+          const rect = rects[i];
+          if (!rect) return;
+          const nextRect = rects[i + 1];
           let sc = 1;
-          if (next && !reduce) {
-            const a = stepEl.getBoundingClientRect().top;
-            const b = next.getBoundingClientRect().top;
-            const k = Math.min(1, Math.max(0, 1 - (b - a) / card.offsetHeight));
+          if (nextRect && !reduce) {
+            const k = Math.min(1, Math.max(0, 1 - (nextRect.top - rect.top) / heights[i]));
             sc = 1 - k * 0.06;
             card.style.filter = `brightness(${1 - k * 0.25})`;
           }
           card.style.setProperty("--sc", String(sc));
-          const r = stepEl.getBoundingClientRect();
-          const p = Math.min(1, Math.max(0, (window.innerHeight * 0.75 - r.top) / (window.innerHeight * 0.6)));
+          const p = Math.min(1, Math.max(0, (window.innerHeight * 0.75 - rect.top) / (window.innerHeight * 0.6)));
           card.style.setProperty("--p", String(reduce ? 1 : p));
         });
       }

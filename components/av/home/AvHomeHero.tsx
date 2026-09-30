@@ -274,18 +274,34 @@ export function AvHomeHero() {
         body.classList.add("flowing");
         svg.setCurrentTime(0);
         svg.unpauseAnimations();
+        // Each interval's own work is skipped while the hero is off-
+        // screen (the interval keeps ticking — clearing/re-arming exact
+        // phase on re-entry isn't worth the complexity for a decorative
+        // loop — but it does nothing until back in view).
         let k = 0;
         trackInterval(() => {
+          if (!onScreenRef.current) return;
           const r = roles[k++ % roles.length];
           flash(r, "ping", 900);
           r.classList.add("done");
         }, 700);
-        trackInterval(() => flash(pick(tiles), "send", 600), 380);
-        trackInterval(() => flash(node, "gulp", 450), 900);
+        trackInterval(() => {
+          if (!onScreenRef.current) return;
+          flash(pick(tiles), "send", 600);
+        }, 380);
+        trackInterval(() => {
+          if (!onScreenRef.current) return;
+          flash(node, "gulp", 450);
+        }, 900);
         let c = 0;
-        trackInterval(() => flash(chips[2 + (c++ % 4)], "hot", 700), 800);
+        trackInterval(() => {
+          if (!onScreenRef.current) return;
+          flash(chips[2 + (c++ % 4)], "hot", 700);
+        }, 800);
         toast();
-        trackInterval(toast, 1700);
+        trackInterval(() => {
+          if (onScreenRef.current) toast();
+        }, 1700);
       }, 1500);
     };
 

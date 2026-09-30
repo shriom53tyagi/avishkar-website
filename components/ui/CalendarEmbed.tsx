@@ -67,24 +67,37 @@ export function CalendarEmbed() {
       return;
     }
 
+    const el = ref.current;
+    if (!el) return;
+
     let cancelled = false;
-    loadCss(CSS_SRC);
+    // The external widget script/CSS load only once this embed's
+    // container is near the viewport, not on mount.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        loadCss(CSS_SRC);
+        loadScript(SCRIPT_SRC).then((ok) => {
+          if (cancelled) return;
+          const Calendly = (window as unknown as { Calendly?: CalendlyAPI }).Calendly;
 
-    loadScript(SCRIPT_SRC).then((ok) => {
-      if (cancelled) return;
-      const Calendly = (window as unknown as { Calendly?: CalendlyAPI }).Calendly;
+          if (!ok || !Calendly || !ref.current) {
+            setState("error");
+            return;
+          }
 
-      if (!ok || !Calendly || !ref.current) {
-        setState("error");
-        return;
-      }
-
-      Calendly.initInlineWidget({ url: CALENDLY_URL, parentElement: ref.current });
-      setState("ready");
-    });
+          Calendly.initInlineWidget({ url: CALENDLY_URL, parentElement: ref.current });
+          setState("ready");
+        });
+      },
+      { rootMargin: "600px" },
+    );
+    io.observe(el);
 
     return () => {
       cancelled = true;
+      io.disconnect();
     };
   }, []);
 

@@ -91,18 +91,34 @@ function LitParagraph({ text }: { text: string }) {
     const wordEls = [...el.querySelectorAll<HTMLElement>("span")];
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
 
+    // `el`'s position/height only change on scroll or resize, not every
+    // frame — cached and re-measured only on those events instead of a
+    // forced-layout read on every rAF tick.
+    let elTop = el.getBoundingClientRect().top;
+    let elHeight = el.getBoundingClientRect().height;
+    const remeasure = () => {
+      const r = el.getBoundingClientRect();
+      elTop = r.top;
+      elHeight = r.height;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const loop = () => {
       if (onScreenRef.current) {
-        const r = el.getBoundingClientRect();
-        const p = reduce ? 1 : clamp((window.innerHeight * 0.8 - r.top) / (r.height + window.innerHeight * 0.3));
+        const p = reduce ? 1 : clamp((window.innerHeight * 0.8 - elTop) / (elHeight + window.innerHeight * 0.3));
         const n = Math.round(p * wordEls.length);
         wordEls.forEach((w, i) => w.classList.toggle(styles.on, i < n));
       }
       rafId = requestAnimationFrame(loop);
     };
     loop();
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
+    };
   }, []);
 
   return (

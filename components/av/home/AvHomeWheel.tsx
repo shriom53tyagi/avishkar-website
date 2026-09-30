@@ -239,10 +239,29 @@ export function AvHomeWheel() {
       drag = null;
       wheel.classList.remove(styles.isDrag);
     };
-    wheel.addEventListener("pointerdown", onPointerDown);
-    wheel.addEventListener("pointermove", onPointerMove);
-    wheel.addEventListener("pointerup", end);
-    wheel.addEventListener("pointercancel", end);
+    wheel.addEventListener("pointerdown", onPointerDown, { passive: true });
+    wheel.addEventListener("pointermove", onPointerMove, { passive: true });
+    wheel.addEventListener("pointerup", end, { passive: true });
+    wheel.addEventListener("pointercancel", end, { passive: true });
+
+    // `s` and the pixel offset baked into `top` only ever depend on
+    // window.innerWidth, never on scroll/drag/rotation — they were being
+    // recomputed and rewritten every single frame even though they only
+    // actually change on resize. Cached here and refreshed only on
+    // resize; `top` (layout-triggering) is folded into the same
+    // `transform: translate3d(...) scale(...) rotate(...)` the loop
+    // already writes every frame, so the per-frame write is
+    // compositor-only instead of forcing layout each frame.
+    let scale = 1;
+    let translateY = 0;
+    const recomputeSizing = () => {
+      const s = Math.min(1, window.innerWidth / 1440) * (window.innerWidth < 768 ? 0.8 : 1);
+      scale = s;
+      const remPx = (window.innerWidth < 768 ? 3 : 4.5) * 16; // rem → px, matches the CSS rem base
+      translateY = remPx + 1500 * s;
+    };
+    recomputeSizing();
+    window.addEventListener("resize", recomputeSizing, { passive: true });
 
     let rafId: number;
     const loop = () => {
@@ -254,9 +273,7 @@ export function AvHomeWheel() {
           vel *= 0.92;
           rot += (reduce ? 0 : -0.012) + vel;
         }
-        const s = Math.min(1, window.innerWidth / 1440) * (window.innerWidth < 768 ? 0.8 : 1);
-        ring.style.top = `calc(${window.innerWidth < 768 ? 3 : 4.5}rem + ${1500 * s}px)`;
-        ring.style.transform = `scale(${s}) rotate(${rot}deg)`;
+        ring.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rot}deg)`;
       }
       rafId = requestAnimationFrame(loop);
     };
@@ -268,6 +285,7 @@ export function AvHomeWheel() {
       wheel.removeEventListener("pointermove", onPointerMove);
       wheel.removeEventListener("pointerup", end);
       wheel.removeEventListener("pointercancel", end);
+      window.removeEventListener("resize", recomputeSizing);
       cancelAnimationFrame(rafId);
     };
   }, []);

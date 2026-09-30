@@ -127,22 +127,35 @@ export function AvHomeOval() {
     return () => io.disconnect();
   }, []);
 
-  // Shape morph (desktop only, continuous rAF)
+  // Shape morph (desktop only, continuous rAF). `oval`'s position only
+  // actually changes on scroll or resize, not every frame, so its rect is
+  // cached and re-measured only on those events instead of read on every
+  // rAF tick.
   useEffect(() => {
     const oval = ovalRef.current;
     if (!oval) return;
     const reduce = readReducedMotion();
+    let ovalTop = oval.getBoundingClientRect().top;
+    const remeasure = () => {
+      ovalTop = oval.getBoundingClientRect().top;
+    };
+    window.addEventListener("scroll", remeasure, { passive: true });
+    window.addEventListener("resize", remeasure, { passive: true });
+
     let rafId: number;
     const shape = () => {
       if (onScreenRef.current && window.innerWidth > 900) {
-        const r = oval.getBoundingClientRect();
-        const p = reduce ? 1 : easeOutCubic(clamp01((window.innerHeight - r.top) / (window.innerHeight * 1.1)));
+        const p = reduce ? 1 : easeOutCubic(clamp01((window.innerHeight - ovalTop) / (window.innerHeight * 1.1)));
         oval.style.clipPath = `ellipse(${36 + 14 * p}% ${46 + 4 * p}% at 50% 50%)`;
       }
       rafId = requestAnimationFrame(shape);
     };
     shape();
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", remeasure);
+      window.removeEventListener("resize", remeasure);
+    };
   }, []);
 
   // Entrance
@@ -164,12 +177,12 @@ export function AvHomeOval() {
     return () => io.disconnect();
   }, []);
 
-  // Slide auto-advance
+  // Slide auto-advance — only ticks while the section is on screen.
   useEffect(() => {
     const reduce = readReducedMotion();
     if (reduce) return;
     const timer = setInterval(() => {
-      go(curRef.current + 1);
+      if (onScreenRef.current) go(curRef.current + 1);
     }, 4000);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps

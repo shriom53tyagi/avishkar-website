@@ -78,7 +78,11 @@
 .nl .btn {
   grid-row: 1;
   grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 3.4rem;
+  padding: 0 1.5rem;
   white-space: nowrap;
   background: var(--color-text);
   color: #efeeec;
