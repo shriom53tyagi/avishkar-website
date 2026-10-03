@@ -70,26 +70,6 @@ const CARDS: WheelCard[] = [
     ),
   },
   {
-    title: "AI-native EMR",
-    screen: (
-      <div className={`${styles.sc} ${styles.scEmr}`}>
-        <div className="side">
-          <i className="ln" style={{ width: "90%" }} />
-          <i className="ln" style={{ width: "70%" }} />
-          <i className="ln" style={{ width: "80%" }} />
-          <i className="ln" style={{ width: "60%" }} />
-          <i className="ln" style={{ width: "75%" }} />
-        </div>
-        <div className="main">
-          <span className="pill">AI summary</span>
-          <i className="ln" style={{ width: "95%" }} />
-          <i className="ln" style={{ width: "80%" }} />
-          <div className="box" />
-        </div>
-      </div>
-    ),
-  },
-  {
     title: "Lead Engine",
     screen: (
       // TODO: "+128 leads this month" is the reference's own mock figure — no real lead-count data source yet.
@@ -141,8 +121,10 @@ const CARDS: WheelCard[] = [
   },
 ];
 
-// 16 slots: 8 unique cards + the same 8 duplicated at +180°, 22.5° apart.
+// Unique cards duplicated at +180°, evenly spaced around the full ring.
 const SLOTS = [...CARDS.map((c, i) => ({ card: c, d: i })), ...CARDS.map((c, i) => ({ card: c, d: i }))];
+
+const SLOT_STEP = 360 / SLOTS.length;
 
 function RingTicks() {
   const lines: React.ReactNode[] = [];
@@ -188,7 +170,7 @@ export function AvHomeWheel() {
     const ring = ringRef.current;
     if (!wheel || !ring) return;
     const reduce = readReducedMotion();
-    let rot = -11.25;
+    let rot = -SLOT_STEP / 2;
     let vel = 0;
     let lastY = window.scrollY;
     let drag: { x: number; rot: number } | null = null;
@@ -304,7 +286,7 @@ export function AvHomeWheel() {
         {SLOTS.map((slot, i) => (
           <div
             className={styles.slot}
-            style={{ transform: `rotate(${(i * 22.5).toFixed(1)}deg)` }}
+            style={{ transform: `rotate(${(i * SLOT_STEP).toFixed(1)}deg)` }}
             key={i}
           >
             <div className={styles.wcard} style={{ ["--d" as string]: slot.d }}>
