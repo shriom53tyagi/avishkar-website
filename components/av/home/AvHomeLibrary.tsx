@@ -72,7 +72,7 @@ function ArcTicks({ g }: { g: Geometry }) {
 
 const TABS = ["Insights", "The Avishkar Letter", "Practice Audits", "Agents", "Benchmarks"];
 // Where each card's button (and the active card itself) goes, by card index.
-const HREFS = ["/insights", "/coming-soon", "/coming-soon", "/agents", "/coming-soon"];
+const HREFS = ["/insights", "/letter", "/audits", "/agents", "/benchmarks"];
 
 export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
   const libRef = useRef<HTMLElement>(null);

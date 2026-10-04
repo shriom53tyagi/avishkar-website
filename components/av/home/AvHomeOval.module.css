@@ -458,6 +458,12 @@
   font-size: 0.75rem;
   color: rgba(239, 238, 236, 0.45);
 }
+.earlyError {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #e5a0a0;
+  margin-top: -0.4rem;
+}
 .early :global(.done) {
   display: none;
   font-size: 1.25rem;
@@ -496,6 +502,10 @@
 }
 .btnJoin:hover {
   border-radius: 2rem;
+}
+.btnJoin:disabled {
+  cursor: default;
+  opacity: 0.7;
 }
 
 @media (max-width: 900px) {

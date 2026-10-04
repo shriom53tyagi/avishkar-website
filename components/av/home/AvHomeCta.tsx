@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import styles from "./AvHomeCta.module.css";
 import { Roll } from "../Roll";
@@ -35,13 +36,6 @@ function ctaTickLines(): React.ReactNode[] {
     lines.push(<line key={k} x1={x1} y1={y1} x2={x2} y2={y2} />);
   }
   return lines;
-}
-
-function scrollToBook(e: React.MouseEvent<HTMLAnchorElement>) {
-  const el = document.getElementById("book");
-  if (!el) return;
-  e.preventDefault();
-  el.scrollIntoView({ behavior: readReducedMotion() ? "auto" : "smooth", block: "center" });
 }
 
 export function AvHomeCta() {
@@ -137,9 +131,9 @@ export function AvHomeCta() {
             <br />
             practice audit
           </h2>
-          <a href="#book" className={styles.btn} onClick={scrollToBook}>
+          <Link href="/contact" className={styles.btn}>
             <Roll>Book your audit</Roll>
-          </a>
+          </Link>
           <p className={styles.note} aria-hidden="true">
             <svg viewBox="0 0 48 48">
               <path d="M4 40 C 24 36, 36 24, 38 4 M38 4 L 32 11 M38 4 L 43 11" />

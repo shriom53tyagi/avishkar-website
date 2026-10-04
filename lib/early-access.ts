@@ -31,3 +31,23 @@ export async function submitEarlyAccess(
 
   return { ok: false, error: "Couldn't save that. Try again." };
 }
+
+/** The Avishkar Letter signup (footer + /letter). Posts to /api/subscribe. */
+export async function submitSubscribe(
+  email: string,
+  firstName: string,
+  extra: { source?: string; details?: string } = {}
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, firstName, ...extra }),
+    });
+    if (res.ok) return { ok: true };
+    if (res.status === 400) return { ok: false, error: "Enter a valid work email." };
+  } catch {
+    // fall through to the generic error
+  }
+  return { ok: false, error: "Couldn't save that. Try again." };
+}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { clamp01, easeOutCubic } from "./shared/easing";
+import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
 import styles from "./AvHomeOval.module.css";
 import { Roll } from "../Roll";
 
@@ -10,9 +11,12 @@ import { Roll } from "../Roll";
  * "Early access" oval — ported 1:1 from reference/avishkar-hero.html
  * `.oval-wrap` (CSS ~459-551, markup ~1040-1075, JS ~1381-1419).
  *
- * TODO: the early-access form only sets local `.is-done` state
- * (`onSubmit`'s `preventDefault`) — wire a real submit handler here when a
- * backend endpoint exists, mirroring the reference's front-end-only stub.
+ * The submit handler now calls the same submitEarlyAccess()/
+ * /api/early-access path the Insights page newsletter form already uses
+ * (lib/early-access.ts) — a submitted email is validated and, if SES is
+ * configured, emailed to the team (see app/api/early-access/route.ts).
+ * `isDone` only flips to the reference's "You're on the list." state once
+ * that call actually succeeds, not on every submit.
  */
 
 type Slide = {
@@ -110,6 +114,9 @@ export function AvHomeOval() {
   const [prev, setPrev] = useState(-1);
   const [resetting, setResetting] = useState<number | null>(null);
   const [isDone, setIsDone] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [submitPending, setSubmitPending] = useState(false);
   const onScreenRef = useRef(true);
   const curRef = useRef(0);
   curRef.current = cur;
@@ -284,20 +291,43 @@ export function AvHomeOval() {
             know when the model is ready to experience.
           </p>
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              // TODO: wire to a real early-access submit endpoint.
+              const next = email.trim();
+              if (!isValidEmail(next)) {
+                setSubmitError("Enter a valid work email.");
+                return;
+              }
+              setSubmitError("");
+              setSubmitPending(true);
+              const result = await submitEarlyAccess(next);
+              setSubmitPending(false);
+              if (!result.ok) {
+                setSubmitError(result.error);
+                return;
+              }
               setIsDone(true);
             }}
           >
             <label className="sr-only" htmlFor="early-email">
               Work email
             </label>
-            <input id="early-email" type="email" required placeholder="you@yourpractice.com" />
-            <button className={`${styles.btn} ${styles.btnJoin}`} type="submit">
-              <Roll>Join the early access list</Roll>
+            <input
+              id="early-email"
+              type="email"
+              required
+              placeholder="you@yourpractice.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (submitError) setSubmitError("");
+              }}
+            />
+            <button className={`${styles.btn} ${styles.btnJoin}`} type="submit" disabled={submitPending}>
+              <Roll>{submitPending ? "Sending…" : "Join the early access list"}</Roll>
             </button>
           </form>
+          {submitError && <p className={styles.earlyError}>{submitError}</p>}
           <small>No newsletter. One note when there&apos;s something real to try.</small>
           <p className="done">You&apos;re on the list.</p>
         </div>
