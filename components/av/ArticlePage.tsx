@@ -66,7 +66,18 @@ function readReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export function ArticlePage({ article, related }: { article: Article; related: RelatedPost[] }) {
+export function ArticlePage({
+  article,
+  related,
+  basePath = "/insights",
+  backLabel = "All insights",
+}: {
+  article: Article;
+  related: RelatedPost[];
+  /** Route the article lives under; drives the back link and share URL. */
+  basePath?: string;
+  backLabel?: string;
+}) {
   const [isIn, setIsIn] = useState(false);
   const [activeTocId, setActiveTocId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -81,7 +92,7 @@ export function ArticlePage({ article, related }: { article: Article; related: R
   // times a second for a change React never needed to know about.
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const shareUrl = `${SITE_URL}/insights/${article.slug}`;
+  const shareUrl = `${SITE_URL}${basePath}/${article.slug}`;
 
   useEffect(() => {
     let raf2 = 0;
@@ -234,11 +245,11 @@ export function ArticlePage({ article, related }: { article: Article; related: R
       </div>
 
       <header className={styles.hero}>
-        <Link href="/insights" className={`${styles.back} ${styles.fade}`}>
+        <Link href={basePath} className={`${styles.back} ${styles.fade}`}>
           <svg viewBox="0 0 16 16">
             <path d="M13 8H3M7 4L3 8l4 4" />
           </svg>
-          All insights
+          {backLabel}
         </Link>
         <p className={`${styles.meta} ${styles.fade}`} style={{ ["--d" as string]: ".1s" }}>
           <span className={styles.mDark}>{article.kicker}</span>
@@ -255,10 +266,12 @@ export function ArticlePage({ article, related }: { article: Article; related: R
         </p>
       </header>
 
-      <div className={styles.cover} ref={coverImgWrapRef}>
-        <Image src={article.heroImageUrl} alt={article.heroImageAlt} fill sizes="(max-width: 900px) 100vw, 1176px" priority style={{ objectFit: "cover" }} />
-        {article.heroImageTagChipText && <span className={styles.coverTag}>{article.heroImageTagChipText}</span>}
-      </div>
+      {article.heroImageUrl && (
+        <div className={styles.cover} ref={coverImgWrapRef}>
+          <Image src={article.heroImageUrl} alt={article.heroImageAlt} fill sizes="(max-width: 900px) 100vw, 1176px" priority style={{ objectFit: "cover" }} />
+          {article.heroImageTagChipText && <span className={styles.coverTag}>{article.heroImageTagChipText}</span>}
+        </div>
+      )}
 
       <div className={styles.body}>
         <aside className={styles.toc}>

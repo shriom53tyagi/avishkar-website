@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import styles from "./AvSiteFooter.module.css";
 import { Roll } from "./Roll";
+import { submitSubscribe } from "@/lib/early-access";
 
 /**
  * Site-wide footer — ported 1:1 from reference/avishkar-hero.html `.foot`
@@ -15,8 +16,7 @@ import { Roll } from "./Roll";
  * Moved here from components/av/home/AvHomeFooter.tsx so it's shared
  * across every page instead of homepage-only — the design is unchanged.
  *
- * TODO: newsletter submit only sets local `.is-done` state — wire a real
- * endpoint when one exists (reference is front-end-only too).
+ * Newsletter submit posts to /api/subscribe, then shows the `.is-done` state.
  *
  * Footer nav links: pointed at real routes where one exists in this
  * codebase (about, agents, careers, contact, how-we-work, insights,
@@ -29,6 +29,8 @@ export function AvSiteFooter() {
   const footRef = useRef<HTMLElement>(null);
   const bigmarkRef = useRef<HTMLDivElement>(null);
   const [isDone, setIsDone] = useState(false);
+  const [nlError, setNlError] = useState("");
+  const [nlPending, setNlPending] = useState(false);
   const [bigmarkIn, setBigmarkIn] = useState(false);
 
   useEffect(() => {
@@ -56,21 +58,27 @@ export function AvSiteFooter() {
           <h4>Subscribe to The Avishkar Letter</h4>
           <form
             className={styles.nl}
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              // TODO: wire to a real newsletter submit endpoint.
-              setIsDone(true);
+              const form = e.currentTarget;
+              const data = new FormData(form);
+              setNlError("");
+              setNlPending(true);
+              const result = await submitSubscribe(String(data.get("email") ?? ""), String(data.get("firstName") ?? ""));
+              setNlPending(false);
+              if (result.ok) setIsDone(true);
+              else setNlError(result.error);
             }}
           >
             <label className="sr-only" htmlFor="nl-name">
               First name
             </label>
-            <input id="nl-name" type="text" placeholder="First name" required />
+            <input id="nl-name" name="firstName" type="text" placeholder="First name" required />
             <label className="sr-only" htmlFor="nl-email">
               Email
             </label>
-            <input id="nl-email" type="email" placeholder="yourname@practice.com" required />
-            <button className={styles.btn} type="submit">
+            <input id="nl-email" name="email" type="email" placeholder="yourname@practice.com" required />
+            <button className={styles.btn} type="submit" disabled={nlPending}>
               <Roll>Get updates</Roll>
             </button>
             <label className={styles.nlAgree}>
@@ -80,6 +88,11 @@ export function AvSiteFooter() {
               </span>
             </label>
           </form>
+          {nlError && (
+            <p role="alert" style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-coral)" }}>
+              {nlError}
+            </p>
+          )}
           <p className={styles.nlDone}>Amazing, you&apos;re on the list.</p>
         </div>
         <div>
@@ -87,9 +100,9 @@ export function AvSiteFooter() {
             <div>
               <h5>Product</h5>
               <ul>
-                {/* TODO: no dedicated routes for these product sub-pages in this codebase yet */}
+                {/* TODO: no routes for Lead generation / Intelligence yet */}
                 <li>
-                  <a href="#">Platform</a>
+                  <Link href="/what-we-do">Platform</Link>
                 </li>
                 <li>
                   <a href="#">Lead generation</a>
@@ -98,7 +111,7 @@ export function AvSiteFooter() {
                   <a href="#">Intelligence</a>
                 </li>
                 <li>
-                  <a href="#">Integrations</a>
+                  <Link href="/integrations">Integrations</Link>
                 </li>
               </ul>
             </div>
@@ -108,12 +121,12 @@ export function AvSiteFooter() {
                 <li>
                   <Link href="/insights">Articles</Link>
                 </li>
-                {/* TODO: no dedicated routes for the Letter/Audits/Playbooks sub-pages yet */}
+                {/* TODO: no Playbooks route yet */}
                 <li>
-                  <a href="#">The Avishkar Letter</a>
+                  <Link href="/letter">The Avishkar Letter</Link>
                 </li>
                 <li>
-                  <a href="#">Practice audits</a>
+                  <Link href="/audits">Practice audits</Link>
                 </li>
                 <li>
                   <a href="#">Playbooks</a>

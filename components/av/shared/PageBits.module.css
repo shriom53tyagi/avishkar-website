@@ -1,0 +1,443 @@
+/*
+ * Shared building blocks for /letter, /audits, /benchmarks, /integrations.
+ * Structure comes from reference/{letter,audits,benchmarks,integrations}.html;
+ * every colour, font, radius and easing comes from the site tokens in
+ * app/globals.css, and buttons/marquee mirror the live site's own
+ * (AvHomeCta .btn, AboutPage .band).
+ */
+.page {
+  --ink: var(--color-text);
+  --lime: var(--color-lime);
+  --lime-text: #131313;
+  --line: var(--color-rule);
+  --surface: #fff;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  color: var(--ink);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.page a:focus-visible,
+.page button:focus-visible,
+.page input:focus-visible,
+.page [tabindex]:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 3px;
+}
+
+/* hero */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2.5rem;
+  padding: 3rem 0 4rem;
+}
+.title {
+  font-size: clamp(3rem, 8.5vw, 8.5rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+.ln {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.ln > span {
+  display: inline-block;
+  animation: rise 1.2s var(--ease) both;
+}
+@keyframes rise {
+  from {
+    transform: translateY(110%) rotate(3deg);
+    transform-origin: 0 100%;
+  }
+}
+.lede {
+  max-width: 34rem;
+  margin-top: 1.75rem;
+  font-size: clamp(1.125rem, 1.6vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  color: #3f3b38;
+  animation: fadeUp 0.9s var(--ease) 0.4s both;
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+}
+.badge {
+  position: relative;
+  width: 8.5rem;
+  height: 8.5rem;
+  flex: none;
+}
+.badge svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 18s linear infinite;
+}
+.badge text {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+.badge::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: -0.55rem;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 0 0.375rem var(--color-bg);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* sections */
+.section {
+  padding: 1.5rem 0 5.5rem;
+}
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.h2 {
+  font-size: clamp(2.2rem, 4.6vw, 3.75rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+.count {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* buttons: same shape as the site's own (AvHomeCta .btn) */
+.btn {
+  height: 3.2rem;
+  padding: 0 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--color-bg);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  border-radius: 0.2rem;
+  transition: border-radius 0.5s var(--ease);
+}
+.btn:hover {
+  border-radius: 2rem;
+}
+.btnLime {
+  background: var(--lime);
+  color: var(--lime-text);
+}
+.btnLg {
+  height: 3.6rem;
+  font-size: 1.375rem;
+}
+
+/* cards, tags */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1.75rem;
+}
+.sample {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--ink) 35%, transparent);
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+.tagSample {
+  background: transparent;
+  border: 1px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  color: var(--color-muted);
+}
+.tagLime {
+  background: var(--lime);
+  color: var(--lime-text);
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.lift {
+  transition: transform 0.4s var(--ease), border-color 0.3s;
+}
+.lift:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+}
+.empty {
+  border: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent);
+  border-radius: 1rem;
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+.empty strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.empty .btn {
+  margin-top: 1.25rem;
+}
+.notice {
+  border: 1px dashed color-mix(in srgb, var(--ink) 45%, transparent);
+  border-radius: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  background: #fff;
+}
+
+/* dark CTA block */
+.dark {
+  background: var(--color-dark);
+  color: var(--color-bg);
+  border-radius: 1.5rem;
+  padding: clamp(1.75rem, 5vw, 3.5rem);
+}
+.dark p {
+  color: var(--color-muted-on-dark);
+}
+.ctaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.ctaRow p {
+  margin-top: 0.6rem;
+}
+
+/* forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.dark .field label {
+  color: #cfcfcf;
+}
+.input {
+  width: 100%;
+  height: 3.4rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.dark .input {
+  background: var(--color-dark-card);
+  border-color: #3a3737;
+  color: #fff;
+}
+.formMsg {
+  min-height: 1.5em;
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+}
+.formErr {
+  color: #ff8a8a;
+}
+.formOk {
+  color: var(--lime);
+}
+.agree {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted-on-dark);
+}
+.agree a {
+  text-decoration: underline;
+}
+
+/* marquee (About page .band, un-rotated) */
+.band {
+  background: var(--color-dark);
+  color: var(--color-bg);
+  overflow: hidden;
+  padding: 1.5rem 0;
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+}
+.bandTrack {
+  display: flex;
+  width: max-content;
+  animation: strip-scroll 40s linear infinite;
+}
+.band:hover .bandTrack {
+  animation-play-state: paused;
+}
+.bandGrp {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.bandGrp span {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bandGrp b {
+  margin: 0 2rem;
+  color: var(--lime);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 400;
+  display: inline-block;
+  animation: spin 6s linear infinite;
+}
+@keyframes strip-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* grade strip (homepage Practice Audits card) */
+.score {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.25rem 0 1.5rem;
+}
+.score div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr 2rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+.score em {
+  height: 0.5rem;
+  border-radius: 0.3rem;
+  background: rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+.score em::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--ink);
+  border-radius: 0.3rem;
+  transform-origin: left;
+  animation: grow 1.2s var(--ease) both;
+}
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+.score strong {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .grid3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 767px) {
+  .page {
+    padding: 0 1.25rem;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 1.5rem 0 3rem;
+  }
+  .badge {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+  .grid3,
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+  .section {
+    padding-bottom: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ln > span,
+  .lede,
+  .badge svg,
+  .bandTrack,
+  .bandGrp b,
+  .score em::after {
+    animation: none !important;
+  }
+  .lift,
+  .btn {
+    transition: none;
+  }
+  .bandTrack {
+    overflow-x: auto;
+  }
+}

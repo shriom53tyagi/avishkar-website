@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice Audits | Avishkar</title>
+<meta name="description" content="Teardowns of real practices' stacks, and exactly what we'd fix.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: replace with the site's existing tokens when porting ===== */
+:root{
+  --bg:#f4f4f4; --surface:#ffffff; --ink:#000000; --ink-2:#5c5c5c; --ink-3:#8a8a8a;
+  --line:#e2e2e2; --dark-2:#1c1c1c; --lime:#a3f25b;
+  --r-xl:32px; --r-l:24px; --r-m:14px; --r-s:10px;
+  --sans:'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --ease:cubic-bezier(.7,0,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;box-shadow:0 0 0 6px var(--lime)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ===== Buttons with roll-up text ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 18px;border-radius:var(--r-s);font-weight:500;font-size:15px;border:0;cursor:pointer;white-space:nowrap}
+.btn-lg{height:56px;padding:0 24px;font-size:17px;border-radius:var(--r-m)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-lime{background:var(--lime);color:#000}
+.btn-ghost{background:var(--dark-2);color:#fff}
+.btn-light{background:#fff;color:#000;border:1px solid var(--line)}
+.roll{display:block;overflow:hidden;height:1.3em;line-height:1.3em}
+.roll>span{display:block;transition:transform .5s var(--ease)}
+.roll>span::after{content:attr(data-t);display:block}
+.btn:hover .roll>span,.btn:focus-visible .roll>span{transform:translateY(-50%)}
+
+/* ===== Navbar (floating, Osmo-style) ===== */
+.nav-wrap{position:sticky;top:12px;z-index:50;padding:0 16px}
+.nav{max-width:880px;margin:0 auto;background:#000;color:#fff;border-radius:var(--r-m);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px}
+.menu-btn{justify-self:start;background:none;border:0;color:#fff;font-weight:500;display:flex;gap:12px;align-items:center;height:44px;padding:0 14px;border-radius:var(--r-s);cursor:pointer}
+.menu-btn:hover{background:var(--dark-2)}
+.burger{width:16px;height:10px;position:relative}
+.burger i{position:absolute;left:0;width:100%;height:2px;background:#fff;border-radius:2px;transition:transform .4s var(--ease),top .4s var(--ease)}
+.burger i:first-child{top:0}.burger i:last-child{top:8px}
+.nav-wrap.open .burger i:first-child{top:4px;transform:rotate(45deg)}
+.nav-wrap.open .burger i:last-child{top:4px;transform:rotate(-45deg)}
+.logo{font-weight:700;font-size:20px;letter-spacing:-.03em}
+.nav-actions{justify-self:end;display:flex;gap:6px}
+.nav-panel{position:absolute;left:16px;right:16px;top:64px;z-index:2;max-width:880px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:var(--r-m);display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:28px;opacity:0;transform:translateY(-10px);pointer-events:none;visibility:hidden;transition:opacity .35s var(--ease),transform .35s var(--ease),visibility .35s}
+.nav-wrap.open .nav-panel{opacity:1;transform:none;pointer-events:auto;visibility:visible}
+.nav-panel h4{font-size:13px;font-weight:500;color:var(--ink-3);margin-bottom:12px}
+.nav-panel ul{list-style:none;display:grid;gap:4px}
+.nav-panel a{font-size:26px;font-weight:500;letter-spacing:-.03em;display:inline-flex;align-items:center;gap:10px}
+.nav-panel a:hover{color:var(--ink-2)}
+.new{font-family:var(--mono);font-size:11px;background:var(--lime);padding:2px 6px;border-radius:5px;letter-spacing:0}
+
+/* ===== Marquee strip ===== */
+.marquee{max-width:880px;margin:6px auto 0;background:var(--lime);border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:13px;letter-spacing:.03em;text-transform:uppercase}
+.marquee .track{display:flex;width:max-content;animation:mq 40s linear infinite}
+.marquee .track span{padding:6px 16px;white-space:nowrap}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ===== Hero ===== */
+.hero{padding:112px 0 72px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
+.display{font-size:clamp(56px,11.5vw,176px);line-height:.86;letter-spacing:-.06em;font-weight:600}
+.display .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em}
+.display .w>span{display:inline-block;transform:translateY(105%);transition:transform 1s var(--ease)}
+.loaded .display .w>span{transform:none}
+.lede{font-size:clamp(18px,2vw,22px);color:var(--ink-2);max-width:34ch;margin-top:28px;line-height:1.35}
+.badge{width:136px;height:136px;position:relative;flex:none}
+.badge svg{width:100%;height:100%;animation:spin 18s linear infinite}
+.badge text{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;fill:var(--ink)}
+.badge::after{content:"";position:absolute;inset:50%;width:18px;height:18px;margin:-9px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px #000}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== Sections, cards, tags ===== */
+.section{padding:24px 0 96px}
+.h2{font-size:clamp(34px,4.6vw,60px);letter-spacing:-.045em;font-weight:600;line-height:.98}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:28px}
+.count{font-family:var(--mono);font-size:13px;color:var(--ink-3)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);padding:28px}
+.card.sample{border-style:dashed;border-color:#b9b9b9}
+.tag{display:inline-flex;align-items:center;height:24px;padding:0 8px;border-radius:6px;font-family:var(--mono);font-size:12px;background:#ececec;color:#333}
+.tag-sample{background:transparent;border:1px dashed #9a9a9a;color:#666}
+.tag-lime{background:var(--lime);color:#000}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lift{transition:transform .4s var(--ease),border-color .3s}
+.lift:hover{transform:translateY(-4px);border-color:#c9c9c9}
+.empty{border:1px dashed #b9b9b9;border-radius:var(--r-l);padding:56px 24px;text-align:center;color:var(--ink-2)}
+.empty strong{display:block;color:var(--ink);font-size:22px;letter-spacing:-.02em;margin-bottom:6px}
+.empty .btn{margin-top:20px}
+.notice{border:1px dashed #9a9a9a;border-radius:var(--r-m);padding:14px 18px;font-size:14px;color:#444;background:#fff;margin-bottom:16px}
+
+/* ===== Pills ===== */
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{height:42px;padding:0 18px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:500;display:inline-flex;gap:10px;align-items:center;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+.pill:hover{border-color:#bcbcbc}
+.pill[aria-pressed="true"]{background:#000;color:#fff;border-color:#000}
+.pill .n{font-family:var(--mono);font-size:12px;opacity:.55}
+.pill:disabled{opacity:.4;cursor:not-allowed}
+
+/* ===== Forms ===== */
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:14px;font-weight:500}
+.input{height:54px;border-radius:var(--r-m);border:1px solid var(--line);background:#fff;padding:0 16px;font:inherit;font-size:16px;color:var(--ink);width:100%}
+.dark .input{background:var(--dark-2);border-color:#2e2e2e;color:#fff}
+.dark .field label{color:#cfcfcf}
+.form-msg{font-size:14px;min-height:1.5em;margin-top:10px}
+.form-msg.err{color:#ff8a8a}
+.form-msg.ok{color:var(--lime)}
+
+/* ===== Dark CTA block ===== */
+.dark{background:#000;color:#fff;border-radius:var(--r-xl);padding:clamp(28px,5vw,56px)}
+.dark p{color:#b5b5b5}
+
+/* ===== Footer ===== */
+.footer{background:#000;color:#fff;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:72px 0 24px;margin-top:48px;overflow:hidden}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+.foot-grid h5{font-size:13px;font-weight:500;color:#8a8a8a;margin-bottom:14px}
+.foot-grid ul{list-style:none;display:grid;gap:8px}
+.foot-grid a{color:#d6d6d6}.foot-grid a:hover{color:#fff}
+.foot-tag{font-size:26px;letter-spacing:-.03em;line-height:1.1;max-width:14ch}
+.foot-mark{font-size:clamp(80px,19vw,280px);font-weight:600;letter-spacing:-.07em;line-height:.8;margin-top:72px;color:#fff}
+.foot-base{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:28px;font-size:14px;color:#8a8a8a}
+.foot-base nav{display:flex;gap:18px}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr 1fr}.foot-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){
+  .grid{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr;padding:72px 0 48px}
+  .badge{width:104px;height:104px}
+  .nav-actions .btn-ghost{display:none}
+  .nav-panel{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .display .w>span{transform:none}
+}
+.audit{display:flex;flex-direction:column;gap:20px}
+.audit-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;color:var(--ink-2)}
+.audit h3{font-size:26px;letter-spacing:-.035em;line-height:1.1}
+.grades{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.g{border-radius:12px;background:#f1f1f1;padding:10px 8px 8px;text-align:center}
+.g b{display:block;font-size:24px;letter-spacing:-.04em;line-height:1}
+.g small{display:block;font-size:11px;color:var(--ink-2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g.a{background:var(--lime)}.g.b{background:#dcf7c2}.g.c{background:#ececec}.g.d,.g.f{background:#000;color:#fff}.g.d small,.g.f small{color:#aaa}
+.audit .btn{align-self:flex-start}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+dialog{border:0;padding:0;background:transparent;max-width:min(920px,calc(100% - 24px));width:100%;margin:auto}
+dialog::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+.sheet-d{background:var(--bg);border-radius:var(--r-xl);padding:clamp(24px,4vw,48px);position:relative}
+.close{position:absolute;top:18px;right:18px;width:44px;height:44px;border-radius:50%;border:0;background:#000;color:#fff;cursor:pointer;font-size:20px}
+.sheet-d h2{margin:10px 0 28px;max-width:18ch}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.board .g{padding:22px 10px 14px;border-radius:var(--r-m)}
+.board .g b{font-size:clamp(34px,5vw,56px)}
+.board .g{opacity:0;transform:translateY(14px) scale(.96);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.board.in .g{opacity:1;transform:none}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.cols h4{font-size:20px;letter-spacing:-.02em;margin-bottom:14px}
+.cols ul{list-style:none;display:grid;gap:10px}
+.cols li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.cols li i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;margin-top:1px}
+.found i{background:#000;color:#fff}.fix i{background:var(--lime)}
+.d-cta{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.d-cta h3{font-size:26px;letter-spacing:-.03em}
+.cta-row{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+@media (max-width:760px){.grid-2,.cols{grid-template-columns:1fr}.board{grid-template-columns:repeat(3,1fr)}}
+</style></head><body>
+<a class="sr" href="#main">Skip to content</a>
+<header class="nav-wrap" id="navWrap">
+  <nav class="nav" aria-label="Main">
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navPanel"><span class="burger" aria-hidden="true"><i></i><i></i></span>Menu</button>
+    <a class="logo" href="/">Avishkar</a>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="/#early-access"><span class="roll"><span data-t="Early access">Early access</span></span></a>
+      <a class="btn btn-lime" href="/contact"><span class="roll"><span data-t="Book a demo">Book a demo</span></span></a>
+    </div>
+  </nav>
+  <div class="nav-panel" id="navPanel">
+    <div><h4>Our products</h4><ul>
+      <li><a href="/what-we-do">What we do</a></li>
+      <li><a href="/#why">Why Avishkar</a></li>
+      <li><a href="/agents">Agents <span class="new">NEW</span></a></li>
+      <li><a href="/how-we-work">How we work</a></li>
+      <li><a href="/security">Security</a></li>
+    </ul></div>
+    <div><h4>Explore</h4><ul>
+      <li><a href="/insights">Insights</a></li>
+      <li><a href="/letter">The Avishkar Letter</a></li>
+      <li><a href="/audits">Practice Audits</a></li>
+      <li><a href="/benchmarks">Benchmarks</a></li>
+      <li><a href="/integrations">Integrations</a></li>
+      <li><a href="/about">About us</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul></div>
+  </div>
+  <div class="marquee" aria-hidden="true"><div class="track"><span>Practice Audits</span><span>✱</span><span>Real stacks, graded</span><span>✱</span><span>Exactly what we'd fix</span><span>✱</span></div></div>
+</header>
+<main id="main" class="wrap">
+<section class="hero">
+  <div>
+    <h1 class="display" data-split>Practice Audits</h1>
+    <p class="lede">Teardowns of real practices' stacks, and exactly what we'd fix.</p>
+  </div>
+  <div class="badge" aria-hidden="true"><svg viewBox="0 0 136 136"><defs><path id="c" d="M68,68 m-52,0 a52,52 0 1,1 104,0 a52,52 0 1,1 -104,0"/></defs><text><textPath href="#c">Booking ✱ Phones ✱ Follow-ups ✱ Data ✱ </textPath></text></svg></div>
+</section>
+
+<section class="section">
+  <div class="section-head"><h2 class="h2">Latest audits</h2><span class="count" id="auditCount"></span></div>
+  <div id="audits"></div>
+</section>
+
+<section class="section">
+  <div class="dark cta-row">
+    <div><h2 class="h2">Want your stack audited?</h2><p style="margin-top:10px">We'll grade it and show you where revenue slips out.</p></div>
+    <a class="btn btn-lime btn-lg" href="/contact"><span class="roll"><span data-t="Get your free audit">Get your free audit</span></span></a>
+  </div>
+</section>
+
+<!-- /audits/[slug] detail template (opened as a dialog here for reference) -->
+<dialog id="auditDialog" aria-labelledby="dTitle"><div class="sheet-d" id="dBody"></div></dialog>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <p class="foot-tag">The technology partner for medspas and clinics.</p>
+      <div><h5>Product</h5><ul>
+        <li><a href="/what-we-do">Platform</a></li><li><a href="#">Lead generation</a></li>
+        <li><a href="#">Intelligence</a></li><li><a href="/integrations">Integrations</a></li></ul></div>
+      <div><h5>Insights</h5><ul>
+        <li><a href="/insights">Articles</a></li><li><a href="/letter">The Avishkar Letter</a></li>
+        <li><a href="/audits">Practice audits</a></li><li><a href="/benchmarks">Benchmarks</a></li></ul></div>
+      <div><h5>Company</h5><ul>
+        <li><a href="/about">About us</a></li><li><a href="/results">Case studies</a></li>
+        <li><a href="/contact">Contact</a></li></ul></div>
+    </div>
+    <div class="foot-mark" aria-hidden="true">Avishkar</div>
+    <div class="foot-base"><span>© 2026 Avishkar AI</span>
+      <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="#">Cookies</a></nav></div>
+  </div>
+</footer>
+<script>
+/* ===== Shared: menu, headline reveal ===== */
+(function(){
+  const wrap=document.getElementById('navWrap'), btn=document.getElementById('menuBtn');
+  btn.addEventListener('click',()=>{const o=wrap.classList.toggle('open');btn.setAttribute('aria-expanded',o)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&wrap.classList.contains('open')){wrap.classList.remove('open');btn.setAttribute('aria-expanded',false);btn.focus()}});
+  document.addEventListener('click',e=>{if(!wrap.contains(e.target)){wrap.classList.remove('open');btn.setAttribute('aria-expanded',false)}});
+  // duplicate marquee content for a seamless loop
+  document.querySelectorAll('.marquee .track').forEach(t=>t.innerHTML+=t.innerHTML);
+  // split headline into masked words (the one load moment per page)
+  document.querySelectorAll('[data-split]').forEach(h=>{
+    h.setAttribute('aria-label',h.textContent.trim());
+    h.innerHTML=h.textContent.trim().split(/\s+/).map((w,i)=>`<span class="w" aria-hidden="true"><span style="transition-delay:${i*90}ms">${w}</span></span>`).join(' ');
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('loaded')));
+})();
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+</script>
+<script>
+/* ===== DATA: anonymized only, never a real practice name. Empty array shows the empty state. ===== */
+const SHOW_SAMPLES = true; // set false before launch
+const AREAS=['Booking','Follow-ups','Phones','Reviews','Data flow'];
+const AUDITS = SHOW_SAMPLES ? [
+  {sample:true, slug:'sample-1', label:'Medspa, City, ST', locations:1,
+   headline:'Headline finding for this practice goes here',
+   grades:{'Booking':'B+','Follow-ups':'D','Phones':'C','Reviews':'A','Data flow':'D'},
+   found:['Finding one, in one short line','Finding two, in one short line','Finding three, in one short line'],
+   fix:['Fix one, in one short line','Fix two, in one short line','Fix three, in one short line']},
+  {sample:true, slug:'sample-2', label:'Clinic, City, ST', locations:3,
+   headline:'Headline finding for this practice goes here',
+   grades:{'Booking':'A','Follow-ups':'C','Phones':'D','Reviews':'B','Data flow':'C'},
+   found:['Finding one, in one short line','Finding two, in one short line'],
+   fix:['Fix one, in one short line','Fix two, in one short line']},
+] : [];
+
+const cls=g=>g.trim()[0].toLowerCase();
+const strip=(gr,big)=>AREAS.map((a,i)=>`<div class="g ${cls(gr[a])}" ${big?`style="transition-delay:${i*120}ms"`:''}><b>${esc(gr[a])}</b><small>${a}</small></div>`).join('');
+
+const box=document.getElementById('audits');
+document.getElementById('auditCount').textContent = AUDITS.length ? `${AUDITS.length} audits` : '';
+box.innerHTML = AUDITS.length
+  ? `<div class="grid-2">${AUDITS.map((a,i)=>`
+    <article class="card audit ${a.sample?'sample':''}">
+      <div class="audit-top"><span>${esc(a.label)} · ${a.locations} location${a.locations>1?'s':''}</span>${a.sample?'<span class="tag tag-sample">Sample</span>':''}</div>
+      <h3>${esc(a.headline)}</h3>
+      <div class="grades">${strip(a.grades)}</div>
+      <button class="btn btn-ink" data-open="${i}"><span class="roll"><span data-t="Read audit">Read audit</span></span></button>
+    </article>`).join('')}</div>`
+  : `<div class="empty"><strong>The first audit publishes soon.</strong>Want yours to be next? We'll grade your stack for free.
+     <br><a class="btn btn-ink" href="/contact"><span class="roll"><span data-t="Get your free audit">Get your free audit</span></span></a></div>`;
+
+const dlg=document.getElementById('auditDialog'), body=document.getElementById('dBody');
+let opener=null;
+box.addEventListener('click',e=>{
+  const b=e.target.closest('[data-open]'); if(!b) return;
+  opener=b; const a=AUDITS[+b.dataset.open];
+  body.innerHTML=`
+    <button class="close" aria-label="Close audit">✕</button>
+    <span class="tag ${a.sample?'tag-sample':''}">${esc(a.label)}</span>
+    <h2 class="h2" id="dTitle">${esc(a.headline)}</h2>
+    <div class="board" id="board">${strip(a.grades,true)}</div>
+    <div class="cols">
+      <div class="card"><h4>What we found</h4><ul class="found">${a.found.map(f=>`<li><i>!</i><span>${esc(f)}</span></li>`).join('')}</ul></div>
+      <div class="card"><h4>What we'd fix</h4><ul class="fix">${a.fix.map(f=>`<li><i>✓</i><span>${esc(f)}</span></li>`).join('')}</ul></div>
+    </div>
+    <div class="dark d-cta"><h3>See how your stack grades.</h3>
+      <a class="btn btn-lime btn-lg" href="/contact"><span class="roll"><span data-t="Get your free audit">Get your free audit</span></span></a></div>`;
+  dlg.showModal();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById('board').classList.add('in')));
+  body.querySelector('.close').addEventListener('click',()=>dlg.close());
+});
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+dlg.addEventListener('close',()=>opener&&opener.focus());
+</script>
+</body></html>
