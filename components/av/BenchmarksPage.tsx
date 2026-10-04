@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Roll } from "./Roll";
-import { isValidEmail } from "@/lib/early-access";
+import { isValidEmail, submitSubscribe } from "@/lib/early-access";
 import { METRICS, SHOW_SAMPLES, type Metric } from "@/lib/benchmarks-config";
 import { readReducedMotion } from "./home/shared/useReducedMotion";
 import { bits, PageHero } from "./shared/PageBits";
@@ -60,6 +60,7 @@ export function BenchmarksPage() {
     Object.fromEntries(METRICS.map((m) => [m.id, String(m.initial)])),
   );
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [pending, setPending] = useState(false);
   const value = (m: Metric) => clamp(m, Number(raw[m.id]) || 0);
   const sourced = METRICS.filter((m) => m.average.value != null);
 
@@ -108,6 +109,7 @@ export function BenchmarksPage() {
                   max={m.max}
                   step={m.step}
                   value={value(m)}
+                  style={{ ["--p" as string]: `${pct(m, value(m))}%` }}
                   onChange={(e) => setRaw((r) => ({ ...r, [m.id]: e.target.value }))}
                 />
               </div>
@@ -164,12 +166,13 @@ export function BenchmarksPage() {
                   {sourced.map((m, i) => (
                     <span key={m.id}>
                       {i > 0 && " · "}
+                      {m.name}:{" "}
                       {m.average.sourceUrl ? (
                         <a href={m.average.sourceUrl} target="_blank" rel="noopener noreferrer">
                           {m.average.sourceName || m.name}
                         </a>
                       ) : (
-                        `${m.name}: source needed`
+                        "source needed"
                       )}
                     </span>
                   ))}
@@ -191,7 +194,7 @@ export function BenchmarksPage() {
           <div>
             <form
               noValidate
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const form = e.currentTarget;
                 const email = String(new FormData(form).get("email") ?? "");
@@ -200,7 +203,17 @@ export function BenchmarksPage() {
                   form.querySelector<HTMLInputElement>("input[name=email]")?.focus();
                   return;
                 }
-                // TODO: POST email + the metric values above to a report endpoint.
+                const details = METRICS.map((m) => {
+                  const avg = m.average.value;
+                  return `${m.name}: ${value(m)}${m.unit} (industry average ${avg == null ? "not set" : `${avg}${m.unit}`})`;
+                }).join("\n");
+                setPending(true);
+                const result = await submitSubscribe(email, "", { source: "benchmarks-report", details });
+                setPending(false);
+                if (!result.ok) {
+                  setMsg({ ok: false, text: result.error });
+                  return;
+                }
                 setMsg({ ok: true, text: "Report requested. It'll arrive in your inbox." });
                 form.reset();
               }}
@@ -209,7 +222,7 @@ export function BenchmarksPage() {
                 <label htmlFor="report-email">Work email</label>
                 <input className={bits.input} id="report-email" name="email" type="email" autoComplete="email" />
               </div>
-              <button className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`} type="submit">
+              <button className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`} type="submit" disabled={pending}>
                 <Roll>Send my report</Roll>
               </button>
             </form>

@@ -29,7 +29,9 @@ export function SubscribeForm() {
           return;
         }
         setPending(true);
-        const result = await submitSubscribe(email, String(new FormData(form).get("firstName") ?? ""));
+        const result = await submitSubscribe(email, String(new FormData(form).get("firstName") ?? ""), {
+          source: "letter-page",
+        });
         setPending(false);
         if (!result.ok) {
           setMsg({ ok: false, text: result.error });

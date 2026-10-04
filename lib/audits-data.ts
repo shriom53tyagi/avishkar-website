@@ -3,7 +3,10 @@
  * TODO: replace the samples with real audits. With SHOW_SAMPLES = false and
  * an empty AUDITS array the pages show their empty state.
  */
-export const SHOW_SAMPLES = true; // set false before launch
+// Flip to true locally to preview the sample cards. Even then they are never
+// shown in a production build.
+const SAMPLES_ENABLED = false;
+export const SHOW_SAMPLES = SAMPLES_ENABLED && process.env.NODE_ENV !== "production";
 
 export const AREAS = ["Booking", "Follow-ups", "Phones", "Reviews", "Data flow"] as const;
 export type Area = (typeof AREAS)[number];

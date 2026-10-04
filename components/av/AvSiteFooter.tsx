@@ -17,12 +17,6 @@ import { submitSubscribe } from "@/lib/early-access";
  * across every page instead of homepage-only — the design is unchanged.
  *
  * Newsletter submit posts to /api/subscribe, then shows the `.is-done` state.
- *
- * Footer nav links: pointed at real routes where one exists in this
- * codebase (about, agents, careers, contact, how-we-work, insights,
- * privacy, results, security, terms, what-we-do); every other `href="#"`
- * from the reference is kept as a plain anchor with a TODO, not silently
- * invented.
  */
 
 export function AvSiteFooter() {
@@ -64,7 +58,9 @@ export function AvSiteFooter() {
               const data = new FormData(form);
               setNlError("");
               setNlPending(true);
-              const result = await submitSubscribe(String(data.get("email") ?? ""), String(data.get("firstName") ?? ""));
+              const result = await submitSubscribe(String(data.get("email") ?? ""), String(data.get("firstName") ?? ""), {
+                source: "footer",
+              });
               setNlPending(false);
               if (result.ok) setIsDone(true);
               else setNlError(result.error);
@@ -100,18 +96,20 @@ export function AvSiteFooter() {
             <div>
               <h5>Product</h5>
               <ul>
-                {/* TODO: no routes for Lead generation / Intelligence yet */}
                 <li>
-                  <Link href="/what-we-do">Platform</Link>
+                  <Link href="/what-we-do">What we do</Link>
                 </li>
                 <li>
-                  <a href="#">Lead generation</a>
-                </li>
-                <li>
-                  <a href="#">Intelligence</a>
+                  <Link href="/agents">Agents</Link>
                 </li>
                 <li>
                   <Link href="/integrations">Integrations</Link>
+                </li>
+                <li>
+                  <Link href="/how-we-work">How we work</Link>
+                </li>
+                <li>
+                  <Link href="/security">Security</Link>
                 </li>
               </ul>
             </div>
@@ -121,7 +119,6 @@ export function AvSiteFooter() {
                 <li>
                   <Link href="/insights">Articles</Link>
                 </li>
-                {/* TODO: no Playbooks route yet */}
                 <li>
                   <Link href="/letter">The Avishkar Letter</Link>
                 </li>
@@ -129,7 +126,7 @@ export function AvSiteFooter() {
                   <Link href="/audits">Practice audits</Link>
                 </li>
                 <li>
-                  <a href="#">Playbooks</a>
+                  <Link href="/benchmarks">Benchmarks</Link>
                 </li>
               </ul>
             </div>
@@ -139,7 +136,6 @@ export function AvSiteFooter() {
                 <li>
                   <Link href="/about">About us</Link>
                 </li>
-                {/* TODO: "Case studies" has no dedicated route; /results is the closest existing page */}
                 <li>
                   <Link href="/results">Case studies</Link>
                 </li>
@@ -169,11 +165,6 @@ export function AvSiteFooter() {
                   <path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.95a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.06-3.5.16-5.4 2.06-5.54 5.54C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.16 3.48 2.06 5.38 5.54 5.54 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c3.47-.16 5.39-2.06 5.54-5.54.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.15-3.47-2.06-5.38-5.54-5.54-1-.06-1.3-.06-3.9-.06zm0 1.7c2.55 0 2.85 0 3.85.06 2.6.12 3.8 1.35 3.93 3.93.05 1 .05 1.3.05 3.81s0 2.85-.05 3.85c-.12 2.57-1.33 3.8-3.93 3.93-1 .05-1.3.05-3.85.05s-2.85 0-3.85-.05c-2.6-.12-3.8-1.36-3.93-3.93-.05-1-.06-1.3-.06-3.85s0-2.84.06-3.85C4.34 5.6 5.55 4.37 8.15 4.26c1-.05 1.3-.06 3.85-.06z" />
                 </svg>
               </a>
-              <a href="#" aria-label="X">
-                <svg viewBox="0 0 24 24">
-                  <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z" />
-                </svg>
-              </a>
             </div>
           </div>
         </div>
@@ -194,8 +185,6 @@ export function AvSiteFooter() {
         <div className={styles.pills}>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
-          {/* TODO: no /cookies route in this codebase */}
-          <a href="#">Cookies</a>
         </div>
         <span>© 2026 Avishkar AI</span>
         <div>

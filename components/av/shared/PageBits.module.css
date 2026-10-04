@@ -24,12 +24,9 @@
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
-.page a:focus-visible,
-.page button:focus-visible,
-.page input:focus-visible,
-.page [tabindex]:focus-visible {
-  outline: 2px solid var(--color-purple);
-  outline-offset: 3px;
+/* Focus uses the site's global :focus-visible; on dark blocks it switches to lime for contrast. */
+.dark :focus-visible {
+  outline-color: var(--lime);
 }
 
 /* hero */

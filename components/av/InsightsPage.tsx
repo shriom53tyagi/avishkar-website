@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { isValidEmail, submitEarlyAccess } from "@/lib/early-access";
+import { isValidEmail, submitSubscribe } from "@/lib/early-access";
 import styles from "./InsightsPage.module.css";
 
 /**
@@ -136,7 +136,7 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
     }
     setSubscribeError("");
     setSubscribePending(true);
-    const result = await submitEarlyAccess(next);
+    const result = await submitSubscribe(next, "", { source: "insights-page" });
     setSubscribePending(false);
     if (!result.ok) {
       setSubscribeError(result.error);

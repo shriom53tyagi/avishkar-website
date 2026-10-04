@@ -2,10 +2,9 @@
  * Benchmark metrics and industry averages.
  * Industry averages MUST come from a cited source. `value: null` hides the
  * marker and shows "Industry average not set".
- * TODO: with SHOW_SAMPLES = false every average is null until real, sourced
- * values are entered in REAL_AVERAGES below (value + sourceName + sourceUrl).
+ * TODO: rebooking rate still has no sourced average (value: null).
  */
-export const SHOW_SAMPLES = true; // set false before launch
+export const SHOW_SAMPLES = false;
 
 export type IndustryAverage = {
   value: number | null;
@@ -25,14 +24,22 @@ export type Metric = {
   average: IndustryAverage;
 };
 
-// TODO: replace with real, sourced averages.
 const REAL_AVERAGES: Record<Metric["id"], IndustryAverage> = {
-  noShow: { value: null, sourceName: "", sourceUrl: "" },
+  noShow: {
+    value: 4,
+    sourceName: "Zenoti 2026 Beauty & Wellness Benchmark Report (Medspa Edition)",
+    sourceUrl: "https://www.zenoti.com/thecheckin/medspa-cancellation-rate",
+  },
+  // No sourced figure yet: marker hidden, "Industry average not set" shown.
   rebook: { value: null, sourceName: "", sourceUrl: "" },
-  response: { value: null, sourceName: "", sourceUrl: "" },
+  response: {
+    value: 125,
+    sourceName: "InsideSales.com, healthcare average (via Geckoboard)",
+    sourceUrl: "https://www.geckoboard.com/resources/kpi-examples/lead-response-time/",
+  },
 };
 
-// Placeholder numbers, only shown while SHOW_SAMPLES is true (with a notice).
+// Placeholder numbers, only used while SHOW_SAMPLES is true (with a notice).
 const SAMPLE_AVERAGES: Record<Metric["id"], number> = { noShow: 15, rebook: 55, response: 45 };
 
 function avg(id: Metric["id"]): IndustryAverage {
