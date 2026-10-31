@@ -1,125 +1,84 @@
 # Avishkar — practice technology
 
-Marketing site for **Avishkar**: we connect the systems a practice already uses and
-build AI agents, integrations, automation and custom tools around its workflows.
+Marketing site for **Avishkar**: we connect the systems a practice already uses and build AI
+agents, integrations, automation and custom tools around its workflows.
 
 > Technology built around how your practice works.
 
-The site has two jobs: explain what Avishkar is in about ten seconds, and give a
-qualified visitor a clear path to trying an agent or booking a conversation.
-
 ## Tech stack
 
-- **Next.js 15** (App Router, RSC) · **React 19** · **TypeScript** (strict)
-- **Tailwind CSS** with a small token set (see `tailwind.config.ts`)
-- **Inter** via `next/font`, single family
-- **Framer Motion** for exactly one entrance animatio
+- **Next.js 15** (App Router) · **React 19** · **TypeScript** (strict)
+- **Tailwind CSS** and CSS modules
+- **Framer Motion** for animation
+- **Postgres** (via `pg`) for the Insights section, **AWS SES** for form emails
 
-## Information architecture
+## Prerequisites
 
-```
-/                    Home — 8 sections, in a fixed order
-/agents              Agent library, grouped by availability
-/agents/[slug]       One page per agent, generated from content
-/how-we-work         Engagement model, what we build, common questions
-/about               Who we are and how we think
-/contact             Booking + "tell us what you're trying to solve"
-/security            How access and data are handled
-/resources           Existing SEO articles (footer-linked)
-/careers /privacy /terms
-```
+- Node.js, the version in [`.nvmrc`](.nvmrc) (`nvm use`)
+- npm (the repo uses `package-lock.json`)
+- A Postgres database, only if you need the Insights pages to show articles
 
-Navigation is three links plus one CTA. The site uses four CTA labels in total:
-`Book a 30-min conversation`, `Try agent`, `Explore agents`, and
-`Tell us what you're trying to solve` (see `CTA` in `lib/content.ts`).
-
-## Content model
-
-All copy lives in two files, so wording changes never require touching layout:
-
-| File               | Holds                                                      |
-| ------------------ | ---------------------------------------------------------- |
-| `lib/content.ts`   | Navigation, CTA labels, every page's copy, security claims |
-| `lib/agents.ts`    | The agent library — one typed entry per agent              |
-| `lib/resources.ts` | The SEO article content                                    |
-
-**Adding an agent** means adding one entry to `AGENTS` in `lib/agents.ts`. The
-library grouping, category filter, home page preview, footer list, detail page,
-sitemap and structured data all derive from it.
-
-**Shipping an agent** means changing `status` to `"live"` and setting `demoUrl`.
-The card then shows a `Try agent` CTA and the detail page links to the demo.
-
-## Claims policy
-
-The site carries no client logos, no invented metrics and no certifications we
-have not earned. Before launch, review `SECURITY_PILLARS` in `lib/content.ts` —
-if a line cannot be evidenced in a security questionnaire, cut it.
-
-## Design system
-
-- Two neutral surfaces (`canvas`, `alt`), white cards, a three-step ink ramp
-- One accent (`#124C5F`), plus a green for available and an amber for in-development
-- 8px radius, 1px borders, no shadows, no gradients
-- One animation: an 8px rise and fade on section enter, disabled under
-  `prefers-reduced-motion` and forced visible under `<noscript>`
-
-## Run locally
+## Setup
 
 ```bash
-npm install
-cp .env.example .env.local   # add NEXT_PUBLIC_CALENDLY_URL
+nvm use
+npm ci
+cp .env.example .env.local   # then fill in the values you need
 npm run dev
 ```
 
+The app starts without most variables. Pages that depend on a missing service (Insights, form
+emails) degrade instead of crashing. Ask the project lead for shared development credentials.
+
+## Environment variables
+
+Defined in [`.env.example`](.env.example).
+
+| Variable                    | Purpose                                                             |
+| --------------------------- | ------------------------------------------------------------------- |
+| `NEXT_PUBLIC_CALENDLY_URL`  | Booking URL for the contact page's Calendly embed                   |
+| `SES_AWS_ACCESS_KEY_ID`     | AWS SES credentials for form emails (set all five or none)          |
+| `SES_AWS_SECRET_ACCESS_KEY` | AWS SES credentials for form emails                                 |
+| `SES_AWS_REGION`            | AWS SES region                                                      |
+| `SES_FROM_EMAIL`            | Verified SES sender identity                                        |
+| `SES_TO_EMAIL`              | Inbox that receives early-access, Letter and report requests        |
+| `DATABASE_URL`              | Postgres connection string for the Insights section                 |
+| `INSIGHTS_PUBLISH_API_KEY`  | Bearer token the Content Engine uses to publish via `/api/insights` |
+
+## Scripts
+
+| Command                  | What it does                                   |
+| ------------------------ | ---------------------------------------------- |
+| `npm run dev`            | Start the dev server                           |
+| `npm run build`          | Production build (standalone output)           |
+| `npm start`              | Start the production server                    |
+| `npm run lint`           | ESLint                                         |
+| `npm run typecheck`      | TypeScript, no emit                            |
+| `npm run format`         | Rewrite files with Prettier                    |
+| `npm run format:check`   | Fail if any file is not formatted              |
+| `npm run check`          | Lint, typecheck and format check               |
+| `npm run db:migrate`     | Apply database migrations (needs `.env.local`) |
+| `npm run db:seed-legacy` | Seed the legacy Insights articles              |
+
+## Routes
+
+`/` · `/what-we-do` · `/agents` · `/agents/[slug]` · `/audits` · `/audits/[slug]` · `/benchmarks` ·
+`/integrations` · `/results` · `/how-we-work` · `/about` · `/careers` · `/contact` · `/security` ·
+`/insights` · `/insights/[slug]` · `/letter` · `/letter/[slug]` · `/privacy` · `/terms` ·
+`/coming-soon`
+
 ## Insights (database-driven)
 
-`/insights` and `/insights/[slug]` are rendered from a Neon Postgres database
-instead of static content. Articles are published by the separate Avishkar
-Content Engine (`intelligence.avishkar.app`) via the API in
-`app/api/insights/`; there is no admin UI on this site.
+`/insights` pages are rendered from Postgres. Articles are published by the separate Avishkar
+Content Engine through the API in `app/api/insights/`; there is no admin UI. Run
+`npm run db:migrate` after setting `DATABASE_URL`. Pages use ISR (`revalidate = 60`) and the API
+revalidates on publish, update and delete. See `db/test-guide.md` for curl examples.
 
-Setup:
+## Deployment
 
-```bash
-# In .env.local:
-DATABASE_URL=postgres://user:password@ep-xxxx.neon.tech/dbname?sslmode=require
-INSIGHTS_PUBLISH_API_KEY=some-long-random-shared-secret
+The app deploys to a long-running Node.js server (not Vercel) with `output: "standalone"` in
+`next.config.ts`: build with `npm run build` and run `npm start`.
 
-npm run db:migrate
-```
+## Contributing
 
-If either env var is missing, the app still starts and every other page works
-normally — the Insights pages will just show no articles, and the publish API
-returns 401/warns in the server log until both are set.
-
-See `db/test-guide.md` for exact curl commands to exercise the publish API,
-and `db/migrations/` for the schema. Pages use Next.js ISR
-(`revalidate = 60`), and the API calls `revalidatePath` on publish/update/
-delete so changes appear within about a second instead of waiting a minute.
-
-This app deploys to a long-running Node.js server (not Vercel) — build with
-`npm run build` and run `node .next/standalone/server.js` (or `npm start`),
-per `output: "standalone"` in `next.config.ts`.
-
-## Checks
-
-```bash
-npm run typecheck
-npm run lint
-npm run build
-```
-
-## Project structure
-
-```
-app/                    Routes
-components/
-  home/                 The eight home page sections
-  agents/               Agent library (client-side category filter)
-  ui/                   Primitives: Container, Section, Button, Reveal, Nav, Footer
-lib/
-  content.ts            Site copy and navigation
-  agents.ts             Agent library
-  schema.ts             Structured data, derived from the content files
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md).
