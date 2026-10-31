@@ -1,0 +1,11 @@
+.next
+node_modules
+out
+coverage
+public
+reference
+.claude
+data
+package-lock.json
+tsconfig.tsbuildinfo
+next-env.d.ts
