@@ -58,9 +58,13 @@ export function AvSiteFooter() {
               const data = new FormData(form);
               setNlError("");
               setNlPending(true);
-              const result = await submitSubscribe(String(data.get("email") ?? ""), String(data.get("firstName") ?? ""), {
-                source: "footer",
-              });
+              const result = await submitSubscribe(
+                String(data.get("email") ?? ""),
+                String(data.get("firstName") ?? ""),
+                {
+                  source: "footer",
+                },
+              );
               setNlPending(false);
               if (result.ok) setIsDone(true);
               else setNlError(result.error);
@@ -73,7 +77,13 @@ export function AvSiteFooter() {
             <label className="sr-only" htmlFor="nl-email">
               Email
             </label>
-            <input id="nl-email" name="email" type="email" placeholder="yourname@practice.com" required />
+            <input
+              id="nl-email"
+              name="email"
+              type="email"
+              placeholder="yourname@practice.com"
+              required
+            />
             <button className={styles.btn} type="submit" disabled={nlPending}>
               <Roll>Get updates</Roll>
             </button>
@@ -85,7 +95,10 @@ export function AvSiteFooter() {
             </label>
           </form>
           {nlError && (
-            <p role="alert" style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-coral)" }}>
+            <p
+              role="alert"
+              style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-coral)" }}
+            >
               {nlError}
             </p>
           )}
@@ -155,12 +168,22 @@ export function AvSiteFooter() {
               </Link>
             </div>
             <div className={styles.social}>
-              <a href="https://www.linkedin.com/company/avishkarai/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <a
+                href="https://www.linkedin.com/company/avishkarai/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
                 <svg viewBox="0 0 24 24">
                   <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z" />
                 </svg>
               </a>
-              <a href="https://www.instagram.com/avishkar.app/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <a
+                href="https://www.instagram.com/avishkar.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
                 <svg viewBox="0 0 24 24">
                   <path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.95a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.06-3.5.16-5.4 2.06-5.54 5.54C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.16 3.48 2.06 5.38 5.54 5.54 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c3.47-.16 5.39-2.06 5.54-5.54.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.15-3.47-2.06-5.38-5.54-5.54-1-.06-1.3-.06-3.9-.06zm0 1.7c2.55 0 2.85 0 3.85.06 2.6.12 3.8 1.35 3.93 3.93.05 1 .05 1.3.05 3.81s0 2.85-.05 3.85c-.12 2.57-1.33 3.8-3.93 3.93-1 .05-1.3.05-3.85.05s-2.85 0-3.85-.05c-2.6-.12-3.8-1.36-3.93-3.93-.05-1-.06-1.3-.06-3.85s0-2.84.06-3.85C4.34 5.6 5.55 4.37 8.15 4.26c1-.05 1.3-.06 3.85-.06z" />
                 </svg>
@@ -170,7 +193,11 @@ export function AvSiteFooter() {
         </div>
       </div>
 
-      <div className={`${styles.bigmark} ${bigmarkIn ? styles.isIn : ""}`} ref={bigmarkRef} aria-hidden="true">
+      <div
+        className={`${styles.bigmark} ${bigmarkIn ? styles.isIn : ""}`}
+        ref={bigmarkRef}
+        aria-hidden="true"
+      >
         <div className={styles.bigmarkClip}>
           <div className={styles.bigmarkTrack}>
             <span>Avishkar</span>

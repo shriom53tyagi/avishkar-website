@@ -75,8 +75,8 @@ export function BenchmarksPage() {
       <section className={bits.section}>
         {SHOW_SAMPLES && (
           <div className={bits.notice} role="note">
-            <b>Sample data.</b> The industry averages here are placeholders, not real figures. Add sourced values in
-            lib/benchmarks-config.ts before publishing.
+            <b>Sample data.</b> The industry averages here are placeholders, not real figures. Add
+            sourced values in lib/benchmarks-config.ts before publishing.
           </div>
         )}
         <div className={x.tool}>
@@ -189,7 +189,9 @@ export function BenchmarksPage() {
         <div className={`${bits.dark} ${x.report}`}>
           <div>
             <h2 className={bits.h2}>Get the full report.</h2>
-            <p style={{ marginTop: "0.6rem" }}>We&apos;ll send a breakdown of where you stand and what to fix first.</p>
+            <p style={{ marginTop: "0.6rem" }}>
+              We&apos;ll send a breakdown of where you stand and what to fix first.
+            </p>
           </div>
           <div>
             <form
@@ -208,7 +210,10 @@ export function BenchmarksPage() {
                   return `${m.name}: ${value(m)}${m.unit} (industry average ${avg == null ? "not set" : `${avg}${m.unit}`})`;
                 }).join("\n");
                 setPending(true);
-                const result = await submitSubscribe(email, "", { source: "benchmarks-report", details });
+                const result = await submitSubscribe(email, "", {
+                  source: "benchmarks-report",
+                  details,
+                });
                 setPending(false);
                 if (!result.ok) {
                   setMsg({ ok: false, text: result.error });
@@ -220,13 +225,26 @@ export function BenchmarksPage() {
             >
               <div className={bits.field}>
                 <label htmlFor="report-email">Work email</label>
-                <input className={bits.input} id="report-email" name="email" type="email" autoComplete="email" />
+                <input
+                  className={bits.input}
+                  id="report-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                />
               </div>
-              <button className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`} type="submit" disabled={pending}>
+              <button
+                className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`}
+                type="submit"
+                disabled={pending}
+              >
                 <Roll>Send my report</Roll>
               </button>
             </form>
-            <p className={`${bits.formMsg} ${msg ? (msg.ok ? bits.formOk : bits.formErr) : ""}`} role="status">
+            <p
+              className={`${bits.formMsg} ${msg ? (msg.ok ? bits.formOk : bits.formErr) : ""}`}
+              role="status"
+            >
               {msg?.text}
             </p>
           </div>

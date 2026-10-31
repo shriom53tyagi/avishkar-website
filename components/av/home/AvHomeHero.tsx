@@ -224,8 +224,7 @@ export function AvHomeHero() {
       setTimeout(() => el.classList.remove(cls), ms);
     };
 
-    const tickSvg =
-      '<i><svg viewBox="0 0 12 12"><path d="M3 6.2l2 2 4-4.4"/></svg></i>';
+    const tickSvg = '<i><svg viewBox="0 0 12 12"><path d="M3 6.2l2 2 4-4.4"/></svg></i>';
     let ev = 0;
     const toast = () => {
       const old = [...toastBox.children];
@@ -237,7 +236,8 @@ export function AvHomeHero() {
       });
       const t = document.createElement("div");
       t.className = styles.toast;
-      t.innerHTML = tickSvg.replace("<i>", `<i class="${styles.toastIcon}">`) + EVENTS[ev++ % EVENTS.length];
+      t.innerHTML =
+        tickSvg.replace("<i>", `<i class="${styles.toastIcon}">`) + EVENTS[ev++ % EVENTS.length];
       toastBox.appendChild(t);
       requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add("show")));
     };
@@ -261,10 +261,13 @@ export function AvHomeHero() {
       hero.classList.add(styles.isIn);
       stage.classList.add(styles.isIn, styles.isConnected);
       tiles.forEach((t, i) =>
-        trackTimeout(() => {
-          t.classList.add("on");
-          count.textContent = `${i + 1}/9`;
-        }, reduce ? 0 : 500 + i * 90),
+        trackTimeout(
+          () => {
+            t.classList.add("on");
+            count.textContent = `${i + 1}/9`;
+          },
+          reduce ? 0 : 500 + i * 90,
+        ),
       );
       if (reduce) {
         roles.forEach((r) => r.classList.add("done"));
@@ -503,7 +506,13 @@ export function AvHomeHero() {
                 <path key={`base-out-${i}`} className="wire-base" d={d} />
               ))}
               {WIRE_PATHS_IN.map((d, i) => (
-                <path key={`live-in-${i}`} id={`wl${i}`} className="wire-live" pathLength={1} d={d} />
+                <path
+                  key={`live-in-${i}`}
+                  id={`wl${i}`}
+                  className="wire-live"
+                  pathLength={1}
+                  d={d}
+                />
               ))}
               {WIRE_PATHS_OUT.map((d, i) => (
                 <path

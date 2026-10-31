@@ -15,7 +15,7 @@ export function isValidEmail(value: string): boolean {
 }
 
 export async function submitEarlyAccess(
-  email: string
+  email: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const res = await fetch("/api/early-access", {
     method: "POST",
@@ -36,7 +36,7 @@ export async function submitEarlyAccess(
 export async function submitSubscribe(
   email: string,
   firstName: string,
-  extra: { source?: string; details?: string } = {}
+  extra: { source?: string; details?: string } = {},
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     const res = await fetch("/api/subscribe", {

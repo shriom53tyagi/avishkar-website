@@ -67,8 +67,8 @@ export function AgentDetailPage({ agent, related }: { agent: Agent; related: Age
         </div>
         {live && !agent.demoUrl && (
           <p className={`${styles.liveNote} ${styles.fade}`} style={{ ["--d" as string]: ".38s" }}>
-            This agent is running today. We walk you through it live on a call while the self-serve version is
-            being finished.
+            This agent is running today. We walk you through it live on a call while the self-serve
+            version is being finished.
           </p>
         )}
       </section>
@@ -97,14 +97,17 @@ export function AgentDetailPage({ agent, related }: { agent: Agent; related: Age
             ))}
           </ul>
           <p className={styles.analyzesNote}>
-            We work with the systems that already hold this data, and only the fields the analysis needs.
+            We work with the systems that already hold this data, and only the fields the analysis
+            needs.
           </p>
         </div>
       </section>
 
       <section className={styles.closing}>
         <div className={styles.closingInner}>
-          <h2>{live ? "Want this connected to your practice?" : `Need the ${agent.name} sooner?`}</h2>
+          <h2>
+            {live ? "Want this connected to your practice?" : `Need the ${agent.name} sooner?`}
+          </h2>
           <p>
             {live
               ? "We'll walk you through it on a live call, then look at what it would take to run on your own data. If this isn't quite the problem, that's useful too — most of what we build starts from a conversation, not a catalogue."

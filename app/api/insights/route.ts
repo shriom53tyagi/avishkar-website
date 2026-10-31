@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return Response.json(
       { error: "invalid_payload", details: parsed.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

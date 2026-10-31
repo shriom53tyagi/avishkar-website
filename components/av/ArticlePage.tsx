@@ -63,7 +63,9 @@ export type Article = {
 };
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 export function ArticlePage({
@@ -112,7 +114,10 @@ export function ArticlePage({
     const header = document.querySelector("header");
     if (!header) return;
     const setVar = () => {
-      document.documentElement.style.setProperty("--header-h", `${header.getBoundingClientRect().height}px`);
+      document.documentElement.style.setProperty(
+        "--header-h",
+        `${header.getBoundingClientRect().height}px`,
+      );
     };
     setVar();
     const ro = new ResizeObserver(setVar);
@@ -127,9 +132,12 @@ export function ArticlePage({
     if (!prose) return;
     const reduce = readReducedMotion();
     let onScreen = true;
-    const io = new IntersectionObserver((entries) => entries.forEach((e) => (onScreen = e.isIntersecting)), {
-      rootMargin: "600px",
-    });
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (onScreen = e.isIntersecting)),
+      {
+        rootMargin: "600px",
+      },
+    );
     io.observe(prose);
 
     // `prose`'s position/height only change on scroll or resize, not
@@ -151,7 +159,10 @@ export function ArticlePage({
         const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - proseTop) / proseHeight));
         if (progressBarRef.current) progressBarRef.current.style.transform = `scaleX(${p})`;
         if (!reduce && coverImgWrapRef.current) {
-          coverImgWrapRef.current.style.setProperty("--cs", String(1 + Math.min(window.scrollY, 800) / 8000));
+          coverImgWrapRef.current.style.setProperty(
+            "--cs",
+            String(1 + Math.min(window.scrollY, 800) / 8000),
+          );
         }
       }
       rafId = requestAnimationFrame(loop);
@@ -241,7 +252,11 @@ export function ArticlePage({
   return (
     <main className={`${styles.art} ${isIn ? styles.isIn : ""}`} data-article-page>
       <div className={styles.progress}>
-        <div className={styles.progressBar} ref={progressBarRef} style={{ transform: "scaleX(0)" }} />
+        <div
+          className={styles.progressBar}
+          ref={progressBarRef}
+          style={{ transform: "scaleX(0)" }}
+        />
       </div>
 
       <header className={styles.hero}>
@@ -268,8 +283,17 @@ export function ArticlePage({
 
       {article.heroImageUrl && (
         <div className={styles.cover} ref={coverImgWrapRef}>
-          <Image src={article.heroImageUrl} alt={article.heroImageAlt} fill sizes="(max-width: 900px) 100vw, 1176px" priority style={{ objectFit: "cover" }} />
-          {article.heroImageTagChipText && <span className={styles.coverTag}>{article.heroImageTagChipText}</span>}
+          <Image
+            src={article.heroImageUrl}
+            alt={article.heroImageAlt}
+            fill
+            sizes="(max-width: 900px) 100vw, 1176px"
+            priority
+            style={{ objectFit: "cover" }}
+          />
+          {article.heroImageTagChipText && (
+            <span className={styles.coverTag}>{article.heroImageTagChipText}</span>
+          )}
         </div>
       )}
 
@@ -310,7 +334,12 @@ export function ArticlePage({
                 <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z" />
               </svg>
             </a>
-            <button type="button" onClick={onCopyLink} className={copied ? styles.copied : ""} aria-label="Copy link">
+            <button
+              type="button"
+              onClick={onCopyLink}
+              className={copied ? styles.copied : ""}
+              aria-label="Copy link"
+            >
               <svg viewBox="0 0 24 24">
                 <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
               </svg>
@@ -318,17 +347,47 @@ export function ArticlePage({
           </div>
         </aside>
 
-        <div className={styles.prose} ref={proseRef} dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+        <div
+          className={styles.prose}
+          ref={proseRef}
+          dangerouslySetInnerHTML={{ __html: article.bodyHtml }}
+        />
       </div>
 
       {article.sources.length > 0 && (
-        <div className={styles.body} style={{ paddingTop: 0, gridTemplateColumns: "17rem minmax(0, 44rem) 1fr" }}>
+        <div
+          className={styles.body}
+          style={{ paddingTop: 0, gridTemplateColumns: "17rem minmax(0, 44rem) 1fr" }}
+        >
           <div />
           <div>
-            <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", textTransform: "uppercase", color: "#8a8683" }}>Sources</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14, fontSize: 14 }}>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.75rem",
+                textTransform: "uppercase",
+                color: "#8a8683",
+              }}
+            >
+              Sources
+            </p>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                marginTop: 14,
+                fontSize: 14,
+              }}
+            >
               {article.sources.map((s) => (
-                <a key={s.sourceUrl} href={s.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#4E5654" }}>
+                <a
+                  key={s.sourceUrl}
+                  href={s.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "#4E5654" }}
+                >
                   {s.sourceTitle}
                 </a>
               ))}
@@ -345,7 +404,10 @@ export function ArticlePage({
       <section className={styles.cta}>
         <div className={styles.ctaInner}>
           <h2>Want this framework applied to your practice?</h2>
-          <p>We&apos;ll walk your stack with you and come back with a keep / connect / build map. Thirty minutes, no deck.</p>
+          <p>
+            We&apos;ll walk your stack with you and come back with a keep / connect / build map.
+            Thirty minutes, no deck.
+          </p>
           <Link href="/contact" className={styles.ctaBtn}>
             Talk to Avishkar
           </Link>

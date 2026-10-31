@@ -114,11 +114,7 @@ export function AvHomeCta() {
 
   return (
     <section className={styles.ctaWrap} id="audit" ref={wrapRef}>
-      <div
-        className={`${styles.cta} ${isIn ? styles.isIn : ""}`}
-        data-cta
-        ref={ctaRef}
-      >
+      <div className={`${styles.cta} ${isIn ? styles.isIn : ""}`} data-cta ref={ctaRef}>
         <span className={styles.tag}>Free stack audit</span>
         <svg className={styles.ticks} viewBox="0 0 2400 900" aria-hidden="true" ref={ticksRef}>
           {ctaTickLines()}

@@ -65,7 +65,9 @@ const CARDS = [
 ] as const;
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 function formatDuration(seconds: number): string {
@@ -124,9 +126,12 @@ export function WhatWeDoPage() {
     if (reduce) return;
 
     let onScreen = true;
-    const io = new IntersectionObserver((entries) => entries.forEach((e) => (onScreen = e.isIntersecting)), {
-      rootMargin: "400px",
-    });
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => (onScreen = e.isIntersecting)),
+      {
+        rootMargin: "400px",
+      },
+    );
     io.observe(player);
 
     // `player`'s position only changes on scroll or resize, not every
@@ -144,7 +149,10 @@ export function WhatWeDoPage() {
     let rafId: number;
     const loop = () => {
       if (onScreen) {
-        const p = Math.min(1, Math.max(0, (window.innerHeight - playerTop) / (window.innerHeight * 0.8)));
+        const p = Math.min(
+          1,
+          Math.max(0, (window.innerHeight - playerTop) / (window.innerHeight * 0.8)),
+        );
         player.style.setProperty("--vs", String(0.88 + 0.12 * (1 - Math.pow(1 - p, 3))));
       }
       rafId = requestAnimationFrame(loop);
@@ -195,8 +203,8 @@ export function WhatWeDoPage() {
           ))}
         </h1>
         <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
-          Every engagement starts with a structured audit, not a sales pitch for automation. Agents are switched on
-          only once the numbers prove they&apos;re worth it.
+          Every engagement starts with a structured audit, not a sales pitch for automation. Agents
+          are switched on only once the numbers prove they&apos;re worth it.
         </p>
       </section>
 
@@ -237,7 +245,12 @@ export function WhatWeDoPage() {
               }
             }}
           >
-            <video ref={videoRef} playsInline preload="metadata" aria-label="Avishkar AI product demo">
+            <video
+              ref={videoRef}
+              playsInline
+              preload="metadata"
+              aria-label="Avishkar AI product demo"
+            >
               <source src="/hero-demo.mp4" type="video/mp4" />
             </video>
             {!isPlaying && (
@@ -262,13 +275,7 @@ export function WhatWeDoPage() {
   );
 }
 
-function ServiceCard({
-  card,
-  index,
-}: {
-  card: (typeof CARDS)[number];
-  index: number;
-}) {
+function ServiceCard({ card, index }: { card: (typeof CARDS)[number]; index: number }) {
   const Icon = card.icon;
   return (
     <article className={`${styles.sv} ${card.variant}`} style={{ ["--i" as string]: index }}>
@@ -279,7 +286,9 @@ function ServiceCard({
         <span className={styles.svIcon} aria-hidden="true">
           <Icon strokeWidth={1.6} />
         </span>
-        {card.id === "operational-audit" && <span className={styles.steptag}>Where every engagement starts</span>}
+        {card.id === "operational-audit" && (
+          <span className={styles.steptag}>Where every engagement starts</span>
+        )}
         {card.live && (
           <span className={styles.livetag}>
             <i />

@@ -23,9 +23,7 @@ export function PageHeader({
         <div className="max-w-measure">
           {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
           <h1 className="text-h1 h-display text-ink">{title}</h1>
-          {description && (
-            <p className="mt-5 text-lead text-ink-muted">{description}</p>
-          )}
+          {description && <p className="mt-5 text-lead text-ink-muted">{description}</p>}
           {children && <div className="mt-8">{children}</div>}
         </div>
       </Container>

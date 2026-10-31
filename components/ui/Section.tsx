@@ -50,7 +50,7 @@ export function Section({
         full ? "flex min-h-svh items-center py-20 md:py-24" : "py-16 md:py-24 lg:py-28",
         TONES[tone],
         bordered && "border-t border-line",
-        className
+        className,
       )}
     >
       <Container className={full ? "w-full" : undefined}>{children}</Container>
@@ -74,13 +74,7 @@ export function SectionHeading({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "max-w-measure",
-        align === "center" && "mx-auto text-center",
-        className
-      )}
-    >
+    <div className={cn("max-w-measure", align === "center" && "mx-auto text-center", className)}>
       {eyebrow && <p className="eyebrow mb-4">{eyebrow}</p>}
       <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{title}</h2>
       {sub && <p className="mt-4 text-lead text-ink-muted">{sub}</p>}

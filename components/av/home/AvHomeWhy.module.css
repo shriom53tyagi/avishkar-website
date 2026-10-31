@@ -204,7 +204,9 @@
 .list p {
   opacity: 0;
   transform: translateY(1rem);
-  transition: opacity 0.8s var(--ease), transform 1s var(--ease);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1s var(--ease);
   transition-delay: calc(var(--r) * 0.15s + 0.5s);
 }
 .why.isIn .list li::before {

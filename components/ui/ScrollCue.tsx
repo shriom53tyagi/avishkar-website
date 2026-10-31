@@ -38,10 +38,10 @@ export function ScrollCue({ targetId }: { targetId: string }) {
     // or-taller) sentinel visible at once — which on a narrow screen, where a
     // section can be far taller than the viewport, a percentage-of-sentinel
     // threshold could never satisfy.
-    const observer = new IntersectionObserver(
-      ([entry]) => setActive(entry.isIntersecting),
-      { threshold: 0, rootMargin: "-45% 0px -45% 0px" }
-    );
+    const observer = new IntersectionObserver(([entry]) => setActive(entry.isIntersecting), {
+      threshold: 0,
+      rootMargin: "-45% 0px -45% 0px",
+    });
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, []);

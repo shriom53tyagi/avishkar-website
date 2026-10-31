@@ -32,13 +32,29 @@ export type FeaturedPost = Post & {
   bylineName: string;
 };
 
-const CATS = ["All", "Operations", "Patient experience", "Growth", "AI in aesthetics", "Technology", "Wellness"];
+const CATS = [
+  "All",
+  "Operations",
+  "Patient experience",
+  "Growth",
+  "AI in aesthetics",
+  "Technology",
+  "Wellness",
+];
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
-export function InsightsPage({ posts, featured }: { posts: Post[]; featured: FeaturedPost | null }) {
+export function InsightsPage({
+  posts,
+  featured,
+}: {
+  posts: Post[];
+  featured: FeaturedPost | null;
+}) {
   const [isIn, setIsIn] = useState(false);
   const [cat, setCat] = useState("All");
   const [query, setQuery] = useState("");
@@ -62,7 +78,9 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
   const filtered = useMemo(
     () =>
       posts.filter(
-        (p) => (cat === "All" || p.cat === cat) && (!q || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(q)),
+        (p) =>
+          (cat === "All" || p.cat === cat) &&
+          (!q || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(q)),
       ),
     [posts, cat, q],
   );
@@ -107,7 +125,13 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
     const nq = nextQuery.trim().toLowerCase();
     const leaving = new Set(
       posts
-        .filter((p) => !((nextCat === "All" || p.cat === nextCat) && (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq))))
+        .filter(
+          (p) =>
+            !(
+              (nextCat === "All" || p.cat === nextCat) &&
+              (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq))
+            ),
+        )
         .map((p) => p.slug),
     );
     setLeavingSlugs(leaving);
@@ -162,8 +186,8 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
           ))}
         </h1>
         <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
-          Field notes on aesthetics, medspa operations, wellness, and the technology underneath, written by the
-          people building it, for the people running the practice.
+          Field notes on aesthetics, medspa operations, wellness, and the technology underneath,
+          written by the people building it, for the people running the practice.
         </p>
         <p className={`${styles.note} ${styles.script}`} aria-hidden="true">
           <span>
@@ -205,9 +229,19 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
 
       <div className={styles.body}>
         {showFeature && featured && (
-          <Link href={`/insights/${featured.slug}`} className={`${styles.feat} ${styles.fade}`} style={{ ["--d" as string]: ".6s" }}>
+          <Link
+            href={`/insights/${featured.slug}`}
+            className={`${styles.feat} ${styles.fade}`}
+            style={{ ["--d" as string]: ".6s" }}
+          >
             <div className={styles.featImg}>
-              <Image src={featured.img} alt="" fill sizes="(max-width: 900px) 100vw, 560px" style={{ objectFit: "cover" }} />
+              <Image
+                src={featured.img}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 560px"
+                style={{ objectFit: "cover" }}
+              />
             </div>
             <div className={styles.featBody}>
               <div className={styles.meta}>
@@ -237,7 +271,9 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
         <div className={styles.cards} ref={gridRef}>
           {posts.map((p) => {
             const nq = query.trim().toLowerCase();
-            const matches = (cat === "All" || p.cat === cat) && (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq));
+            const matches =
+              (cat === "All" || p.cat === cat) &&
+              (!nq || (p.title + " " + p.dek + " " + p.cat).toLowerCase().includes(nq));
             const isLeaving = leavingSlugs.has(p.slug);
             if (!matches && !isLeaving) return null;
             return (
@@ -248,7 +284,13 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
                 className={`${styles.icard} ${revealed.has(p.slug) ? styles.isIn : ""} ${isLeaving ? styles.isOut : ""}`}
               >
                 <div className={styles.cardImg}>
-                  <Image src={p.img} alt="" fill sizes="(max-width: 900px) 100vw, 380px" style={{ objectFit: "cover" }} />
+                  <Image
+                    src={p.img}
+                    alt=""
+                    fill
+                    sizes="(max-width: 900px) 100vw, 380px"
+                    style={{ objectFit: "cover" }}
+                  />
                   <span className={styles.cardArrow}>
                     <svg viewBox="0 0 16 16">
                       <path d="M3 8h10M9 4l4 4-4 4" />
@@ -276,7 +318,9 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
         <div className={styles.subscribe}>
           <div>
             <h2>One considered note a month. Nothing else.</h2>
-            <p>Operations, technology, and what we&apos;re learning building for aesthetic practices.</p>
+            <p>
+              Operations, technology, and what we&apos;re learning building for aesthetic practices.
+            </p>
           </div>
           {!subscribed ? (
             <div className={styles.subForm}>
@@ -298,7 +342,9 @@ export function InsightsPage({ posts, featured }: { posts: Post[]; featured: Fea
               {subscribeError && <div className={styles.subError}>{subscribeError}</div>}
             </div>
           ) : (
-            <div className={styles.subDone}>Subscribed. Next issue goes out at the start of the month.</div>
+            <div className={styles.subDone}>
+              Subscribed. Next issue goes out at the start of the month.
+            </div>
           )}
         </div>
       </div>

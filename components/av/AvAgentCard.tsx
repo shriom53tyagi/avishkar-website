@@ -18,7 +18,11 @@ export function AvAgentCard({
   style?: React.CSSProperties;
 }) {
   return (
-    <article className={`${styles.agentCard} ${className ?? ""}`} data-cat={agent.category} style={style}>
+    <article
+      className={`${styles.agentCard} ${className ?? ""}`}
+      data-cat={agent.category}
+      style={style}
+    >
       <div className={styles.agentTop}>
         <span>{agent.category} agent</span>
         <span>

@@ -14,7 +14,9 @@ export function Capability() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:gap-24">
         <FadeUp className="lg:self-center">
           <p className="eyebrow mb-4">What Avishkar does</p>
-          <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{CAPABILITY.headline}</h2>
+          <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">
+            {CAPABILITY.headline}
+          </h2>
         </FadeUp>
 
         <Stagger className="flex flex-col">

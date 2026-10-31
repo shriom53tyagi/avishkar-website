@@ -20,9 +20,9 @@ multi-shot / keyframe input.
 > driven by a smooth animated cursor.
 >
 > Sequence: (1) the cursor clicks **"Run Audit"** and a soft **cyan scan line**
-> sweeps across a network of connected system nodes labeled *EMR, Billing,
-> Scheduling, Voice AI, Follow-up*; (2) small red **"revenue leak" cards** fly in
-> and stack neatly — *No-shows $1.84M, Denials $1.12M, Call drop-off $0.61M* — as a
+> sweeps across a network of connected system nodes labeled _EMR, Billing,
+> Scheduling, Voice AI, Follow-up_; (2) small red **"revenue leak" cards** fly in
+> and stack neatly — _No-shows $1.84M, Denials $1.12M, Call drop-off $0.61M_ — as a
 > big counter **counts up to $4.2M**; (3) the leak cards flip to **green "agent
 > deployed"** chips with checkmarks; (4) a **revenue line chart sweeps upward** and
 > the headline number settles on **"$4.2M recovered."**
@@ -46,14 +46,14 @@ Scheduling, Voice AI, Intake, Follow-up). Nodes light up cyan one by one. Calm,
 confident pace.
 
 **Shot 2 — Detect (4–9s)**
-Four red-tinted "leak" cards fly in from the right and stack: *Missed appointments
-$1.84M*, *Claim denials $1.12M*, *Call drop-off $0.61M*, *Documentation $0.63M*.
+Four red-tinted "leak" cards fly in from the right and stack: _Missed appointments
+$1.84M_, _Claim denials $1.12M_, _Call drop-off $0.61M_, _Documentation $0.63M_.
 A large headline counter rolls up from $0 to **$4.2M / yr**. Subtle red glow.
 
 **Shot 3 — Deploy (9–14s)**
 The red cards smoothly flip / morph into **emerald green chips** with checkmarks:
-*Patient Access · live*, *Revenue Recovery · live*, *Clinical Ops · live*,
-*Engagement · live*. A small "12 agents live" badge pulses.
+_Patient Access · live_, _Revenue Recovery · live_, _Clinical Ops · live_,
+_Engagement · live_. A small "12 agents live" badge pulses.
 
 **Shot 4 — Recover (14–19s)**
 An emerald revenue line chart sweeps upward filling with a soft gradient. Headline
@@ -63,6 +63,7 @@ frame holds for a beat, then gently resets for a seamless loop.
 ---
 
 ## Negative prompt (if supported)
+
 `live-action people, faces, hospital footage, photorealistic humans, cluttered UI,
 distorted text, gibberish letters, watermark, logo, low contrast, dark background,
 shaky camera, harsh flashing`
@@ -93,4 +94,5 @@ shaky camera, harsh flashing`
    ```
 
    (Keep `ProductDemo` as the reduced-motion / no-video fallback if you like.)
+
 4. No `next.config` change needed for local files in `public/`.

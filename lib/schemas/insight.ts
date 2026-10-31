@@ -34,13 +34,13 @@ export const InsightPayloadSchema = z.object({
       id: z.string(),
       heading: z.string(),
       blocks: z.array(z.any()), // trust Content Engine's shape
-    })
+    }),
   ),
   sources: z.array(
     z.object({
       sourceTitle: z.string(),
       sourceUrl: z.string().url(),
-    })
+    }),
   ),
   bodyHtml: z.string(),
   contentEngineBundleId: z.string().optional(),

@@ -6,13 +6,7 @@ import { cn } from "@/lib/utils";
  * The Avishkar mark. The link carries the accessible name; the image is
  * decorative inside it so the word isn't read twice.
  */
-export function Logo({
-  className,
-  priority = false,
-}: {
-  className?: string;
-  priority?: boolean;
-}) {
+export function Logo({ className, priority = false }: { className?: string; priority?: boolean }) {
   return (
     <Link
       href="/"

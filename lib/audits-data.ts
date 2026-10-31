@@ -31,8 +31,16 @@ const SAMPLE_AUDITS: Audit[] = [
     locations: 1,
     headline: "Headline finding for this practice goes here",
     grades: { Booking: "B+", "Follow-ups": "D", Phones: "C", Reviews: "A", "Data flow": "D" },
-    found: ["Finding one, in one short line", "Finding two, in one short line", "Finding three, in one short line"],
-    fix: ["Fix one, in one short line", "Fix two, in one short line", "Fix three, in one short line"],
+    found: [
+      "Finding one, in one short line",
+      "Finding two, in one short line",
+      "Finding three, in one short line",
+    ],
+    fix: [
+      "Fix one, in one short line",
+      "Fix two, in one short line",
+      "Fix three, in one short line",
+    ],
   },
   {
     slug: "sample-2",

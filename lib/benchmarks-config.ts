@@ -47,7 +47,37 @@ function avg(id: Metric["id"]): IndustryAverage {
 }
 
 export const METRICS: Metric[] = [
-  { id: "noShow", name: "No-show rate", unit: "%", min: 0, max: 40, step: 1, initial: 12, better: "lower", average: avg("noShow") },
-  { id: "rebook", name: "Rebooking rate", unit: "%", min: 0, max: 100, step: 1, initial: 45, better: "higher", average: avg("rebook") },
-  { id: "response", name: "Lead response time", unit: "min", min: 0, max: 240, step: 5, initial: 60, better: "lower", average: avg("response") },
+  {
+    id: "noShow",
+    name: "No-show rate",
+    unit: "%",
+    min: 0,
+    max: 40,
+    step: 1,
+    initial: 12,
+    better: "lower",
+    average: avg("noShow"),
+  },
+  {
+    id: "rebook",
+    name: "Rebooking rate",
+    unit: "%",
+    min: 0,
+    max: 100,
+    step: 1,
+    initial: 45,
+    better: "higher",
+    average: avg("rebook"),
+  },
+  {
+    id: "response",
+    name: "Lead response time",
+    unit: "min",
+    min: 0,
+    max: 240,
+    step: 5,
+    initial: 60,
+    better: "lower",
+    average: avg("response"),
+  },
 ];

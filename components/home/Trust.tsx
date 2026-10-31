@@ -14,7 +14,9 @@ export function Trust() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-20">
         <FadeUp>
           <p className="eyebrow mb-4">Trust</p>
-          <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{TRUST.headline}</h2>
+          <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">
+            {TRUST.headline}
+          </h2>
           <p className="mt-4 text-lead text-ink-muted">{TRUST.sub}</p>
           <div className="rule mt-6" />
           <div className="mt-8">

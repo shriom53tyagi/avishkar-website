@@ -49,7 +49,7 @@ export function Navbar() {
         "sticky top-0 z-50 transition-colors duration-300",
         scrolled || open
           ? "border-b border-line bg-[#FBFAF7]/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+          : "border-b border-transparent bg-transparent",
       )}
     >
       <Container>
@@ -64,7 +64,7 @@ export function Navbar() {
                 aria-current={isActive(link.href) ? "page" : undefined}
                 className={cn(
                   "relative rounded px-3 py-2 text-[0.72rem] font-medium uppercase tracking-[0.2em] transition-colors",
-                  isActive(link.href) ? "text-ink" : "text-ink-muted hover:text-ink"
+                  isActive(link.href) ? "text-ink" : "text-ink-muted hover:text-ink",
                 )}
               >
                 {link.label}
@@ -117,7 +117,7 @@ export function Navbar() {
                     aria-current={isActive(link.href) ? "page" : undefined}
                     className={cn(
                       "border-b border-line py-4 text-body transition-colors",
-                      isActive(link.href) ? "text-ink" : "text-ink-muted"
+                      isActive(link.href) ? "text-ink" : "text-ink-muted",
                     )}
                   >
                     {link.label}

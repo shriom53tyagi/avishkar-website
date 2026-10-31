@@ -72,18 +72,62 @@ export const RESOURCES: Resource[] = [
         table: {
           headers: ["Specialty", "Avg No-Show Rate", "Range", "Notes"],
           rows: [
-            { label: "Behavioral health / psychiatry", value: "28–32%", note: "Highest across all specialties; appointment anxiety and stigma are key factors" },
-            { label: "Primary care", value: "20–25%", note: "High volume amplifies the financial impact even at moderate rates" },
-            { label: "Internal medicine", value: "18–22%", note: "Lower urgency follow-ups skew the rate upward" },
-            { label: "OB/GYN", value: "16–21%", note: "Prenatal visit no-shows carry significant clinical risk" },
-            { label: "Cardiology", value: "15–19%", note: "Episodic care patterns increase no-show risk" },
-            { label: "Dermatology", value: "18–22%", note: "Long wait times correlate with higher rates" },
-            { label: "Orthopedics", value: "14–18%", note: "Post-surgical follow-ups tend to have lower rates" },
-            { label: "Pediatrics", value: "14–17%", note: "Well-child visits have higher compliance than sick visits" },
+            {
+              label: "Behavioral health / psychiatry",
+              value: "28–32%",
+              note: "Highest across all specialties; appointment anxiety and stigma are key factors",
+            },
+            {
+              label: "Primary care",
+              value: "20–25%",
+              note: "High volume amplifies the financial impact even at moderate rates",
+            },
+            {
+              label: "Internal medicine",
+              value: "18–22%",
+              note: "Lower urgency follow-ups skew the rate upward",
+            },
+            {
+              label: "OB/GYN",
+              value: "16–21%",
+              note: "Prenatal visit no-shows carry significant clinical risk",
+            },
+            {
+              label: "Cardiology",
+              value: "15–19%",
+              note: "Episodic care patterns increase no-show risk",
+            },
+            {
+              label: "Dermatology",
+              value: "18–22%",
+              note: "Long wait times correlate with higher rates",
+            },
+            {
+              label: "Orthopedics",
+              value: "14–18%",
+              note: "Post-surgical follow-ups tend to have lower rates",
+            },
+            {
+              label: "Pediatrics",
+              value: "14–17%",
+              note: "Well-child visits have higher compliance than sick visits",
+            },
             { label: "Urology", value: "16–20%", note: "Varies significantly by payer mix" },
-            { label: "Gastroenterology", value: "13–18%", note: "Procedure prep burden affects compliance" },
-            { label: "Ophthalmology", value: "12–16%", note: "Among the lowest — high perceived urgency" },
-            { label: "Oncology", value: "8–13%", note: "Lowest rates; treatment continuity is well understood by patients" },
+            {
+              label: "Gastroenterology",
+              value: "13–18%",
+              note: "Procedure prep burden affects compliance",
+            },
+            {
+              label: "Ophthalmology",
+              value: "12–16%",
+              note: "Among the lowest — high perceived urgency",
+            },
+            {
+              label: "Oncology",
+              value: "8–13%",
+              note: "Lowest rates; treatment continuity is well understood by patients",
+            },
           ],
         },
       },
@@ -94,7 +138,11 @@ export const RESOURCES: Resource[] = [
           { value: "$150–$300", label: "Lost per primary care no-show", accent: "amber" },
           { value: "$200–$450", label: "Lost per specialist no-show", accent: "amber" },
           { value: "$400–$900", label: "Lost per procedure no-show", accent: "amber" },
-          { value: "$1.84M", label: "Annual no-show loss at 2,400 visits/month (18% rate)", accent: "cyan" },
+          {
+            value: "$1.84M",
+            label: "Annual no-show loss at 2,400 visits/month (18% rate)",
+            accent: "cyan",
+          },
         ],
       },
       {
@@ -105,8 +153,16 @@ export const RESOURCES: Resource[] = [
           rows: [
             { label: "Commercial insurance", value: "1× (baseline)", note: "Reference group" },
             { label: "Medicare", value: "1.2–1.5×", note: "Transportation and mobility barriers" },
-            { label: "Medicaid", value: "2.0–3.0×", note: "Structural access barriers, competing demands" },
-            { label: "Self-pay / uninsured", value: "2.5–3.5×", note: "Cost anxiety about balance billing" },
+            {
+              label: "Medicaid",
+              value: "2.0–3.0×",
+              note: "Structural access barriers, competing demands",
+            },
+            {
+              label: "Self-pay / uninsured",
+              value: "2.5–3.5×",
+              note: "Cost anxiety about balance billing",
+            },
           ],
         },
       },
@@ -196,8 +252,16 @@ export const RESOURCES: Resource[] = [
           headers: ["Denial reason", "Share of all denials", "Avg cost to rework", "Preventable?"],
           rows: [
             { label: "Eligibility / coverage issues", value: "30–35%", note: "Yes — at check-in" },
-            { label: "Prior authorization missing/expired", value: "20–25%", note: "Yes — before scheduling" },
-            { label: "Coding errors (wrong code, modifier)", value: "15–20%", note: "Yes — pre-submission" },
+            {
+              label: "Prior authorization missing/expired",
+              value: "20–25%",
+              note: "Yes — before scheduling",
+            },
+            {
+              label: "Coding errors (wrong code, modifier)",
+              value: "15–20%",
+              note: "Yes — pre-submission",
+            },
             { label: "Timely filing exceeded", value: "10–15%", note: "Yes — workflow" },
             { label: "Medical necessity not documented", value: "10–15%", note: "Partially" },
           ],
@@ -213,8 +277,16 @@ export const RESOURCES: Resource[] = [
         stats: [
           { value: "$25–118", label: "Cost to work a single denied claim", accent: "amber" },
           { value: "65%", label: "Of denied claims are never resubmitted", accent: "amber" },
-          { value: "$1.12M", label: "Annual denial loss at 2,400 visits/month (10% rate)", accent: "cyan" },
-          { value: "< 3%", label: "First-pass denial rate for best-in-class orgs", accent: "emerald" },
+          {
+            value: "$1.12M",
+            label: "Annual denial loss at 2,400 visits/month (10% rate)",
+            accent: "cyan",
+          },
+          {
+            value: "< 3%",
+            label: "First-pass denial rate for best-in-class orgs",
+            accent: "emerald",
+          },
         ],
       },
     ],
@@ -295,7 +367,11 @@ export const RESOURCES: Resource[] = [
         ],
         stats: [
           { value: "8%+", label: "Abandonment rate = leakage signal", accent: "amber" },
-          { value: "$612K", label: "Typical call center leakage at 2,400 visits/month", accent: "cyan" },
+          {
+            value: "$612K",
+            label: "Typical call center leakage at 2,400 visits/month",
+            accent: "cyan",
+          },
         ],
       },
       {
@@ -315,7 +391,11 @@ export const RESOURCES: Resource[] = [
           headers: ["Category", "Monthly loss", "Annual loss"],
           rows: [
             { label: "No-show leakage (18% rate, $250 avg)", value: "$90,000", note: "$1,080,000" },
-            { label: "Denial leakage (10% rate, 65% unrecovered)", value: "$40,000", note: "$480,000" },
+            {
+              label: "Denial leakage (10% rate, 65% unrecovered)",
+              value: "$40,000",
+              note: "$480,000",
+            },
             { label: "Call center abandonment (15% rate)", value: "$18,000", note: "$216,000" },
             { label: "Undercoding (3% revenue gap)", value: "$20,000", note: "$240,000" },
             { label: "Authorization denials (4% of claims)", value: "$22,000", note: "$264,000" },
@@ -609,8 +689,16 @@ export const RESOURCES: Resource[] = [
           "Include a direct callback number in reminders so patients can easily reschedule rather than simply not showing",
         ],
         stats: [
-          { value: "28–42%", label: "No-show reduction with two-touch reminders", accent: "emerald" },
-          { value: "8–14%", label: "Additional reduction with morning-of confirmation", accent: "emerald" },
+          {
+            value: "28–42%",
+            label: "No-show reduction with two-touch reminders",
+            accent: "emerald",
+          },
+          {
+            value: "8–14%",
+            label: "Additional reduction with morning-of confirmation",
+            accent: "emerald",
+          },
         ],
       },
       {
@@ -663,8 +751,16 @@ export const RESOURCES: Resource[] = [
           "Three consecutive no-shows without contact: consider whether the patient should remain on your panel",
         ],
         stats: [
-          { value: "45–60%", label: "Same-day no-show reschedule rate with immediate callback", accent: "emerald" },
-          { value: "15–20%", label: "Reschedule rate with callback after 48 hours", accent: "amber" },
+          {
+            value: "45–60%",
+            label: "Same-day no-show reschedule rate with immediate callback",
+            accent: "emerald",
+          },
+          {
+            value: "15–20%",
+            label: "Reschedule rate with callback after 48 hours",
+            accent: "amber",
+          },
         ],
       },
       {

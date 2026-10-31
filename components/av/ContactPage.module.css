@@ -102,7 +102,9 @@
 .fade {
   opacity: 0;
   transform: translateY(1.25rem);
-  transition: opacity 0.9s var(--ease), transform 1.1s var(--ease);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 1.1s var(--ease);
   transition-delay: var(--d, 0s);
 }
 .talk.isIn .fade {
@@ -333,7 +335,9 @@
 .ready li span {
   opacity: 0;
   transform: translateY(0.6rem);
-  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.9s var(--ease);
   transition-delay: calc(0.75s + var(--r) * 0.12s);
 }
 .talk.isIn .ready li span {

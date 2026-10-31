@@ -22,7 +22,9 @@
 .fade {
   opacity: 0;
   transform: translateY(1.25rem);
-  transition: opacity 0.9s var(--ease), transform 1.1s var(--ease);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 1.1s var(--ease);
   transition-delay: var(--d, 0s);
 }
 .art.isIn .fade {
@@ -73,7 +75,9 @@
   font-size: 1.0625rem;
   font-weight: 500;
   color: #6d6965;
-  transition: color 0.3s, gap 0.5s var(--ease);
+  transition:
+    color 0.3s,
+    gap 0.5s var(--ease);
 }
 .back:hover {
   color: var(--ink);
@@ -232,7 +236,9 @@
   place-items: center;
   background: #e6e4e1;
   border-radius: 50%;
-  transition: border-radius 0.5s var(--ease), background-color 0.3s;
+  transition:
+    border-radius 0.5s var(--ease),
+    background-color 0.3s;
 }
 .share a:hover,
 .share button:hover {
@@ -352,7 +358,9 @@
 .reveal {
   opacity: 0;
   transform: translateY(1.5rem);
-  transition: opacity 0.8s var(--ease), transform 1s var(--ease);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1s var(--ease);
 }
 .reveal.isIn {
   opacity: 1;
@@ -391,7 +399,9 @@
   flex-direction: column;
   opacity: 0;
   transform: translateY(2rem);
-  transition: opacity 0.7s var(--ease), transform 1s var(--ease);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 1s var(--ease);
 }
 .icard.isIn {
   opacity: 1;

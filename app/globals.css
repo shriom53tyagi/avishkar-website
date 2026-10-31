@@ -695,7 +695,8 @@ a {
 .ambient-grid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(theme("colors.ink.DEFAULT") 1px, transparent 1px),
+  background-image:
+    linear-gradient(theme("colors.ink.DEFAULT") 1px, transparent 1px),
     linear-gradient(90deg, theme("colors.ink.DEFAULT") 1px, transparent 1px);
   background-size: 72px 72px;
   opacity: 0.025;
@@ -704,8 +705,8 @@ a {
 }
 
 .ambient-grid.is-dark {
-  background-image: linear-gradient(#fff 1px, transparent 1px),
-    linear-gradient(90deg, #fff 1px, transparent 1px);
+  background-image:
+    linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px);
   opacity: 0.05;
 }
 

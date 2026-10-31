@@ -2,20 +2,9 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";
 import { FOOTER_AGENTS } from "@/lib/agents";
-import {
-  CONTACT_EMAIL,
-  FOOTER_BRAND,
-  FOOTER_LINKS,
-  LEGAL_NOTE,
-} from "@/lib/content";
+import { CONTACT_EMAIL, FOOTER_BRAND, FOOTER_LINKS, LEGAL_NOTE } from "@/lib/content";
 
-function Column({
-  title,
-  links,
-}: {
-  title: string;
-  links: { href: string; label: string }[];
-}) {
+function Column({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div>
       <p className="eyebrow">{title}</p>
@@ -59,9 +48,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-x-8 gap-y-12 py-14 md:grid-cols-3 lg:grid-cols-5">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Logo />
-            <p className="mt-4 max-w-xs text-small text-ink-muted">
-              {FOOTER_BRAND.description}
-            </p>
+            <p className="mt-4 max-w-xs text-small text-ink-muted">{FOOTER_BRAND.description}</p>
             <p className="mt-3 max-w-xs text-small text-ink-subtle">
               {FOOTER_BRAND.descriptionSub}
             </p>

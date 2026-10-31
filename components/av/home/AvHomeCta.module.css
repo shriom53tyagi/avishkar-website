@@ -52,7 +52,9 @@
 .left > * {
   opacity: 0;
   transform: translateY(1.5rem);
-  transition: opacity 0.8s var(--ease), transform 1.1s var(--ease);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1.1s var(--ease);
 }
 .cta.isIn .left > * {
   opacity: 1;
@@ -132,7 +134,9 @@
   min-height: 44rem;
   opacity: 0;
   transform: translateX(4rem);
-  transition: opacity 1s var(--ease) 0.2s, transform 1.4s var(--ease) 0.2s;
+  transition:
+    opacity 1s var(--ease) 0.2s,
+    transform 1.4s var(--ease) 0.2s;
 }
 .book iframe {
   display: block;

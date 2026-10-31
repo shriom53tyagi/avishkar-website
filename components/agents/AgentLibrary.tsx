@@ -21,7 +21,7 @@ export function AgentLibrary({
 
   const filtered = useMemo(
     () => (active === "All" ? agents : agents.filter((a) => a.category === active)),
-    [agents, active]
+    [agents, active],
   );
 
   const live = filtered.filter((a) => a.status === "live");
@@ -42,7 +42,7 @@ export function AgentLibrary({
                 "rounded border px-3.5 py-2 text-small transition-colors",
                 active === category
                   ? "border-accent bg-accent text-white"
-                  : "border-line-strong bg-surface text-ink-muted hover:text-ink"
+                  : "border-line-strong bg-surface text-ink-muted hover:text-ink",
               )}
             >
               {category}

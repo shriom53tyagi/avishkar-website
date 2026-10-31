@@ -32,10 +32,21 @@ export async function POST(request: Request) {
 }
 
 async function recordEarlyAccess(email: string) {
-  const { SES_AWS_ACCESS_KEY_ID, SES_AWS_SECRET_ACCESS_KEY, SES_AWS_REGION, SES_FROM_EMAIL, SES_TO_EMAIL } =
-    process.env;
+  const {
+    SES_AWS_ACCESS_KEY_ID,
+    SES_AWS_SECRET_ACCESS_KEY,
+    SES_AWS_REGION,
+    SES_FROM_EMAIL,
+    SES_TO_EMAIL,
+  } = process.env;
 
-  if (!SES_AWS_ACCESS_KEY_ID || !SES_AWS_SECRET_ACCESS_KEY || !SES_AWS_REGION || !SES_FROM_EMAIL || !SES_TO_EMAIL) {
+  if (
+    !SES_AWS_ACCESS_KEY_ID ||
+    !SES_AWS_SECRET_ACCESS_KEY ||
+    !SES_AWS_REGION ||
+    !SES_FROM_EMAIL ||
+    !SES_TO_EMAIL
+  ) {
     if (process.env.NODE_ENV !== "production") {
       console.info("[early-access] SES not configured; accepted", email);
     }
@@ -63,6 +74,6 @@ async function recordEarlyAccess(email: string) {
           },
         },
       },
-    })
+    }),
   );
 }

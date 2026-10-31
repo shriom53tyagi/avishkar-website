@@ -74,13 +74,17 @@
   color: var(--text);
   border-radius: 0.375rem;
   /* CLOSE sequence: height collapses first, then width shrinks */
-  transition: width 0.6s var(--ease) 0.3s, border-radius 0.6s var(--ease) 0.3s;
+  transition:
+    width 0.6s var(--ease) 0.3s,
+    border-radius 0.6s var(--ease) 0.3s;
 }
 .nav.isOpen .navBox {
   width: calc(100vw - 2 * var(--gutter));
   border-radius: 0.75rem;
   /* OPEN sequence: width widens first */
-  transition: width 0.6s var(--ease), border-radius 0.6s var(--ease);
+  transition:
+    width 0.6s var(--ease),
+    border-radius 0.6s var(--ease);
 }
 
 /* ================= Top bar ================= */
@@ -119,7 +123,10 @@
   width: 100%;
   height: 1.5px;
   background: currentColor;
-  transition: transform 0.6s var(--ease), top 0.6s var(--ease), width 0.6s var(--ease);
+  transition:
+    transform 0.6s var(--ease),
+    top 0.6s var(--ease),
+    width 0.6s var(--ease);
 }
 .burger i:first-child {
   top: 0;
@@ -163,7 +170,9 @@
   font-size: 1.1875rem;
   font-weight: 500;
   letter-spacing: -0.02em;
-  transition: background-color 0.5s var(--ease), border-radius 0.5s var(--ease);
+  transition:
+    background-color 0.5s var(--ease),
+    border-radius 0.5s var(--ease);
 }
 /* Early Access sits a touch smaller than Book a demo (the primary action)
    so the two read as a clear hierarchy rather than two equal buttons. */
@@ -195,7 +204,6 @@
   border-radius: 2rem;
 }
 
-
 /* ================= Panel: height grows ================= */
 .panel {
   display: grid;
@@ -221,12 +229,16 @@
 .reveal {
   opacity: 0;
   transform: translateY(1.5rem);
-  transition: opacity 0.3s var(--ease), transform 0.5s var(--ease);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.5s var(--ease);
 }
 .nav.isOpen .reveal {
   opacity: 1;
   transform: none;
-  transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.8s var(--ease);
   transition-delay: calc(0.4s + var(--i, 0) * 0.05s);
 }
 
@@ -323,7 +335,9 @@
   height: 3.25rem;
   background: var(--pill);
   border-radius: 50%;
-  transition: border-radius 0.5s var(--ease), background-color 0.5s var(--ease);
+  transition:
+    border-radius 0.5s var(--ease),
+    background-color 0.5s var(--ease);
 }
 .socials a:hover {
   border-radius: 0.25rem;
@@ -418,7 +432,9 @@
   opacity: 0;
   visibility: hidden;
   z-index: 99;
-  transition: opacity 0.6s var(--ease), visibility 0s linear 0.6s;
+  transition:
+    opacity 0.6s var(--ease),
+    visibility 0s linear 0.6s;
 }
 .nav.isOpen ~ .scrim {
   opacity: 1;
@@ -523,13 +539,17 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  transition: opacity 0.4s var(--ease) 0.5s, transform 0.6s var(--ease) 0.5s;
+  transition:
+    opacity 0.4s var(--ease) 0.5s,
+    transform 0.6s var(--ease) 0.5s;
 }
 .nav.isOpen .strip {
   opacity: 0;
   transform: translateY(-0.5rem);
   pointer-events: none;
-  transition: opacity 0.2s var(--ease), transform 0.3s var(--ease);
+  transition:
+    opacity 0.2s var(--ease),
+    transform 0.3s var(--ease);
 }
 .stripTrack {
   display: flex;

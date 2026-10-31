@@ -16,7 +16,9 @@ import styles from "./AgentsPage.module.css";
  */
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 function useCountUp(target: number, start: boolean) {
@@ -82,9 +84,9 @@ export function AgentsPage() {
           ))}
         </h1>
         <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
-          A current look at our work. Agents are not everything we build, but they are a clear way to see how we
-          think: start from the workflow, connect to the systems already in place, and ship something the team can
-          use.
+          A current look at our work. Agents are not everything we build, but they are a clear way
+          to see how we think: start from the workflow, connect to the systems already in place, and
+          ship something the team can use.
         </p>
         <div className={`${styles.stats} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }}>
           <div className={`${styles.stat} ${styles.statLive}`}>
@@ -119,9 +121,10 @@ export function AgentsPage() {
         <div className={styles.closingInner}>
           <h2>This is one part of the work.</h2>
           <p>
-            Avishkar builds technology around how a practice already operates — integrations, automation, internal
-            tools, reporting, and custom software. Agents are the piece we can publish. If your problem doesn&apos;t
-            look like one of these, that&apos;s normal. Bring it anyway.
+            Avishkar builds technology around how a practice already operates — integrations,
+            automation, internal tools, reporting, and custom software. Agents are the piece we can
+            publish. If your problem doesn&apos;t look like one of these, that&apos;s normal. Bring
+            it anyway.
           </p>
           <div className={styles.closingActions}>
             <Link href="/contact?intent=custom" className={styles.closingDark}>

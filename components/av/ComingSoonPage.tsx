@@ -52,8 +52,14 @@ export function ComingSoonPage() {
           This page is under construction. We&apos;re building it right now.
         </p>
         <span className={styles.ctaWrap}>
-          <span style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.75rem" }}>
-            <Link href="/" className={`${styles.cta} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }}>
+          <span
+            style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.75rem" }}
+          >
+            <Link
+              href="/"
+              className={`${styles.cta} ${styles.fade}`}
+              style={{ ["--d" as string]: ".5s" }}
+            >
               Back to home
             </Link>
             <Link

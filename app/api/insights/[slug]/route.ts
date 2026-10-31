@@ -53,7 +53,7 @@ export async function PUT(request: Request, { params }: Params) {
   if (!parsed.success) {
     return Response.json(
       { error: "invalid_payload", details: parsed.error.flatten() },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -37,11 +37,11 @@ Navigation is three links plus one CTA. The site uses four CTA labels in total:
 
 All copy lives in two files, so wording changes never require touching layout:
 
-| File              | Holds                                                        |
-| ----------------- | ------------------------------------------------------------ |
-| `lib/content.ts`  | Navigation, CTA labels, every page's copy, security claims   |
-| `lib/agents.ts`   | The agent library — one typed entry per agent                |
-| `lib/resources.ts`| The SEO article content                                      |
+| File               | Holds                                                      |
+| ------------------ | ---------------------------------------------------------- |
+| `lib/content.ts`   | Navigation, CTA labels, every page's copy, security claims |
+| `lib/agents.ts`    | The agent library — one typed entry per agent              |
+| `lib/resources.ts` | The SEO article content                                    |
 
 **Adding an agent** means adding one entry to `AGENTS` in `lib/agents.ts`. The
 library grouping, category filter, home page preview, footer list, detail page,

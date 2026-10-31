@@ -30,7 +30,7 @@ export function Words({ children, className }: { children: string; className?: s
           <span key={i} className="w" style={{ animationDelay: `${90 + i * 68}ms` }}>
             {part}
           </span>
-        )
+        ),
       )}
     </span>
   );

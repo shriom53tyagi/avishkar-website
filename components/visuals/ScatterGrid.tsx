@@ -22,7 +22,7 @@ export function ScatterGrid({ items }: { items: string[] }) {
         y: (Math.cos(i * 7.3) * 0.5 + 0.5) * 60 + 10,
         r: ((i * 37) % 14) - 7,
       })),
-    [items]
+    [items],
   );
 
   const cols = items.length > 3 ? 3 : items.length;
@@ -33,7 +33,7 @@ export function ScatterGrid({ items }: { items: string[] }) {
         x: ((i % cols) + 0.5) * (100 / cols),
         y: ((Math.floor(i / cols) + 0.5) * 100) / rows,
       })),
-    [items, cols, rows]
+    [items, cols, rows],
   );
 
   useEffect(() => {

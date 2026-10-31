@@ -107,7 +107,7 @@ export async function getInsightBySlug(slug: string): Promise<Insight | null> {
 
   const { rows } = await pool.query<InsightRow>(
     `SELECT * FROM insights WHERE slug = $1 AND status = 'PUBLISHED' LIMIT 1`,
-    [slug]
+    [slug],
   );
   return rows[0] ? rowToInsight(rows[0]) : null;
 }
@@ -154,7 +154,7 @@ export async function countPublishedInsights(): Promise<number> {
   if (!pool) return 0;
 
   const { rows } = await pool.query<{ count: string }>(
-    `SELECT COUNT(*)::text AS count FROM insights WHERE status = 'PUBLISHED'`
+    `SELECT COUNT(*)::text AS count FROM insights WHERE status = 'PUBLISHED'`,
   );
   return parseInt(rows[0]?.count ?? "0", 10);
 }
@@ -186,12 +186,15 @@ export async function createInsight(payload: InsightPayload): Promise<Insight> {
       JSON.stringify(payload.sources),
       payload.bodyHtml,
       payload.contentEngineBundleId ?? null,
-    ]
+    ],
   );
   return rowToInsight(rows[0]);
 }
 
-export async function updateInsight(slug: string, payload: InsightPayload): Promise<Insight | null> {
+export async function updateInsight(
+  slug: string,
+  payload: InsightPayload,
+): Promise<Insight | null> {
   const pool = getPool();
   if (!pool) throw new Error("Database is not configured");
 
@@ -230,7 +233,7 @@ export async function updateInsight(slug: string, payload: InsightPayload): Prom
       JSON.stringify(payload.sources),
       payload.bodyHtml,
       payload.contentEngineBundleId ?? null,
-    ]
+    ],
   );
   return rows[0] ? rowToInsight(rows[0]) : null;
 }
