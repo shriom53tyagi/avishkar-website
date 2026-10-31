@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { CSSProperties } from "react";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { easeOutCubic } from "./shared/easing";
 import styles from "./AvHomeWheel.module.css";

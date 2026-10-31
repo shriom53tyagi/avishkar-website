@@ -174,7 +174,7 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
     let drag: { x: number; pos: number; samples: { p: number; t: number }[] } | null = null;
     let active = -1;
     let moved = 0;
-    let g = geometry;
+    const g = geometry;
 
     const tweenTo = (to: number, dur: number, ease: (t: number) => number) => {
       if (reduce) {
@@ -392,7 +392,6 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
       window.removeEventListener("resize", remeasureArcRect);
       window.removeEventListener("scroll", remeasureArcRect);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geometry]);
 
   const g = geometry;

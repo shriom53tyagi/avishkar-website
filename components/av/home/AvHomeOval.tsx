@@ -194,7 +194,6 @@ export function AvHomeOval() {
       if (onScreenRef.current) go(curRef.current + 1);
     }, 4000);
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cur]);
 
   const go = (n: number) => {

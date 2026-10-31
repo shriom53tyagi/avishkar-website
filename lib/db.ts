@@ -34,7 +34,6 @@ export type Insight = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __avishkarPgPool: Pool | undefined;
 }
 

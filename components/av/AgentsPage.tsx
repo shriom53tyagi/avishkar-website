@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AvAgentLibrary } from "@/components/av/AvAgentLibrary";
 import { AGENTS, AGENT_CATEGORIES, DEVELOPING_AGENTS, LIVE_AGENTS } from "@/lib/agents";

@@ -190,6 +190,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                       </svg>
                     </a>
                     {/* TODO: no X/Twitter account yet — placeholder from the reference. */}
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- placeholder until the X account exists */}
                     <a href="#" aria-label="X (TODO: no account yet)">
                       <svg viewBox="0 0 24 24">
                         <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z" />

@@ -378,7 +378,6 @@ export function AvHomeHero() {
       if (rafId !== null) cancelAnimationFrame(rafId);
       cleanupFns.forEach((fn) => fn());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
