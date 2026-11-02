@@ -62,7 +62,9 @@ const PRINCIPLES = [
 ];
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 /** A paragraph whose words light up (opacity 1) as it scrolls through the viewport. */
@@ -107,7 +109,9 @@ function LitParagraph({ text }: { text: string }) {
     let rafId: number;
     const loop = () => {
       if (onScreenRef.current) {
-        const p = reduce ? 1 : clamp((window.innerHeight * 0.8 - elTop) / (elHeight + window.innerHeight * 0.3));
+        const p = reduce
+          ? 1
+          : clamp((window.innerHeight * 0.8 - elTop) / (elHeight + window.innerHeight * 0.3));
         const n = Math.round(p * wordEls.length);
         wordEls.forEach((w, i) => w.classList.toggle(styles.on, i < n));
       }
@@ -265,11 +269,13 @@ export function AboutPage() {
           <div className={`${styles.turn} ${turnIn ? styles.isIn : ""}`} ref={turnRef}>
             <h2>We work the other way around.</h2>
             <p>
-              We start from the workflow, connect to whatever systems are already in place, and build the
-              smallest thing that solves the problem properly:{" "}
+              We start from the workflow, connect to whatever systems are already in place, and
+              build the smallest thing that solves the problem properly:{" "}
               {BODY_TURN_CHIPS.map((c, i) => (
                 <span key={c}>
-                  <span className={`${styles.chip} ${i === turnHotIndex ? styles.hot : ""}`}>{c}</span>
+                  <span className={`${styles.chip} ${i === turnHotIndex ? styles.hot : ""}`}>
+                    {c}
+                  </span>
                   {i < BODY_TURN_CHIPS.length - 1 ? ", " : ""}
                 </span>
               ))}
@@ -334,8 +340,8 @@ export function AboutPage() {
         <div className={styles.closingInner}>
           <h2>Bring us the problem.</h2>
           <p>
-            The best first conversation is a specific one: a workflow, a report you can&apos;t get, or a system
-            that won&apos;t give up its data.
+            The best first conversation is a specific one: a workflow, a report you can&apos;t get,
+            or a system that won&apos;t give up its data.
           </p>
           <div className={styles.closingActions}>
             <Link href="/contact" className={styles.closingDark}>

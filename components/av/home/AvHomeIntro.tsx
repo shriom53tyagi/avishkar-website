@@ -40,7 +40,13 @@ function DialTicks({ dialRef }: { dialRef: React.RefObject<SVGSVGElement | null>
     lines.push(<line key={k} x1={x1} y1={y1} x2={x2} y2={y2} />);
   }
   return (
-    <svg className={styles.reelDial} viewBox="0 0 608 608" aria-hidden="true" ref={dialRef} data-dial-svg>
+    <svg
+      className={styles.reelDial}
+      viewBox="0 0 608 608"
+      aria-hidden="true"
+      ref={dialRef}
+      data-dial-svg
+    >
       {lines}
     </svg>
   );
@@ -211,11 +217,7 @@ export function AvHomeIntro() {
           <span className={`${styles.reelWord} ${styles.reelWordR}`} ref={rRef} aria-hidden="true">
             Reel
           </span>
-          <button
-            className={styles.reelCard}
-            ref={cardRef}
-            aria-label="Play the Avishkar film"
-          >
+          <button className={styles.reelCard} ref={cardRef} aria-label="Play the Avishkar film">
             <video
               className={styles.reelVideo}
               ref={previewRef}
@@ -230,7 +232,9 @@ export function AvHomeIntro() {
             <span className={styles.reelShade} aria-hidden="true" />
             <span className={styles.reelMeta}>
               <span>Avishkar · Film</span>
-              <span>A one-minute look at how Avishkar connects the tools your clinic already uses.</span>
+              <span>
+                A one-minute look at how Avishkar connects the tools your clinic already uses.
+              </span>
             </span>
             <span className={styles.reelRow}>
               <span>
@@ -254,7 +258,13 @@ export function AvHomeIntro() {
         </div>
       </section>
 
-      <div className={styles.film} ref={filmRef} role="dialog" aria-modal="true" aria-label="Avishkar film">
+      <div
+        className={styles.film}
+        ref={filmRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Avishkar film"
+      >
         <button className={styles.filmClose} data-film-close>
           Close
         </button>

@@ -48,7 +48,9 @@ export function ContactPage({ custom }: { custom: boolean }) {
   }, []);
 
   const title = custom ? "Tell us what you're trying to solve." : "Book a 30-minute conversation.";
-  const titleLines = custom ? ["Tell us what you're", "trying to solve."] : ["Book a 30-minute", "conversation."];
+  const titleLines = custom
+    ? ["Tell us what you're", "trying to solve."]
+    : ["Book a 30-minute", "conversation."];
 
   return (
     <main className={`${styles.talk} ${isIn ? styles.isIn : ""}`} data-talk ref={talkRef}>
@@ -68,15 +70,15 @@ export function ContactPage({ custom }: { custom: boolean }) {
         </h1>
         {custom ? (
           <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
-            The agents on our site are examples of current work, not a catalogue. Describe the problem and
-            we&apos;ll tell you honestly what we&apos;d build around it.
+            The agents on our site are examples of current work, not a catalogue. Describe the
+            problem and we&apos;ll tell you honestly what we&apos;d build around it.
           </p>
         ) : (
           <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".35s" }}>
             Thirty minutes on the workflow you want to improve. We&apos;ll ask about the{" "}
             <span className={styles.chip}>systems</span> involved and where the{" "}
-            <span className={styles.chip}>time</span> goes, then tell you where technology could help, and where
-            it wouldn&apos;t.
+            <span className={styles.chip}>time</span> goes, then tell you where technology could
+            help, and where it wouldn&apos;t.
           </p>
         )}
         <p className={styles.note} aria-hidden="true">
@@ -88,7 +90,11 @@ export function ContactPage({ custom }: { custom: boolean }) {
       </header>
 
       <div className={styles.grid}>
-        <section className={`${styles.calCard} ${styles.fade}`} style={{ ["--d" as string]: ".5s" }} aria-labelledby="pick">
+        <section
+          className={`${styles.calCard} ${styles.fade}`}
+          style={{ ["--d" as string]: ".5s" }}
+          aria-labelledby="pick"
+        >
           <div className={styles.calCardHead}>
             <div>
               <h2 id="pick">Pick a time</h2>
@@ -143,8 +149,8 @@ export function ContactPage({ custom }: { custom: boolean }) {
               ))}
             </ol>
             <p className={styles.readyFootnote}>
-              No preparation is required. Nothing in the conversation obliges you to buy anything, and we
-              won&apos;t ask for system access to have it.
+              No preparation is required. Nothing in the conversation obliges you to buy anything,
+              and we won&apos;t ask for system access to have it.
             </p>
           </section>
         </aside>

@@ -42,10 +42,21 @@ export async function POST(request: Request) {
 }
 
 async function recordSubscriber(email: string, firstName: string, source: string, details: string) {
-  const { SES_AWS_ACCESS_KEY_ID, SES_AWS_SECRET_ACCESS_KEY, SES_AWS_REGION, SES_FROM_EMAIL, SES_TO_EMAIL } =
-    process.env;
+  const {
+    SES_AWS_ACCESS_KEY_ID,
+    SES_AWS_SECRET_ACCESS_KEY,
+    SES_AWS_REGION,
+    SES_FROM_EMAIL,
+    SES_TO_EMAIL,
+  } = process.env;
 
-  if (!SES_AWS_ACCESS_KEY_ID || !SES_AWS_SECRET_ACCESS_KEY || !SES_AWS_REGION || !SES_FROM_EMAIL || !SES_TO_EMAIL) {
+  if (
+    !SES_AWS_ACCESS_KEY_ID ||
+    !SES_AWS_SECRET_ACCESS_KEY ||
+    !SES_AWS_REGION ||
+    !SES_FROM_EMAIL ||
+    !SES_TO_EMAIL
+  ) {
     if (process.env.NODE_ENV !== "production") {
       console.info("[subscribe] SES not configured; accepted", email);
     }
@@ -65,7 +76,9 @@ async function recordSubscriber(email: string, firstName: string, source: string
       Destination: { ToAddresses: [SES_TO_EMAIL] },
       ReplyToAddresses: [email],
       Message: {
-        Subject: { Data: `${isReport ? "Benchmark report request" : "Avishkar Letter signup"}: ${email}` },
+        Subject: {
+          Data: `${isReport ? "Benchmark report request" : "Avishkar Letter signup"}: ${email}`,
+        },
         Body: {
           Text: {
             Data: `${

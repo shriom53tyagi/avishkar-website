@@ -9,6 +9,7 @@ and the established `"use client"` + Framer Motion patterns
 ## New files
 
 ### Backend route handlers (App Router convention: `app/api/<name>/route.ts`)
+
 - **`app/api/chat/route.ts`** — Domain-locked chatbot. Calls the Anthropic Messages
   API **server-side** using `process.env.ANTHROPIC_API_KEY` (never exposed to the
   client). Strict system prompt with embedded company facts: answers only about
@@ -26,6 +27,7 @@ and the established `"use client"` + Framer Motion patterns
   for read-only/serverless filesystems.
 
 ### Components
+
 - **`components/ui/ChatWidget.tsx`** — Floating bottom-right chat widget. Matches the
   site's primary-button gradient halo, glass surfaces and status-dot styling.
   Typing indicator, starter suggestions, Escape-to-close, auto-scroll.
@@ -43,9 +45,11 @@ and the established `"use client"` + Framer Motion patterns
   Compliance grid.
 
 ### Config / docs
+
 - **`.env.example`** — documents `ANTHROPIC_API_KEY` (and optional `ANTHROPIC_MODEL`).
 
 ## Modified files
+
 - **`app/layout.tsx`** — render `<ChatWidget />` globally; updated `metadata`
   (title/description/keywords/OG/Twitter) to the Avishkar AI positioning + tagline.
 - **`app/page.tsx`** — render `<Contact />` between Process and FinalCTA.
@@ -62,6 +66,7 @@ and the established `"use client"` + Framer Motion patterns
 - **`.gitignore`** — ignore the runtime `data/visitors.json`.
 
 ## Notes
+
 - `info@avhishkar.app` is used verbatim throughout (matching the brief's spelling).
 - Verified: `tsc --noEmit` passes; `next build` compiles all routes and the page
   (all three API routes register as dynamic server functions); visitor-counter
@@ -77,6 +82,7 @@ and the established `"use client"` + Framer Motion patterns
 Applied the conversion/positioning brief and the requested structural changes.
 
 ## New routes (separate pages, as requested)
+
 - **`app/contact/page.tsx`** — dedicated `/contact` page: "Book an Operational
   Audit" email CTA, the Apple-style voice note, and a "what to expect" strip.
 - **`app/careers/page.tsx`** — dedicated `/careers` page: values, open-role cards
@@ -86,6 +92,7 @@ Applied the conversion/positioning brief and the requested structural changes.
   now live on the two pages above + the new `Security` section.
 
 ## New home-page sections (brief priorities)
+
 - **`ExecutiveSummary.tsx`** (Priority 6) — sits directly under the hero.
 - **`WhyDifferent.tsx`** (Priority 2) — "diagnosis before automation" with a
   Traditional-vs-Avishkar comparison and the closing positioning line.
@@ -99,6 +106,7 @@ Applied the conversion/positioning brief and the requested structural changes.
   Process → Founder Conviction → Security → Final CTA.
 
 ## Content / positioning
+
 - **Hero** (Priority 1): headline "Stop losing revenue to operational blind
   spots.", new subheadline, CTA "Book an Operational Audit" → `/contact`,
   secondary "See Sample Leakage Report" → `#revenue`.
@@ -111,6 +119,7 @@ Applied the conversion/positioning brief and the requested structural changes.
 - Final CTA copy + buttons re-pointed to `/contact`.
 
 ## Navigation / footer / social
+
 - `NAV_LINKS` now use `/#anchor` form and render via Next `<Link>` so they work
   from sub-pages; labels updated (Why Avishkar, Operational Audit, …).
 - Navbar Contact + primary CTA route to `/contact`; mobile menu adds Careers.
@@ -119,6 +128,7 @@ Applied the conversion/positioning brief and the requested structural changes.
   refreshed brand blurb; direct email link.
 
 ## Data / branding
+
 - `lib/data.ts`: added `EXEC_OUTCOMES`, `WHY_DIFFERENT`, `REVENUE_METRICS`,
   `TRUST_LOGOS`, `OPEN_ROLES`, `SOCIAL_LINKS`; updated `NAV_LINKS`.
 - Chatbot facts updated with the new positioning, representative KPIs, and the
@@ -128,6 +138,7 @@ Applied the conversion/positioning brief and the requested structural changes.
   and where to set real social handles.
 
 ## Verified
+
 - `tsc --noEmit` passes; `next build` prerenders `/`, `/contact`, `/careers` and
   keeps all three API routes as dynamic server functions. No dead links remain.
 
@@ -138,6 +149,7 @@ Applied the conversion/positioning brief and the requested structural changes.
 Applied the cleanup brief to cut repetition and shorten the page (~30–40%).
 
 ## Removed
+
 - **Executive Summary** section (duplicated Hero + Why Different) — file deleted.
 - **Our Conviction** (FounderConviction) — removed before the CTA — file deleted.
 - **Inside Your System** (InsideSystem) — replaced (see below) — file deleted.
@@ -145,6 +157,7 @@ Applied the cleanup brief to cut repetition and shorten the page (~30–40%).
 - **Problems** standalone section — merged into Revenue (see below) — file deleted.
 
 ## Merged
+
 - **Revenue Recovery + Problems → "Hidden Revenue Is Already Flowing Through Your
   Organization"** (`RevenueMetrics.tsx`): KPI cards first, then a compact
   "Where revenue leaks" breakdown. `PROBLEMS` data reduced from 6 → 5 items
@@ -155,28 +168,33 @@ Applied the cleanup brief to cut repetition and shorten the page (~30–40%).
   timeline.
 
 ## Reduced
+
 - **Agents 8 → 4** (`lib/data.ts` + `Agents.tsx`): Patient Access (Scheduling +
   Voice AI), Revenue Recovery (Billing + Insurance Verification), Clinical
   Operations (EMR Automation + Documentation), Patient Engagement (Follow-Up).
   Heading + icon map updated.
 
 ## Added
+
 - **`WhyDeploymentsWork.tsx`** — compact 4-pillar replacement for InsideSystem
   (Workflow Mapping, Environment-Specific Agents, Continuous Monitoring,
   Enterprise Security).
 
 ## Final home flow
+
 Hero → Why Avishkar Is Different → Hidden Revenue (KPIs + leaks) → Operational
 Intelligence Audit → Agent Solutions (4) → Why Our Deployments Work → Outcomes,
 Not Adjectives → Security & Compliance → Final CTA.
 
 ## Wiring
+
 - `NAV_LINKS` updated (Process removed; Revenue added): Why Avishkar, Revenue,
   Operational Audit, Agents, Results.
 - Footer "Process" link → "How We Deploy" (`/#deployments`).
 - `PROCESS` data export is now unused (left in place, harmless).
 
 ## Verified
+
 - `tsc --noEmit` passes; `next build` succeeds; home page bundle shrank
   (23 kB → 19 kB). No dead links/dangling section refs.
 

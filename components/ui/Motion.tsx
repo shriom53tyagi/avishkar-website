@@ -69,13 +69,7 @@ export function Stagger({
 }
 
 /** One step inside a <Stagger>. Inherits the parent's timing. */
-export function StaggerItem({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <motion.div className={cn("reveal", className)} variants={itemVariants}>
       {children}

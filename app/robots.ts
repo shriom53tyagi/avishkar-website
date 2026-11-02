@@ -14,9 +14,9 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "*",        // applies to ALL crawlers (Google, Bing, etc.)
-        allow: "/",            // allow crawling the entire site...
-        disallow: ["/api/"],   // ...except the API routes (not meant for search)
+        userAgent: "*", // applies to ALL crawlers (Google, Bing, etc.)
+        allow: "/", // allow crawling the entire site...
+        disallow: ["/api/"], // ...except the API routes (not meant for search)
       },
     ],
     // Tell crawlers where the sitemap lives — this is how they find it.

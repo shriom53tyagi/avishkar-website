@@ -59,7 +59,11 @@ export function LatestUpdates({ showHeading = true }: { showHeading?: boolean })
             <Reveal key={u.label} delay={i * 0.07}>
               <div id={u.id} className="card h-full scroll-mt-28 p-7">
                 <div className="text-h1 font-bold leading-none tracking-tight text-accent">
-                  <AnimatedNumber value={u.value} prefix={u.prefix || undefined} suffix={u.suffix} />
+                  <AnimatedNumber
+                    value={u.value}
+                    prefix={u.prefix || undefined}
+                    suffix={u.suffix}
+                  />
                 </div>
                 <p className="mt-3 text-small font-medium text-ink">{u.label}</p>
                 <p className="mt-1 text-small text-ink-subtle">{u.note}</p>
@@ -79,8 +83,8 @@ export function LatestUpdates({ showHeading = true }: { showHeading?: boolean })
                 sizes="80px"
               />
               <p className="flex-1 text-body italic leading-relaxed text-ink-muted">
-                "We identified $1.1M in leakage in 3 weeks and recovered $800K within Q1.
-                The diagnosis paid for itself before a single agent went live."
+                "We identified $1.1M in leakage in 3 weeks and recovered $800K within Q1. The
+                diagnosis paid for itself before a single agent went live."
               </p>
               <div className="shrink-0 rounded-lg border border-line bg-alt p-4 text-center">
                 <div className="text-h2 font-bold text-accent">$800K</div>

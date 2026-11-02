@@ -8,7 +8,7 @@ Read-only audit. Stack: Next.js 15 App Router, `app/` directory only (no Pages R
 
 The brief for this audit describes the product as **"Loomis," an AI voice agent for US medspas** targeting queries like "medspa answering service" / "AI receptionist for medspa" / "missed call medspa booking."
 
-The actual codebase is a completely different product: **"Avishkar AI,"** a *healthcare operational-intelligence and revenue-recovery platform for hospitals and clinics*, built around EMR/billing/scheduling audits, claim-denial management, and patient no-show reduction. This is present everywhere — `app/layout.tsx` metadata, `lib/schema.ts`, `lib/resources.ts` (6 SEO articles on denial rates / no-show benchmarks / revenue leakage), the Navbar, Footer, Hero copy, and `lib/data.ts`.
+The actual codebase is a completely different product: **"Avishkar AI,"** a _healthcare operational-intelligence and revenue-recovery platform for hospitals and clinics_, built around EMR/billing/scheduling audits, claim-denial management, and patient no-show reduction. This is present everywhere — `app/layout.tsx` metadata, `lib/schema.ts`, `lib/resources.ts` (6 SEO articles on denial rates / no-show benchmarks / revenue leakage), the Navbar, Footer, Hero copy, and `lib/data.ts`.
 
 There is no mention of "Loomis," medspas, voice receptionists, or missed-call recovery anywhere in the repo. Everything in Phase 3 below is written against **what actually exists** (Avishkar/healthcare). If Loomis/medspa is in fact the real target product, either this is the wrong repo/branch, or the site is mid-rebrand and the content hasn't caught up — worth confirming before building anything on top of the medspa positioning.
 
@@ -18,16 +18,16 @@ There is no mention of "Loomis," medspas, voice receptionists, or missed-call re
 
 ### Routing (App Router only)
 
-| Route | File |
-|---|---|
-| `/` | `app/page.tsx` |
-| `/contact` | `app/contact/page.tsx` |
-| `/careers` | `app/careers/page.tsx` |
-| `/privacy` | `app/privacy/page.tsx` |
-| `/terms` | `app/terms/page.tsx` |
-| `/resources` | `app/resources/page.tsx` |
-| `/resources/[slug]` | `app/resources/[slug]/page.tsx` (6 static params via `generateStaticParams`) |
-| `/api/chat`, `/api/visitors`, `/api/voice-note` | route handlers, correctly excluded from crawling |
+| Route                                           | File                                                                         |
+| ----------------------------------------------- | ---------------------------------------------------------------------------- |
+| `/`                                             | `app/page.tsx`                                                               |
+| `/contact`                                      | `app/contact/page.tsx`                                                       |
+| `/careers`                                      | `app/careers/page.tsx`                                                       |
+| `/privacy`                                      | `app/privacy/page.tsx`                                                       |
+| `/terms`                                        | `app/terms/page.tsx`                                                         |
+| `/resources`                                    | `app/resources/page.tsx`                                                     |
+| `/resources/[slug]`                             | `app/resources/[slug]/page.tsx` (6 static params via `generateStaticParams`) |
+| `/api/chat`, `/api/visitors`, `/api/voice-note` | route handlers, correctly excluded from crawling                             |
 
 No `not-found.tsx` at root (Next falls back to default 404, unstyled). No route groups. No Pages Router coexistence.
 
@@ -36,6 +36,7 @@ Resource slugs (`lib/resources.ts`): `no-show-benchmarks`, `denial-rate-benchmar
 ### Per-page metadata
 
 **`/` (`app/page.tsx`, metadata inherited from root `layout.tsx`)**
+
 - Title: `"Avishkar AI"` → renders as `"Avishkar AI · Avishkar AI"`... actually root `title.default` has no template applied to itself, but note the **trailing space** in `"Avishkar AI "` (layout.tsx:158) — sloppy, shows in tab title.
 - Description: present, keyword-rich (healthcare operational intelligence, revenue leakage, denial management, HIPAA).
 - OG: title/description/image (`/og-image.png`) present. **`/og-image.png` was not verified to exist in `public/`** — only `logo.png` and `hero-demo.mp4` are in `public/`, so this OG image reference is likely broken.
@@ -46,15 +47,17 @@ Resource slugs (`lib/resources.ts`): `no-show-benchmarks`, `denial-rate-benchmar
 - JSON-LD: `FAQPage` schema injected inline (`app/page.tsx:25`), `Organization` schema injected globally in `layout.tsx:230`. **`serviceSchema` is defined in `lib/schema.ts:79` but never imported or rendered anywhere in the app** — dead code, a missed opportunity since it's the schema type most relevant to describing what Avishkar sells.
 
 **`/contact`**
+
 - Title: `"Book an Operational Audit"` → resolves via template to `"Book an Operational Audit · Avishkar AI"`. Good, specific.
 - Description: present, on-topic.
 - OG: partial override (title/description/url) — inherits image/type from root, fine.
 - Canonical: absent.
 - H1 via `PageHeader`: 1. Good.
 - Word count: ~526 (JSX literal).
-- Internal links: none *to* other pages (calendar embed + voice note + mailto only) — no link back to `/resources` or `/`.
+- Internal links: none _to_ other pages (calendar embed + voice note + mailto only) — no link back to `/resources` or `/`.
 
 **`/careers`**
+
 - Title: `"Careers"` → `"Careers · Avishkar AI"`.
 - Description: present, on-topic.
 - OG: partial override, no dedicated image.
@@ -63,11 +66,13 @@ Resource slugs (`lib/resources.ts`): `no-show-benchmarks`, `denial-rate-benchmar
 - Internal links out: none (all CTAs are `mailto:`). No inbound links except Footer.
 
 **`/privacy`, `/terms`**
+
 - Titles/descriptions present but minimal (no OG override, inherits root OG image/copy which is off-topic for a legal page — low priority but worth a plain `noindex`-style treatment since these shouldn't compete for rankings anyway; currently they're fully indexable with generic homepage OG data).
 - H1: 1 each. Word count: 306 / 237 — thin, acceptable for legal boilerplate.
 - **Content bug, not just SEO**: both pages reference `info@avishakar.com` (misspelled domain — extra "a") while every other file in the codebase (`lib/data.ts`, JSON-LD `contactPoint`) uses `info@avishkar.app`. This is a real, live discrepancy in externally-facing legal copy.
 
 **`/resources`**
+
 - Title: `"Healthcare Operations Resources"`, description good.
 - OG override present.
 - Canonical: absent.
@@ -75,6 +80,7 @@ Resource slugs (`lib/resources.ts`): `no-show-benchmarks`, `denial-rate-benchmar
 - Internal links: strong — links to all 6 resource articles, links to `/contact`. This is the best internally-linked page on the site.
 
 **`/resources/[slug]`** (6 pages, `generateMetadata` per-article)
+
 - Title: `resource.metaTitle` — per-article, unique, keyword-targeted (e.g. `"No-Show Rate Benchmarks by Medical Specialty 2025 | Avishkar AI"`). This is the **only route using a different title convention** (raw suffix with `|` instead of the root's `%s · Avishkar AI` template) — inconsistent but not wrong.
 - Description: per-article, unique, substantive.
 - OG: `type: "article"`, `publishedTime` set — correctly typed for content pages. **No Twitter card override** (falls back to root Twitter card, which shows the homepage's OG image/copy, not the article's) — mismatch for social shares of articles.
@@ -111,15 +117,15 @@ Resource slugs (`lib/resources.ts`): `no-show-benchmarks`, `denial-rate-benchmar
 
 ## Phase 2 — Gap Analysis
 
-| Page | Title tag OK? | Meta description OK? | H1 OK? | Schema present? | Internal links in/out | Word count | Verdict |
-|---|---|---|---|---|---|---|---|
-| `/` | ⚠️ trailing space in default title | ✅ | ✅ (1) | ✅ Organization + FAQPage (Service schema orphaned) | In: nav/footer everywhere. Out: `/contact` only | Data-driven, substantial | **Needs work** |
-| `/contact` | ✅ | ✅ | ✅ (1) | ➖ (inherits Organization only) | In: nav, footer, homepage CTA. Out: none | ~526 | **Needs work** (no outbound links) |
-| `/careers` | ✅ | ✅ | ✅ (1) | ➖ | In: footer only. Out: none | ~517 | Good |
-| `/privacy` | ✅ (thin) | ✅ (thin) | ✅ (1) | ➖ | In: footer only. Out: none | 306 | Good (low-priority page) |
-| `/terms` | ✅ (thin) | ✅ (thin) | ✅ (1) | ➖ | In: footer only. Out: none | 237 | Good (low-priority page) |
-| `/resources` | ✅ | ✅ | ✅ (1) | ➖ (no `CollectionPage`/`ItemList`) | In: footer("Resources" links point elsewhere — see below). Out: all 6 articles + contact | ~435 + cards | **Needs work** (missing from sitemap) |
-| `/resources/[slug]` × 6 | ✅ unique per article | ✅ unique per article | ✅ (1) | ❌ no `Article` schema | In: `/resources` index only — **not linked from nav, footer, or homepage** | 800–1500+ each | **Needs work** (missing from sitemap, no Article schema, under-linked) |
+| Page                    | Title tag OK?                      | Meta description OK?  | H1 OK? | Schema present?                                     | Internal links in/out                                                                    | Word count               | Verdict                                                                |
+| ----------------------- | ---------------------------------- | --------------------- | ------ | --------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------- |
+| `/`                     | ⚠️ trailing space in default title | ✅                    | ✅ (1) | ✅ Organization + FAQPage (Service schema orphaned) | In: nav/footer everywhere. Out: `/contact` only                                          | Data-driven, substantial | **Needs work**                                                         |
+| `/contact`              | ✅                                 | ✅                    | ✅ (1) | ➖ (inherits Organization only)                     | In: nav, footer, homepage CTA. Out: none                                                 | ~526                     | **Needs work** (no outbound links)                                     |
+| `/careers`              | ✅                                 | ✅                    | ✅ (1) | ➖                                                  | In: footer only. Out: none                                                               | ~517                     | Good                                                                   |
+| `/privacy`              | ✅ (thin)                          | ✅ (thin)             | ✅ (1) | ➖                                                  | In: footer only. Out: none                                                               | 306                      | Good (low-priority page)                                               |
+| `/terms`                | ✅ (thin)                          | ✅ (thin)             | ✅ (1) | ➖                                                  | In: footer only. Out: none                                                               | 237                      | Good (low-priority page)                                               |
+| `/resources`            | ✅                                 | ✅                    | ✅ (1) | ➖ (no `CollectionPage`/`ItemList`)                 | In: footer("Resources" links point elsewhere — see below). Out: all 6 articles + contact | ~435 + cards             | **Needs work** (missing from sitemap)                                  |
+| `/resources/[slug]` × 6 | ✅ unique per article              | ✅ unique per article | ✅ (1) | ❌ no `Article` schema                              | In: `/resources` index only — **not linked from nav, footer, or homepage**               | 800–1500+ each           | **Needs work** (missing from sitemap, no Article schema, under-linked) |
 
 Note: the Footer's "Resources" column (`components/ui/Footer.tsx:29-37`) doesn't actually link to `/resources` or any article — it links to homepage anchors (`/#engine`, `/#security`, `/#results`) and `/contact`. The footer column is mislabeled; the real resources hub has no footer/nav presence at all.
 
@@ -138,9 +144,11 @@ The **incomplete sitemap** is the highest-impact, lowest-effort fix: 7 fully-bui
 **Caveat repeated**: everything below is written against the actual product in this repo (Avishkar / healthcare operational intelligence), not "Loomis / medspa," since that product doesn't exist in this codebase. If the real target is Loomis, treat this section as a template to re-run once medspa positioning/content actually exists, not as directly actionable.
 
 ### URL structure
+
 Recommend a **`/services` hub + `/services/[slug]` detail pages**, mirroring the `/resources` + `/resources/[slug]` pattern that already exists and works (per Phase 1's content-model findings: the section-block renderer, `generateStaticParams`, `generateMetadata`, `PageHeader`, CTA block, and related-links pattern are all directly reusable with zero new components). A single flat `/services` page with anchors would waste the one piece of infrastructure this codebase already has proven out.
 
 ### Page list (ranked by likely search-intent match, using the actual Avishkar service line)
+
 1. Operational Intelligence Audit (the core offering — already has a `Service` JSON-LD written, just orphaned) — highest intent match, direct product page.
 2. Claim Denial Management / AI Denial Triage — matches `reduce-claim-denials` resource article already published; a service page here captures commercial-intent traffic the article can't (article is informational, not transactional).
 3. Patient No-Show Reduction — same logic, pairs with `reduce-patient-no-shows` article.
@@ -149,18 +157,22 @@ Recommend a **`/services` hub + `/services/[slug]` detail pages**, mirroring the
 Each of these already has a matching top-of-funnel article in `lib/resources.ts` — building the service page is the missing bottom-of-funnel counterpart, and the `relatedLinks` field already on every resource object gives a ready-made slot to cross-link article → service page.
 
 ### Per-page metadata template
+
 Follow the convention already established by `/resources/[slug]`'s `generateMetadata()` (the strongest existing pattern):
+
 - Title: `"{Specific Service Name} for Hospitals & Clinics | Avishkar AI"` — matches the resources pages' `| Avishkar AI` suffix, not the root's `%s · Avishkar AI` template (worth picking one convention sitewide, but if forced to choose, standardize on the resources pattern since it's already used for the highest-value pages).
 - Description: problem → mechanism → outcome, under ~160 chars, matching the tone of existing `metaDescription` fields.
 - H1: `PageHeader` component, same as every other page — eyebrow + H1 + supporting description, zero new component work.
 - **Add `alternates: { canonical: ... }`** on every service page metadata export — currently absent sitewide, and it matters most on pages with any risk of duplicate/near-duplicate content (service pages describing overlapping offerings).
 
 ### Schema plan
+
 - `Service` type (the exact shape already written in `lib/schema.ts:79` — just needs to actually be rendered per-page instead of sitting unused, one `serviceType` value per page).
 - `BreadcrumbList` for `/services/[slug]` (Home → Services → [Service]) — not present anywhere on the site currently, cheap to add, helps rich-result breadcrumb display.
 - Keep `Organization` inherited from root layout (already correct).
 
 ### Internal linking plan
+
 - **Nav**: add "Services" to `NAV_LINKS` in `lib/data.ts` — currently every nav link is a homepage anchor; this would be the first real top-level nav destination.
 - **Footer**: fix the mislabeled "Resources" column (currently links to homepage anchors) and add a genuine "Services" column — this reuses an existing structural slot rather than growing the footer.
 - **Homepage**: link from `Agents` / `AuditEngine` sections (which already describe these offerings in prose) directly to their corresponding `/services/[slug]` page.
@@ -168,6 +180,7 @@ Follow the convention already established by `/resources/[slug]`'s `generateMeta
 - **Service pages should link to**: `/contact` (primary CTA, matching every other page's pattern), the matching `/resources/[slug]` article (for readers wanting the data/evidence first), and sibling service pages.
 
 ### What NOT to build yet
+
 - **Any new page** before fixing `app/sitemap.ts` to include `/resources` + the 6 existing articles — shipping more unindexed content on top of already-unindexed content compounds the problem.
 - **`Article` schema and Twitter-card overrides for resource articles** should land before service pages — cheap, high-leverage, and touches infrastructure the service pages will also depend on (`generateMetadata` pattern, JSON-LD injection).
 - A pricing/comparison page — no pricing table component exists yet, and the product's sales motion (audit-first, fixed-scope) doesn't map cleanly to a self-serve pricing grid; premature until sales motion is more standardized.

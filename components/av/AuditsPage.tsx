@@ -22,7 +22,10 @@ export function AuditsPage() {
         {AUDITS.length > 0 ? (
           <div className={bits.grid2}>
             {AUDITS.map((a) => (
-              <article key={a.slug} className={`${bits.card} ${x.auditCard} ${a.sample ? bits.sample : ""}`}>
+              <article
+                key={a.slug}
+                className={`${bits.card} ${x.auditCard} ${a.sample ? bits.sample : ""}`}
+              >
                 <div className={x.auditTop}>
                   <span>
                     {a.label} · {a.locations} location{a.locations > 1 ? "s" : ""}

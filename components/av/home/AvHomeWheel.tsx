@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { CSSProperties } from "react";
 import { readReducedMotion } from "./shared/useReducedMotion";
 import { easeOutCubic } from "./shared/easing";
 import styles from "./AvHomeWheel.module.css";
@@ -98,11 +97,38 @@ const CARDS: WheelCard[] = [
     screen: (
       <div className={`${styles.sc} ${styles.scBook}`}>
         <span className={styles.cal}>
-          {["", "", "on", "", "", "on", "", "", "", "on", "", "on", "", "new", "", "", "on", "", "", "", "on", "", "new", "", "on", "", "on", ""].map(
-            (cls, i) => (
-              <i key={i} className={cls} />
-            ),
-          )}
+          {[
+            "",
+            "",
+            "on",
+            "",
+            "",
+            "on",
+            "",
+            "",
+            "",
+            "on",
+            "",
+            "on",
+            "",
+            "new",
+            "",
+            "",
+            "on",
+            "",
+            "",
+            "",
+            "on",
+            "",
+            "new",
+            "",
+            "on",
+            "",
+            "on",
+            "",
+          ].map((cls, i) => (
+            <i key={i} className={cls} />
+          ))}
         </span>
       </div>
     ),
@@ -122,7 +148,10 @@ const CARDS: WheelCard[] = [
 ];
 
 // Unique cards duplicated at +180°, evenly spaced around the full ring.
-const SLOTS = [...CARDS.map((c, i) => ({ card: c, d: i })), ...CARDS.map((c, i) => ({ card: c, d: i }))];
+const SLOTS = [
+  ...CARDS.map((c, i) => ({ card: c, d: i })),
+  ...CARDS.map((c, i) => ({ card: c, d: i })),
+];
 
 const SLOT_STEP = 360 / SLOTS.length;
 

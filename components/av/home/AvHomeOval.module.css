@@ -19,7 +19,9 @@
 .oval > * {
   opacity: 0;
   transform: translateY(1.5rem);
-  transition: opacity 0.8s var(--ease), transform 1s var(--ease);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 1s var(--ease);
 }
 .oval.isIn > * {
   opacity: 1;
@@ -326,7 +328,9 @@
   height: 2px;
   background: rgba(239, 238, 236, 0.35);
   border-radius: 1px;
-  transition: width 0.5s var(--ease), background-color 0.3s;
+  transition:
+    width 0.5s var(--ease),
+    background-color 0.3s;
   padding: 0;
 }
 .dashes button.isActive {
@@ -494,7 +498,9 @@
   font-weight: 500;
   letter-spacing: -0.02em;
   border-radius: 0.25rem;
-  transition: background-color 0.5s var(--ease), border-radius 0.5s var(--ease);
+  transition:
+    background-color 0.5s var(--ease),
+    border-radius 0.5s var(--ease);
 }
 .btnJoin {
   background: var(--color-lime);

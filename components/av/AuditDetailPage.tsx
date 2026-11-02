@@ -30,7 +30,11 @@ export function AuditDetailPage({ audit }: { audit: Audit }) {
       <section className={bits.section} style={{ paddingTop: 0 }}>
         <div className={x.board}>
           {AREAS.map((area, i) => (
-            <div key={area} className={`${x.g} ${TILE[audit.grades[area][0]] ?? ""}`} style={{ ["--i" as string]: i }}>
+            <div
+              key={area}
+              className={`${x.g} ${TILE[audit.grades[area][0]] ?? ""}`}
+              style={{ ["--i" as string]: i }}
+            >
               <b>{audit.grades[area]}</b>
               <small>{area}</small>
             </div>

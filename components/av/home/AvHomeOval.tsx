@@ -152,7 +152,9 @@ export function AvHomeOval() {
     let rafId: number;
     const shape = () => {
       if (onScreenRef.current && window.innerWidth > 900) {
-        const p = reduce ? 1 : easeOutCubic(clamp01((window.innerHeight - ovalTop) / (window.innerHeight * 1.1)));
+        const p = reduce
+          ? 1
+          : easeOutCubic(clamp01((window.innerHeight - ovalTop) / (window.innerHeight * 1.1)));
         oval.style.clipPath = `ellipse(${36 + 14 * p}% ${46 + 4 * p}% at 50% 50%)`;
       }
       rafId = requestAnimationFrame(shape);
@@ -192,7 +194,6 @@ export function AvHomeOval() {
       if (onScreenRef.current) go(curRef.current + 1);
     }, 4000);
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cur]);
 
   const go = (n: number) => {
@@ -323,7 +324,11 @@ export function AvHomeOval() {
                 if (submitError) setSubmitError("");
               }}
             />
-            <button className={`${styles.btn} ${styles.btnJoin}`} type="submit" disabled={submitPending}>
+            <button
+              className={`${styles.btn} ${styles.btnJoin}`}
+              type="submit"
+              disabled={submitPending}
+            >
               <Roll>{submitPending ? "Sending…" : "Join the early access list"}</Roll>
             </button>
           </form>

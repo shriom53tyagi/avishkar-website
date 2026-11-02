@@ -35,13 +35,7 @@ function buildStripItems(insights: LatestInsightLink[]): LatestInsightLink[] {
   return items;
 }
 
-function StripGroup({
-  items,
-  hidden,
-}: {
-  items: LatestInsightLink[];
-  hidden: boolean;
-}) {
+function StripGroup({ items, hidden }: { items: LatestInsightLink[]; hidden: boolean }) {
   return (
     <div className={styles.stripGroup} aria-hidden={hidden || undefined}>
       {items.map((insight, i) => (
@@ -83,11 +77,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
 
   return (
     <>
-      <header
-        ref={navRef}
-        className={cn(styles.nav, open && styles.isOpen)}
-        data-nav
-      >
+      <header ref={navRef} className={cn(styles.nav, open && styles.isOpen)} data-nav>
         <div className={styles.navBox}>
           <div className={styles.bar}>
             <button
@@ -122,7 +112,10 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
           <div className={styles.panel} id="av-nav-panel">
             <div className={styles.panelClip}>
               <nav className={styles.panelGrid} aria-label="Main">
-                <div className={cn(styles.card, styles.reveal)} style={{ "--i": 0 } as React.CSSProperties}>
+                <div
+                  className={cn(styles.card, styles.reveal)}
+                  style={{ "--i": 0 } as React.CSSProperties}
+                >
                   <p className={styles.label}>Our products</p>
                   <ul className={styles.links}>
                     <li>
@@ -153,7 +146,10 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                   </div>
                 </div>
 
-                <div className={cn(styles.col, styles.reveal)} style={{ "--i": 1 } as React.CSSProperties}>
+                <div
+                  className={cn(styles.col, styles.reveal)}
+                  style={{ "--i": 1 } as React.CSSProperties}
+                >
                   <p className={styles.label}>Explore</p>
                   <ul className={styles.links}>
                     <li>
@@ -173,17 +169,28 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     </li>
                   </ul>
                   <div className={styles.socials}>
-                    <a href="https://www.linkedin.com/company/avishkarai/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <a
+                      href="https://www.linkedin.com/company/avishkarai/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="LinkedIn"
+                    >
                       <svg viewBox="0 0 24 24">
                         <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.78-1.7-2.78-1.7 0-1.96 1.33-1.96 2.7V21h-4z" />
                       </svg>
                     </a>
-                    <a href="https://www.instagram.com/avishkar.app/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <a
+                      href="https://www.instagram.com/avishkar.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Instagram"
+                    >
                       <svg viewBox="0 0 24 24">
                         <path d="M12 7.3a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.95a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.06-3.5.16-5.4 2.06-5.54 5.54C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.16 3.48 2.06 5.38 5.54 5.54 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c3.47-.16 5.39-2.06 5.54-5.54.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.15-3.47-2.06-5.38-5.54-5.54-1-.06-1.3-.06-3.9-.06zm0 1.7c2.55 0 2.85 0 3.85.06 2.6.12 3.8 1.35 3.93 3.93.05 1 .05 1.3.05 3.81s0 2.85-.05 3.85c-.12 2.57-1.33 3.8-3.93 3.93-1 .05-1.3.05-3.85.05s-2.85 0-3.85-.05c-2.6-.12-3.8-1.36-3.93-3.93-.05-1-.06-1.3-.06-3.85s0-2.84.06-3.85C4.34 5.6 5.55 4.37 8.15 4.26c1-.05 1.3-.06 3.85-.06z" />
                       </svg>
                     </a>
                     {/* TODO: no X/Twitter account yet — placeholder from the reference. */}
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- placeholder until the X account exists */}
                     <a href="#" aria-label="X (TODO: no account yet)">
                       <svg viewBox="0 0 24 24">
                         <path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.2h1.7L7.4 4.73H5.58z" />
@@ -192,7 +199,10 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                   </div>
                 </div>
 
-                <div className={cn(styles.card, styles.feature, styles.reveal)} style={{ "--i": 2 } as React.CSSProperties}>
+                <div
+                  className={cn(styles.card, styles.feature, styles.reveal)}
+                  style={{ "--i": 2 } as React.CSSProperties}
+                >
                   <p className={styles.tag}>
                     <span>Latest</span>
                     <span>Insight</span>
@@ -203,7 +213,10 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     <i />
                     <i />
                   </div>
-                  <Link href={latestInsight ? `/insights/${latestInsight.slug}` : "/insights"} className={styles.more}>
+                  <Link
+                    href={latestInsight ? `/insights/${latestInsight.slug}` : "/insights"}
+                    className={styles.more}
+                  >
                     <Roll>Read more</Roll>
                   </Link>
                 </div>

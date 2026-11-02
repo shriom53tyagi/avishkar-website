@@ -61,7 +61,9 @@
   box-shadow: 0 30px 50px -35px rgba(0, 0, 0, 0.45);
   transform: translateY(4rem) scale(0.9);
   opacity: 0;
-  transition: transform 0.9s var(--ease), opacity 0.6s var(--ease);
+  transition:
+    transform 0.9s var(--ease),
+    opacity 0.6s var(--ease);
 }
 .wheel.isIn .wcard {
   transform: none;

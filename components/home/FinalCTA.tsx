@@ -35,9 +35,7 @@ export function FinalCTA() {
             </h2>
           </StaggerItem>
           <StaggerItem>
-            <p className="mx-auto mt-7 max-w-measure text-lead text-white/70">
-              {FINAL_CTA.body}
-            </p>
+            <p className="mx-auto mt-7 max-w-measure text-lead text-white/70">{FINAL_CTA.body}</p>
           </StaggerItem>
           <StaggerItem>
             <div className="mt-12 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">

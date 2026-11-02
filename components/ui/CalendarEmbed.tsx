@@ -47,9 +47,7 @@ function loadCss(href: string) {
 }
 
 function Fallback({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="card p-8">{children}</div>
-  );
+  return <div className="card p-8">{children}</div>;
 }
 
 export function CalendarEmbed() {

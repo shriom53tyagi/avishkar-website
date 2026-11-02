@@ -86,7 +86,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "We timed the handoffs in three multi-room practices. The pattern was remarkably consistent — and expensive.",
-      "Operations"
+      "Operations",
     ),
   },
   {
@@ -105,7 +105,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "A practical line between the messages a model should draft and the ones a nurse must read.",
-      "AI in aesthetics"
+      "AI in aesthetics",
     ),
   },
   {
@@ -124,7 +124,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Why retention programs stall when billing, booking and the chart don't share a definition of a member.",
-      "Growth"
+      "Growth",
     ),
   },
   {
@@ -143,7 +143,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Inventory, provider credentials, and the schedule. In that order, almost every time.",
-      "Operations"
+      "Operations",
     ),
   },
   {
@@ -162,7 +162,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Aesthetic practices carry clinical risk with consumer-grade tooling. A calmer way to handle documentation.",
-      "Technology"
+      "Technology",
     ),
   },
   {
@@ -181,7 +181,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Intake is the only moment where every patient touches your technology. Most practices waste it.",
-      "Patient experience"
+      "Patient experience",
     ),
   },
   {
@@ -200,7 +200,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Revenue per chair hour changes which appointments you actually want. Here's how to see it.",
-      "Growth"
+      "Growth",
     ),
   },
   {
@@ -219,7 +219,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "A blunt decision tree for practice owners weighing another subscription against a custom build.",
-      "Technology"
+      "Technology",
     ),
   },
   {
@@ -238,7 +238,7 @@ const LEGACY_INSIGHTS: InsightPayload[] = [
     sources: [],
     bodyHtml: placeholderBody(
       "Programs, packages and longitudinal care break tools designed around single treatments.",
-      "Wellness"
+      "Wellness",
     ),
   },
 ];

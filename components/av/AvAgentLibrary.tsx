@@ -19,7 +19,9 @@ import styles from "./AgentsPage.module.css";
  */
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 const WL_SAMPLE = [
@@ -28,7 +30,8 @@ const WL_SAMPLE = [
   { label: "Lost: timing", pct: 26, color: "var(--purple)" },
   { label: "No decision", pct: 18, color: "#6d6965" },
 ];
-const WL_INSIGHT_SAMPLE = "Medspas lose the most ground on price objections raised after the first consult.";
+const WL_INSIGHT_SAMPLE =
+  "Medspas lose the most ground on price objections raised after the first consult.";
 
 function LiveAgentCard({ agent }: { agent: Agent }) {
   const ref = useRef<HTMLElement>(null);
@@ -108,7 +111,13 @@ function LiveAgentCard({ agent }: { agent: Agent }) {
             {WL_SAMPLE.map((row, k) => (
               <div key={row.label}>
                 <span>{row.label}</span>
-                <em style={{ ["--w" as string]: `${row.pct}%`, ["--c" as string]: row.color, ["--k" as string]: k }} />
+                <em
+                  style={{
+                    ["--w" as string]: `${row.pct}%`,
+                    ["--c" as string]: row.color,
+                    ["--k" as string]: k,
+                  }}
+                />
                 <strong>{row.pct}%</strong>
               </div>
             ))}
@@ -123,7 +132,13 @@ function LiveAgentCard({ agent }: { agent: Agent }) {
   );
 }
 
-export function AvAgentLibrary({ agents, categories }: { agents: Agent[]; categories: AgentCategory[] }) {
+export function AvAgentLibrary({
+  agents,
+  categories,
+}: {
+  agents: Agent[];
+  categories: AgentCategory[];
+}) {
   const [active, setActive] = useState<AgentCategory | "All">("All");
   const [leavingKeys, setLeavingKeys] = useState<Set<string>>(new Set());
   const devRef = useRef<HTMLDivElement>(null);
@@ -171,7 +186,9 @@ export function AvAgentLibrary({ agents, categories }: { agents: Agent[]; catego
       setActive(category);
       return;
     }
-    const leaving = new Set(developing.filter((a) => !(category === "All" || a.category === category)).map((a) => a.slug));
+    const leaving = new Set(
+      developing.filter((a) => !(category === "All" || a.category === category)).map((a) => a.slug),
+    );
     setLeavingKeys(leaving);
     setTimeout(() => {
       setActive(category);
@@ -230,7 +247,9 @@ export function AvAgentLibrary({ agents, categories }: { agents: Agent[]; catego
               <h2>
                 In development<sup>{visibleDeveloping.length}</sup>
               </h2>
-              <p>What we&apos;re building next, based on the problems practices keep bringing us.</p>
+              <p>
+                What we&apos;re building next, based on the problems practices keep bringing us.
+              </p>
             </div>
             <div className={styles.dev} ref={devRef}>
               {developing.map((agent) => {
@@ -250,7 +269,9 @@ export function AvAgentLibrary({ agents, categories }: { agents: Agent[]; catego
           </>
         )}
 
-        <p className={`${styles.empty} ${showEmpty ? styles.show : ""}`}>Nothing in this area yet.</p>
+        <p className={`${styles.empty} ${showEmpty ? styles.show : ""}`}>
+          Nothing in this area yet.
+        </p>
       </div>
     </div>
   );

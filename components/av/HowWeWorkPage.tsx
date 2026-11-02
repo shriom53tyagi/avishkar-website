@@ -68,7 +68,9 @@ const FAQS = [
 ];
 
 function readReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
 }
 
 export function HowWeWorkPage() {
@@ -97,7 +99,8 @@ export function HowWeWorkPage() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const idx = els.indexOf(entry.target as HTMLDivElement);
-            if (idx !== -1) setStepsIn((prev) => (prev[idx] ? prev : prev.map((v, i) => (i === idx ? true : v))));
+            if (idx !== -1)
+              setStepsIn((prev) => (prev[idx] ? prev : prev.map((v, i) => (i === idx ? true : v))));
           }
         });
       },
@@ -139,7 +142,9 @@ export function HowWeWorkPage() {
         // browser never has to interleave a read with a write it just
         // made (which would force a second synchronous layout per step).
         const rects = steps.map((stepEl) => stepEl?.getBoundingClientRect() ?? null);
-        const heights = steps.map((stepEl) => (stepEl?.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0);
+        const heights = steps.map(
+          (stepEl) => (stepEl?.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0,
+        );
 
         steps.forEach((stepEl, i) => {
           if (!stepEl) return;
@@ -155,7 +160,10 @@ export function HowWeWorkPage() {
             card.style.filter = `brightness(${1 - k * 0.25})`;
           }
           card.style.setProperty("--sc", String(sc));
-          const p = Math.min(1, Math.max(0, (window.innerHeight * 0.75 - rect.top) / (window.innerHeight * 0.6)));
+          const p = Math.min(
+            1,
+            Math.max(0, (window.innerHeight * 0.75 - rect.top) / (window.innerHeight * 0.6)),
+          );
           card.style.setProperty("--p", String(reduce ? 1 : p));
         });
       }
@@ -185,11 +193,15 @@ export function HowWeWorkPage() {
           ))}
         </h1>
         <p className={`${styles.lead} ${styles.fade}`} style={{ ["--d" as string]: ".4s" }}>
-          No long discovery phase, no platform migration, no committee. We start with the workflow that frustrates
-          you and build the smallest thing that fixes it.
+          No long discovery phase, no platform migration, no committee. We start with the workflow
+          that frustrates you and build the smallest thing that fixes it.
         </p>
         <span className={styles.ctaWrap}>
-          <Link href="/contact" className={`${styles.cta} ${styles.fade}`} style={{ ["--d" as string]: ".55s" }}>
+          <Link
+            href="/contact"
+            className={`${styles.cta} ${styles.fade}`}
+            style={{ ["--d" as string]: ".55s" }}
+          >
             Book a 30-min conversation
           </Link>
           <p className={`${styles.note} ${styles.script}`} aria-hidden="true">
@@ -250,8 +262,9 @@ export function HowWeWorkPage() {
           </p>
           <h2 id="what-we-build">Built around your practice. Not the other way around.</h2>
           <p>
-            Your practice should not have to change how it works just to fit another piece of software. Avishkar
-            works with the systems you already use and builds the technology around your workflow.
+            Your practice should not have to change how it works just to fit another piece of
+            software. Avishkar works with the systems you already use and builds the technology
+            around your workflow.
           </p>
           <div className={styles.formsList}>
             {FORMS.map((f) => (
@@ -296,7 +309,10 @@ export function HowWeWorkPage() {
       <section className={styles.closing}>
         <div className={styles.closingInner}>
           <h2>Start with the workflow.</h2>
-          <p>Thirty minutes, no slide deck. If technology isn&apos;t the right answer, we&apos;ll say so.</p>
+          <p>
+            Thirty minutes, no slide deck. If technology isn&apos;t the right answer, we&apos;ll say
+            so.
+          </p>
           <div className={styles.closingActions}>
             <Link href="/contact" className={styles.closingDark}>
               Book a 30-min conversation

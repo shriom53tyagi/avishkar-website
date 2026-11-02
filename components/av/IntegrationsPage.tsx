@@ -63,7 +63,9 @@ export function IntegrationsPage() {
               <h3>{i.name}</h3>
               <div className={x.intMeta}>
                 <span className={bits.tag}>{i.cat}</span>
-                <span className={`${bits.tag} ${i.status === "Live" ? bits.tagLime : ""}`}>{i.status}</span>
+                <span className={`${bits.tag} ${i.status === "Live" ? bits.tagLime : ""}`}>
+                  {i.status}
+                </span>
               </div>
               <div className={x.syncs}>
                 <b>What syncs</b>

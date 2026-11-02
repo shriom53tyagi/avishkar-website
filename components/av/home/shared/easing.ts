@@ -27,8 +27,7 @@ export function bez(x1: number, y1: number, x2: number, y2: number) {
     let u = t;
     for (let i = 0; i < 6; i++) {
       const x = 3 * (1 - u) * (1 - u) * u * x1 + 3 * (1 - u) * u * u * x2 + u * u * u - t;
-      const dx =
-        3 * (1 - u) * (1 - u) * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2);
+      const dx = 3 * (1 - u) * (1 - u) * x1 + 6 * (1 - u) * u * (x2 - x1) + 3 * u * u * (1 - x2);
       if (Math.abs(dx) < 1e-6) break;
       u -= x / dx;
       u = Math.min(1, Math.max(0, u));

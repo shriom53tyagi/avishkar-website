@@ -56,7 +56,10 @@ const config: Config = {
         h3: ["1.25rem", { lineHeight: "1.4", letterSpacing: "-0.01em" }],
         h2: ["clamp(1.625rem, 2.6vw, 2.125rem)", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
         h1: ["clamp(2rem, 3.4vw, 2.75rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
-        display: ["clamp(2.25rem, 4.6vw, 3.5rem)", { lineHeight: "1.06", letterSpacing: "-0.025em" }],
+        display: [
+          "clamp(2.25rem, 4.6vw, 3.5rem)",
+          { lineHeight: "1.06", letterSpacing: "-0.025em" },
+        ],
       },
       maxWidth: {
         container: "1200px",

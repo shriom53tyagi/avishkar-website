@@ -29,9 +29,13 @@ export function SubscribeForm() {
           return;
         }
         setPending(true);
-        const result = await submitSubscribe(email, String(new FormData(form).get("firstName") ?? ""), {
-          source: "letter-page",
-        });
+        const result = await submitSubscribe(
+          email,
+          String(new FormData(form).get("firstName") ?? ""),
+          {
+            source: "letter-page",
+          },
+        );
         setPending(false);
         if (!result.ok) {
           setMsg({ ok: false, text: result.error });
@@ -47,7 +51,14 @@ export function SubscribeForm() {
       </div>
       <div className={bits.field}>
         <label htmlFor="letter-em">Work email</label>
-        <input className={bits.input} id="letter-em" name="email" type="email" autoComplete="email" required />
+        <input
+          className={bits.input}
+          id="letter-em"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+        />
       </div>
       <div className={x.full}>
         <label className={bits.agree}>
@@ -58,10 +69,17 @@ export function SubscribeForm() {
         </label>
       </div>
       <div className={x.full}>
-        <button className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`} type="submit" disabled={pending}>
+        <button
+          className={`${bits.btn} ${bits.btnLime} ${bits.btnLg}`}
+          type="submit"
+          disabled={pending}
+        >
           <Roll>Subscribe</Roll>
         </button>
-        <p className={`${bits.formMsg} ${msg ? (msg.ok ? bits.formOk : bits.formErr) : ""}`} role="status">
+        <p
+          className={`${bits.formMsg} ${msg ? (msg.ok ? bits.formOk : bits.formErr) : ""}`}
+          role="status"
+        >
           {msg?.text}
         </p>
       </div>

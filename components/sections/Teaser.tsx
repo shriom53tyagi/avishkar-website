@@ -48,9 +48,7 @@ export function Teaser() {
           {UPDATES.map((u, i) => (
             <Reveal key={u.title} delay={i * 0.07}>
               <div className="flex h-full flex-col rounded-2xl bg-canvas-alt p-6">
-                <h3 className="text-[19px] font-semibold leading-snug text-slate-900">
-                  {u.title}
-                </h3>
+                <h3 className="text-[19px] font-semibold leading-snug text-slate-900">{u.title}</h3>
                 <p className="mt-3 flex-1 text-[14px] leading-relaxed text-slate-500">
                   {u.description}
                 </p>

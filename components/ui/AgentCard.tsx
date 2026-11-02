@@ -20,12 +20,14 @@ export function AgentCard({ agent, className }: { agent: Agent; className?: stri
       className={cn(
         "agent-card card group flex h-full w-full flex-col gap-3 p-5 transition-all duration-300 hover:-translate-y-0.5",
         live ? "hover:border-accent" : "",
-        className
+        className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{agent.name}</h3>
+          <h3 className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
+            {agent.name}
+          </h3>
           <p className="mt-0.5 text-label uppercase text-ink-subtle">{agent.category} agent</p>
         </div>
         {live ? (
@@ -55,7 +57,7 @@ export function AgentCard({ agent, className }: { agent: Agent; className?: stri
           "mt-1 inline-flex items-center gap-1.5 text-small transition-colors",
           live
             ? "font-medium text-accent group-hover:text-accent-hover"
-            : "text-ink-muted group-hover:text-ink"
+            : "text-ink-muted group-hover:text-ink",
         )}
       >
         {live ? "Try the agent" : "See what it does"}

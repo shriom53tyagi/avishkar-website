@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import type { InsightPayload } from "@/lib/schemas/insight";
 
 export type InsightSection = {
@@ -34,7 +35,6 @@ export type Insight = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __avishkarPgPool: Pool | undefined;
 }
 
@@ -55,6 +55,16 @@ function getPool(): Pool | null {
   }
 
   return global.__avishkarPgPool;
+}
+
+// During `next build` the database may be unreachable (CI, fresh checkouts), and
+// every prerendered page goes through the root layout, which lists insights. Fall
+// back to an empty result there so the build passes and ISR fills the data in
+// later. At runtime this must rethrow: a transient error during ISR revalidation
+// then keeps serving the last good cached page instead of replacing it with an
+// empty one.
+function isBuildPhase(): boolean {
+  return process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
 }
 
 type InsightRow = {
@@ -107,7 +117,7 @@ export async function getInsightBySlug(slug: string): Promise<Insight | null> {
 
   const { rows } = await pool.query<InsightRow>(
     `SELECT * FROM insights WHERE slug = $1 AND status = 'PUBLISHED' LIMIT 1`,
-    [slug]
+    [slug],
   );
   return rows[0] ? rowToInsight(rows[0]) : null;
 }
@@ -145,18 +155,30 @@ export async function listPublishedInsights(opts?: {
     query += ` OFFSET $${params.length}`;
   }
 
-  const { rows } = await pool.query<InsightRow>(query, params);
-  return rows.map(rowToInsight);
+  try {
+    const { rows } = await pool.query<InsightRow>(query, params);
+    return rows.map(rowToInsight);
+  } catch (error) {
+    if (!isBuildPhase()) throw error;
+    console.warn("[db] listPublishedInsights failed during build; using an empty list.", error);
+    return [];
+  }
 }
 
 export async function countPublishedInsights(): Promise<number> {
   const pool = getPool();
   if (!pool) return 0;
 
-  const { rows } = await pool.query<{ count: string }>(
-    `SELECT COUNT(*)::text AS count FROM insights WHERE status = 'PUBLISHED'`
-  );
-  return parseInt(rows[0]?.count ?? "0", 10);
+  try {
+    const { rows } = await pool.query<{ count: string }>(
+      `SELECT COUNT(*)::text AS count FROM insights WHERE status = 'PUBLISHED'`,
+    );
+    return parseInt(rows[0]?.count ?? "0", 10);
+  } catch (error) {
+    if (!isBuildPhase()) throw error;
+    console.warn("[db] countPublishedInsights failed during build; using 0.", error);
+    return 0;
+  }
 }
 
 export async function createInsight(payload: InsightPayload): Promise<Insight> {
@@ -186,12 +208,15 @@ export async function createInsight(payload: InsightPayload): Promise<Insight> {
       JSON.stringify(payload.sources),
       payload.bodyHtml,
       payload.contentEngineBundleId ?? null,
-    ]
+    ],
   );
   return rowToInsight(rows[0]);
 }
 
-export async function updateInsight(slug: string, payload: InsightPayload): Promise<Insight | null> {
+export async function updateInsight(
+  slug: string,
+  payload: InsightPayload,
+): Promise<Insight | null> {
   const pool = getPool();
   if (!pool) throw new Error("Database is not configured");
 
@@ -230,7 +255,7 @@ export async function updateInsight(slug: string, payload: InsightPayload): Prom
       JSON.stringify(payload.sources),
       payload.bodyHtml,
       payload.contentEngineBundleId ?? null,
-    ]
+    ],
   );
   return rows[0] ? rowToInsight(rows[0]) : null;
 }

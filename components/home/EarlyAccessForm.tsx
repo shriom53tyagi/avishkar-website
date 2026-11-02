@@ -62,13 +62,12 @@ export function EarlyAccessForm({
   if (done) {
     return (
       <div
-        className={cn(
-          "rounded border border-line bg-surface",
-          compact ? "border-0 p-0" : "p-5"
-        )}
+        className={cn("rounded border border-line bg-surface", compact ? "border-0 p-0" : "p-5")}
         aria-live="polite"
       >
-        <p className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{EARLY_ACCESS.successTitle}</p>
+        <p className="text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
+          {EARLY_ACCESS.successTitle}
+        </p>
         <p className="mt-2 text-small text-ink-muted">{EARLY_ACCESS.successBody}</p>
       </div>
     );
@@ -78,10 +77,7 @@ export function EarlyAccessForm({
     <form
       onSubmit={onSubmit}
       noValidate
-      className={cn(
-        "rounded border-line bg-surface",
-        compact ? "border-t pt-5" : "border p-5"
-      )}
+      className={cn("rounded border-line bg-surface", compact ? "border-t pt-5" : "border p-5")}
     >
       <p className="text-small font-medium text-ink">{EARLY_ACCESS.formLabel}</p>
 
@@ -92,7 +88,7 @@ export function EarlyAccessForm({
         <div
           className={cn(
             "mt-2 flex gap-3",
-            compact ? "flex-col" : "flex-col sm:flex-row sm:items-stretch"
+            compact ? "flex-col" : "flex-col sm:flex-row sm:items-stretch",
           )}
         >
           <input

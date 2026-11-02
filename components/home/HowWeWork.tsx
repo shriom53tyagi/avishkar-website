@@ -16,7 +16,9 @@ export function HowWeWork() {
     <Section id="how-we-work" tone="canvas" full nextId="trust">
       <FadeUp className="max-w-measure">
         <p className="eyebrow mb-4">How we work</p>
-        <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">{HOW_WE_WORK.headline}</h2>
+        <h2 className="text-h2 font-serif font-light tracking-[-0.02em] text-ink">
+          {HOW_WE_WORK.headline}
+        </h2>
         <p className="mt-4 text-lead text-ink-muted">{HOW_WE_WORK.sub}</p>
       </FadeUp>
 
@@ -32,7 +34,9 @@ export function HowWeWork() {
                   {step.timing}
                 </p>
               </div>
-              <h3 className="mt-6 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">{step.title}</h3>
+              <h3 className="mt-6 text-h3 font-serif font-normal tracking-[-0.01em] text-ink">
+                {step.title}
+              </h3>
               <p className="mt-3 text-body text-ink-muted">{step.body}</p>
             </div>
           </StaggerItem>

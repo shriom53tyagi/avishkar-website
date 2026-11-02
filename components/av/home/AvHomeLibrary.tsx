@@ -40,7 +40,12 @@ const CARD_H = 656;
 type Geometry = { step: number; f: number; s: number; R: number };
 
 function layoutFor(w: number): Geometry {
-  const b = w <= 767 ? { step: 12, f: 4.75, s: 0.62 } : w <= 991 ? { step: 15, f: 4.25, s: 0.8 } : { step: 18, f: 3.75, s: Math.min(1, w / 1440) };
+  const b =
+    w <= 767
+      ? { step: 12, f: 4.75, s: 0.62 }
+      : w <= 991
+        ? { step: 15, f: 4.25, s: 0.8 }
+        : { step: 18, f: 3.75, s: Math.min(1, w / 1440) };
   return { ...b, R: CARD_W * b.f };
 }
 
@@ -159,11 +164,17 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
     const mod = (v: number) => ((v % n) + n) % n;
 
     let pos = 0;
-    let tween: { from: number; to: number; t0: number; dur: number; ease: (t: number) => number } | null = null;
+    let tween: {
+      from: number;
+      to: number;
+      t0: number;
+      dur: number;
+      ease: (t: number) => number;
+    } | null = null;
     let drag: { x: number; pos: number; samples: { p: number; t: number }[] } | null = null;
     let active = -1;
     let moved = 0;
-    let g = geometry;
+    const g = geometry;
 
     const tweenTo = (to: number, dur: number, ease: (t: number) => number) => {
       if (reduce) {
@@ -215,8 +226,8 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
       return fn;
     });
 
-    const prevBtn = arc.parentElement?.querySelector<HTMLButtonElement>('[data-arc-prev]');
-    const nextBtn = arc.parentElement?.querySelector<HTMLButtonElement>('[data-arc-next]');
+    const prevBtn = arc.parentElement?.querySelector<HTMLButtonElement>("[data-arc-prev]");
+    const nextBtn = arc.parentElement?.querySelector<HTMLButtonElement>("[data-arc-next]");
     const onPrev = () => step(-1);
     const onNext = () => step(1);
     prevBtn?.addEventListener("click", onPrev);
@@ -266,7 +277,11 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
       if (!drag) {
         if (Math.abs(dx) <= 6) return;
         // Drag confirmed: start capturing from here on.
-        drag = { x: dragStart.x, pos: dragStart.pos, samples: [{ p: dragStart.pos, t: performance.now() }] };
+        drag = {
+          x: dragStart.x,
+          pos: dragStart.pos,
+          samples: [{ p: dragStart.pos, t: performance.now() }],
+        };
         arc.classList.add(styles.isDrag);
         arc.setPointerCapture(dragStart.pointerId);
       }
@@ -338,7 +353,8 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
           sl.style.visibility = Math.abs(d) > 2.6 ? "hidden" : "visible";
           sl.style.zIndex = String(10 - Math.round(Math.abs(d) * 2));
           if (cards[i]) {
-            cards[i].style.transform = r < 1 ? `translateY(${(1 - r) * 60}px) scale(${0.9 + 0.1 * r})` : "";
+            cards[i].style.transform =
+              r < 1 ? `translateY(${(1 - r) * 60}px) scale(${0.9 + 0.1 * r})` : "";
           }
         });
         if (ticks) ticks.style.transform = `rotate(${-pos * g.step}deg)`;
@@ -376,7 +392,6 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
       window.removeEventListener("resize", remeasureArcRect);
       window.removeEventListener("scroll", remeasureArcRect);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geometry]);
 
   const g = geometry;
@@ -426,10 +441,17 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
             <ArcTicks g={g} />
 
             {/* Card 0: Insights */}
-            <div className={styles.arcSlot} ref={(el) => { slotRefs.current[0] = el; }}>
+            <div
+              className={styles.arcSlot}
+              ref={(el) => {
+                slotRefs.current[0] = el;
+              }}
+            >
               <article
                 className={`${styles.lcard} ${styles.lcardDark}`}
-                ref={(el) => { cardRefs.current[0] = el; }}
+                ref={(el) => {
+                  cardRefs.current[0] = el;
+                }}
               >
                 <span className={styles.lcardTag}>
                   <span>From the</span>
@@ -450,17 +472,30 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
                     ))}
                   </div>
                 </div>
-                <Link href={HREFS[0]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[0] = el; }}>
+                <Link
+                  href={HREFS[0]}
+                  className={styles.lcardBtn}
+                  ref={(el) => {
+                    linkRefs.current[0] = el;
+                  }}
+                >
                   <Roll>Read insights</Roll>
                 </Link>
               </article>
             </div>
 
             {/* Card 1: The Avishkar Letter — mock, no real data source */}
-            <div className={styles.arcSlot} ref={(el) => { slotRefs.current[1] = el; }}>
+            <div
+              className={styles.arcSlot}
+              ref={(el) => {
+                slotRefs.current[1] = el;
+              }}
+            >
               <article
                 className={`${styles.lcard} ${styles.lcardPurple}`}
-                ref={(el) => { cardRefs.current[1] = el; }}
+                ref={(el) => {
+                  cardRefs.current[1] = el;
+                }}
               >
                 <span className={styles.lcardTag}>
                   <span>From the</span>
@@ -476,24 +511,39 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
                       <i />
                       The Avishkar Letter
                     </div>
-                    <p className={styles.mailSubj}>This month: the real cost of a five-tool front desk</p>
+                    <p className={styles.mailSubj}>
+                      This month: the real cost of a five-tool front desk
+                    </p>
                     <b style={{ width: "92%" }} />
                     <b style={{ width: "80%" }} />
                     <b style={{ width: "86%" }} />
                     <b style={{ width: "50%" }} />
                   </div>
                 </div>
-                <Link href={HREFS[1]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[1] = el; }}>
+                <Link
+                  href={HREFS[1]}
+                  className={styles.lcardBtn}
+                  ref={(el) => {
+                    linkRefs.current[1] = el;
+                  }}
+                >
                   <Roll>Subscribe</Roll>
                 </Link>
               </article>
             </div>
 
             {/* Card 2: Practice Audits — mock, no real data source */}
-            <div className={styles.arcSlot} ref={(el) => { slotRefs.current[2] = el; }}>
+            <div
+              className={styles.arcSlot}
+              ref={(el) => {
+                slotRefs.current[2] = el;
+              }}
+            >
               <article
                 className={`${styles.lcard} ${styles.lcardLight}`}
-                ref={(el) => { cardRefs.current[2] = el; }}
+                ref={(el) => {
+                  cardRefs.current[2] = el;
+                }}
               >
                 <span className={styles.lcardTag}>
                   <span>From the</span>
@@ -520,17 +570,30 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
                     ))}
                   </div>
                 </div>
-                <Link href={HREFS[2]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[2] = el; }}>
+                <Link
+                  href={HREFS[2]}
+                  className={styles.lcardBtn}
+                  ref={(el) => {
+                    linkRefs.current[2] = el;
+                  }}
+                >
                   <Roll>See an audit</Roll>
                 </Link>
               </article>
             </div>
 
             {/* Card 3: Agents — counts come from lib/agents */}
-            <div className={styles.arcSlot} ref={(el) => { slotRefs.current[3] = el; }}>
+            <div
+              className={styles.arcSlot}
+              ref={(el) => {
+                slotRefs.current[3] = el;
+              }}
+            >
               <article
                 className={`${styles.lcard} ${styles.lcardLime}`}
-                ref={(el) => { cardRefs.current[3] = el; }}
+                ref={(el) => {
+                  cardRefs.current[3] = el;
+                }}
               >
                 <span className={styles.lcardTag}>
                   <span>From the</span>
@@ -553,17 +616,30 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
                     </div>
                   </div>
                 </div>
-                <Link href={HREFS[3]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[3] = el; }}>
+                <Link
+                  href={HREFS[3]}
+                  className={styles.lcardBtn}
+                  ref={(el) => {
+                    linkRefs.current[3] = el;
+                  }}
+                >
                   <Roll>See the agents</Roll>
                 </Link>
               </article>
             </div>
 
             {/* Card 4: Benchmarks — mock, no real data source */}
-            <div className={styles.arcSlot} ref={(el) => { slotRefs.current[4] = el; }}>
+            <div
+              className={styles.arcSlot}
+              ref={(el) => {
+                slotRefs.current[4] = el;
+              }}
+            >
               <article
                 className={`${styles.lcard} ${styles.lcardDark}`}
-                ref={(el) => { cardRefs.current[4] = el; }}
+                ref={(el) => {
+                  cardRefs.current[4] = el;
+                }}
               >
                 <span className={styles.lcardTag}>
                   <span>From the</span>
@@ -592,7 +668,13 @@ export function AvHomeLibrary(_props: { latestInsights: LatestInsight[] }) {
                     </div>
                   </div>
                 </div>
-                <Link href={HREFS[4]} className={styles.lcardBtn} ref={(el) => { linkRefs.current[4] = el; }}>
+                <Link
+                  href={HREFS[4]}
+                  className={styles.lcardBtn}
+                  ref={(el) => {
+                    linkRefs.current[4] = el;
+                  }}
+                >
                   <Roll>Compare yours</Roll>
                 </Link>
               </article>

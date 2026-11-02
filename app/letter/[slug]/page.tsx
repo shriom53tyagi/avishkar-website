@@ -29,19 +29,35 @@ function toArticle(issue: Issue): Article {
   };
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const issue = getIssue((await params).slug);
   if (!issue) return {};
   return {
     title: issue.title,
     description: issue.teaser,
     alternates: { canonical: `/letter/${issue.slug}` },
-    openGraph: { title: `${issue.title} · Avishkar`, description: issue.teaser, url: `${SITE_URL}/letter/${issue.slug}`, type: "article" },
-      };
+    openGraph: {
+      title: `${issue.title} · Avishkar`,
+      description: issue.teaser,
+      url: `${SITE_URL}/letter/${issue.slug}`,
+      type: "article",
+    },
+  };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const issue = getIssue((await params).slug);
   if (!issue) notFound();
-  return <ArticlePage article={toArticle(issue)} related={[]} basePath="/letter" backLabel="All issues" />;
+  return (
+    <ArticlePage
+      article={toArticle(issue)}
+      related={[]}
+      basePath="/letter"
+      backLabel="All issues"
+    />
+  );
 }

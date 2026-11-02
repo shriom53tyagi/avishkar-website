@@ -9,8 +9,7 @@ const VARIANTS: Record<Variant, string> = {
     "bg-accent text-white shadow-card hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-card-hover",
   secondary:
     "border border-line-strong bg-surface text-ink shadow-card hover:-translate-y-0.5 hover:border-ink-subtle hover:shadow-card-hover",
-  quiet:
-    "text-accent underline-offset-4 hover:underline",
+  quiet: "text-accent underline-offset-4 hover:underline",
 };
 
 const SIZES: Record<Variant, string> = {
@@ -42,7 +41,7 @@ export function Button({
     "inline-flex items-center gap-2 text-small font-medium transition-all duration-300",
     SIZES[variant],
     VARIANTS[variant],
-    className
+    className,
   );
 
   const content = (

@@ -34,7 +34,7 @@ export function FloatingCards({ items }: { items: string[] }) {
       const t = total > 1 ? slot / (total - 1) : 0.5;
       const jitter = ((i * 37) % 100) / 100 - 0.5;
       const x = zone[0] + t * (zone[1] - zone[0]);
-      const y = zone[2] + ((jitter + 0.5) * (zone[3] - zone[2]));
+      const y = zone[2] + (jitter + 0.5) * (zone[3] - zone[2]);
       const r = ((i * 41) % 16) - 8;
       return { item, x, y, r, delay: (i % 6) * 0.9 };
     });
@@ -50,7 +50,9 @@ export function FloatingCards({ items }: { items: string[] }) {
             left: `${x}%`,
             top: `${y}%`,
             transform: `translate(-50%, -50%) rotate(${r}deg)`,
-            animation: reduce ? "none" : `float-in 1.4s ease forwards, drift 9s ease-in-out ${delay}s infinite`,
+            animation: reduce
+              ? "none"
+              : `float-in 1.4s ease forwards, drift 9s ease-in-out ${delay}s infinite`,
             animationDelay: `${delay}s, ${delay + 1.4}s`,
             opacity: reduce ? 0.55 : undefined,
           }}
