@@ -3,8 +3,8 @@ name: CI
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
+  # deploy.yml calls this workflow so nothing is deployed unless it passes.
+  workflow_call:
 
 permissions:
   contents: read
@@ -18,30 +18,26 @@ env:
   NEXT_TELEMETRY_DISABLED: "1"
 
 jobs:
-  lint:
-    name: lint
+  # Required status check name for branch protection: "ci".
+  ci:
+    name: ci
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+    env:
+      # Placeholders only: CI never needs production secrets (fork PRs get none).
+      # The database is unreachable on purpose; the build tolerates that.
+      DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+      NEXT_PUBLIC_CALENDLY_URL: https://calendly.com/example
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run lint
-
-  typecheck:
-    name: typecheck
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
       # next-env.d.ts is gitignored, so a clean checkout does not have it.
       # Without it, tsc cannot resolve image and CSS module imports.
       - name: Create next-env.d.ts
@@ -50,53 +46,34 @@ jobs:
             '/// <reference types="next" />' \
             '/// <reference types="next/image-types/global" />' > next-env.d.ts
       - run: npm run typecheck
-
-  format-check:
-    name: format-check
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
       - run: npm run format:check
-
-  build:
-    name: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      # Placeholder values so the build never touches real services.
-      # NOTE: this job only passes once the root layout no longer queries Postgres
-      # at build time (Phase 2). Do not make it a required check before then.
-      DATABASE_URL: postgres://ci:ci@localhost:5432/ci
-      NEXT_PUBLIC_CALENDLY_URL: https://calendly.com/example
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: npm
+      # The repo has no test script today; this runs it as soon as one is added.
+      - name: Test
+        run: |
+          if node -e 'process.exit(require("./package.json").scripts?.test ? 0 : 1)'; then
+            npm test
+          else
+            echo "No test script in package.json; skipping."
+          fi
       - uses: actions/cache@v4
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx', '!node_modules/**', '!.next/**') }}
           restore-keys: |
             nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
-      - run: npm ci
       - run: npm run build
 
   # Informational only: does not block merging. Do not add it to the required checks.
   audit:
     name: audit
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     continue-on-error: true
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc

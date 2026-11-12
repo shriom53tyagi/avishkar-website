@@ -1,2 +1,8 @@
 # Every change needs review from the project lead.
 * @AyushPatiTripathi
+
+# Called out explicitly so deploy and CI changes always need the owner,
+# even if the catch-all above is ever narrowed.
+/.github/ @AyushPatiTripathi
+/scripts/ @AyushPatiTripathi
+/ecosystem.config.cjs @AyushPatiTripathi
