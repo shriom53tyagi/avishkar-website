@@ -1,26 +1,198 @@
-name: Deploy to EC2
+name: Deploy
+
+# Every push to main (that is, every merged pull request) goes to production:
+#   preflight -> ci -> build (release tarball) -> deploy (upload + activate).
+# The server never pulls from git, never builds, and never installs packages.
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  HUSKY: "0"
+  NEXT_TELEMETRY_DISABLED: "1"
 
 jobs:
-  deploy:
+  # Fails fast, and readably, if the GitHub environment is not fully set up.
+  # Note: if the "production" environment gets required reviewers, every job
+  # that uses it (preflight, build, deploy) waits for an approval.
+  preflight:
+    name: preflight
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Check required secrets and variables
+        env:
+          # secrets
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          # variables
+          NEXT_PUBLIC_CALENDLY_URL: ${{ vars.NEXT_PUBLIC_CALENDLY_URL }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          DEPLOY_ENV_FILE: ${{ vars.DEPLOY_ENV_FILE }}
+          APP_PORT: ${{ vars.APP_PORT }}
+          DEPLOY_SSH_PORT: ${{ vars.DEPLOY_SSH_PORT }}
+        run: |
+          missing=()
+          for name in DATABASE_URL DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS \
+                      NEXT_PUBLIC_CALENDLY_URL DEPLOY_PATH DEPLOY_ENV_FILE APP_PORT; do
+            [ -n "${!name}" ] || missing+=("$name")
+          done
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error title=Missing configuration::Not set in the 'production' environment: ${missing[*]}"
+            echo "Create them under Settings > Environments > production."
+            echo "Secrets: DATABASE_URL DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS"
+            echo "Variables: NEXT_PUBLIC_CALENDLY_URL DEPLOY_PATH DEPLOY_ENV_FILE APP_PORT (optional: DEPLOY_SSH_PORT)"
+            exit 1
+          fi
+          bad=()
+          [[ "$DEPLOY_PATH" =~ ^/[A-Za-z0-9._/-]+$ ]] || bad+=("DEPLOY_PATH must be an absolute path without spaces")
+          [[ "$DEPLOY_ENV_FILE" =~ ^/[A-Za-z0-9._/-]+$ ]] || bad+=("DEPLOY_ENV_FILE must be an absolute path without spaces")
+          [[ "$APP_PORT" =~ ^[0-9]+$ ]] || bad+=("APP_PORT must be a number")
+          [[ -z "$DEPLOY_SSH_PORT" || "$DEPLOY_SSH_PORT" =~ ^[0-9]+$ ]] || bad+=("DEPLOY_SSH_PORT must be a number")
+          if [ "${#bad[@]}" -gt 0 ]; then
+            for b in "${bad[@]}"; do echo "::error title=Invalid configuration::$b"; done
+            exit 1
+          fi
+          echo "All required secrets and variables are set."
+
+  ci:
+    name: ci
+    needs: preflight
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  build:
+    name: build
+    needs: [preflight, ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd ~/avishkar-website
-            git remote set-url origin https://${{ secrets.DEPLOY_PAT }}@github.com/shriom53tyagi/avishkar-website.git
-            git pull origin main
-            npm ci
-            npm run build
-            pm2 restart avishkar
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      # The build prerenders pages that read Insights from the database. If the
+      # database cannot be reached the build still succeeds but bakes in EMPTY
+      # Insights (lib/db.ts), so check first and stop instead.
+      - name: Check the database is reachable from this runner
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node -e '
+            const { Client } = require("pg");
+            const c = new Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 15000 });
+            c.connect()
+              .then(() => c.query("select 1"))
+              .then(() => c.end())
+              .then(() => console.log("Database reachable."))
+              .catch((e) => {
+                console.error("::error title=Database unreachable::The runner cannot connect to DATABASE_URL (" + (e.code || e.name) + "). Building now would bake empty Insights pages into the release. Allow GitHub-hosted runners to reach the database, or fix the URL.");
+                process.exit(1);
+              });'
+
+      - name: Build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_CALENDLY_URL: ${{ vars.NEXT_PUBLIC_CALENDLY_URL }}
+        run: npm run build
+
+      - name: Assemble the release
+        run: |
+          set -euo pipefail
+          stage="$RUNNER_TEMP/release"
+          rm -rf "$stage"
+          mkdir -p "$stage"
+          cp -a .next/standalone/. "$stage/"
+          mkdir -p "$stage/.next"
+          cp -a .next/static "$stage/.next/static"
+          cp -a public "$stage/public"
+          cp ecosystem.config.cjs "$stage/ecosystem.config.cjs"
+          printf '%s\n' "$GITHUB_SHA" > "$stage/REVISION"
+          test -f "$stage/server.js"
+          echo "stage=$stage" >> "$GITHUB_ENV"
+          tar -czf "release-${GITHUB_SHA}.tar.gz" -C "$stage" .
+          ls -lh "release-${GITHUB_SHA}.tar.gz"
+
+      # The release must not contain the production database URL.
+      - name: Check the release for leaked secrets
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if grep -rqsF -- "$DATABASE_URL" "$stage"; then
+            echo "::error title=Secret in artifact::The release contains the DATABASE_URL value. Not publishing it."
+            exit 1
+          fi
+          echo "No secret values found in the release."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}
+          path: release-${{ github.sha }}.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-${{ github.sha }}
+      - name: Upload and activate the release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          DEPLOY_ENV_FILE: ${{ vars.DEPLOY_ENV_FILE }}
+          APP_PORT: ${{ vars.APP_PORT }}
+          DEPLOY_SSH_PORT: ${{ vars.DEPLOY_SSH_PORT }}
+        run: |
+          set -euo pipefail
+          ssh_port="${DEPLOY_SSH_PORT:-22}"
+          node_major="$(tr -dc '0-9.' < .nvmrc | cut -d. -f1)"
+          tarball="release-${GITHUB_SHA}.tar.gz"
+          test -s "$tarball"
+
+          umask 077
+          mkdir -p "$HOME/.ssh"
+          key="$HOME/.ssh/deploy_key"
+          trap 'rm -f "$key"' EXIT
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$key"
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+
+          # Host key is pinned from the DEPLOY_KNOWN_HOSTS secret; there is no
+          # ssh-keyscan here, and an unknown or changed key aborts the deploy.
+          opts=(-i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=20
+                -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          target="$DEPLOY_USER@$DEPLOY_HOST"
+
+          ssh "${opts[@]}" -p "$ssh_port" "$target" "mkdir -p '$DEPLOY_PATH/incoming'"
+          scp "${opts[@]}" -P "$ssh_port" "$tarball" scripts/remote-deploy.sh "$target:$DEPLOY_PATH/incoming/"
+          ssh "${opts[@]}" -p "$ssh_port" "$target" \
+            "DEPLOY_PATH='$DEPLOY_PATH' ENV_FILE='$DEPLOY_ENV_FILE' APP_PORT='$APP_PORT' RELEASE_SHA='$GITHUB_SHA' REQUIRED_NODE_MAJOR='$node_major' bash '$DEPLOY_PATH/incoming/remote-deploy.sh'"

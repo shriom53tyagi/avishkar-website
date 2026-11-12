@@ -76,8 +76,20 @@ revalidates on publish, update and delete. See `db/test-guide.md` for curl examp
 
 ## Deployment
 
-The app deploys to a long-running Node.js server (not Vercel) with `output: "standalone"` in
-`next.config.ts`: build with `npm run build` and run `npm start`.
+Merging to `main` deploys to production automatically (`.github/workflows/deploy.yml`):
+
+1. CI runs lint, type check, format check and the build.
+2. A release is built in GitHub Actions with `output: "standalone"` and packed as
+   `release-<sha>.tar.gz`. The production database URL and `NEXT_PUBLIC_*` values come from the
+   GitHub `production` environment.
+3. The tarball is copied to the server and `scripts/remote-deploy.sh` unpacks it into
+   `releases/<sha>`, repoints the `current` symlink and restarts the single PM2 process
+   `avishkar` (`ecosystem.config.cjs`). If the health check fails it rolls back to the previous
+   release.
+
+The server never pulls from git, builds, or installs packages. Runtime variables stay in the
+server's env file and are not in the repo. PM2 must stay at one instance in fork mode, because
+the ISR cache is per process.
 
 ## Contributing
 
