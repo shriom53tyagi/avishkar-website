@@ -48,6 +48,8 @@ export async function POST(request: Request) {
   await createInsight(payload);
 
   revalidatePath("/insights");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/insights/feed.xml");
   revalidatePath(`/insights/${payload.slug}`);
 
   return Response.json({

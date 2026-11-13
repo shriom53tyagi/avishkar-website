@@ -69,6 +69,8 @@ export async function PUT(request: Request, { params }: Params) {
   }
 
   revalidatePath("/insights");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/insights/feed.xml");
   revalidatePath(`/insights/${slug}`);
 
   return Response.json({
@@ -90,6 +92,8 @@ export async function DELETE(request: Request, { params }: Params) {
   }
 
   revalidatePath("/insights");
+  revalidatePath("/sitemap.xml");
+  revalidatePath("/insights/feed.xml");
   revalidatePath(`/insights/${slug}`);
 
   return Response.json({ success: true });

@@ -1,56 +1,71 @@
 import type { MetadataRoute } from "next";
 import { AGENTS } from "@/lib/agents";
 import { AUDITS } from "@/lib/audits-data";
+import { listPublishedInsights } from "@/lib/db";
 import { SITE_URL } from "@/lib/site";
 
-const INSIGHTS_SLUGS = ["the-practice-operating-system-nobody-sold-you"];
+// Insights come from the database, so refresh the sitemap in the background.
+// Publishing or editing a post through /api/insights also revalidates it.
+export const revalidate = 300;
 
 /**
- * Generates /sitemap.xml. Agent and resource pages are derived from their
- * content files, so publishing a new agent needs no change here.
+ * Last real content change of the static pages. These are fixed dates, not
+ * "now": a lastmod that changes on every build tells crawlers to ignore it.
+ * Bump the date when a page's content changes.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+const STATIC_LAST_MODIFIED = new Date("2026-11-13");
 
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/`, lastModified, changeFrequency: "weekly", priority: 1 },
-    { url: `${SITE_URL}/agents`, lastModified, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${SITE_URL}/how-we-work`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/about`, lastModified, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/contact`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE_URL}/security`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/insights`, lastModified, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${SITE_URL}/letter`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/audits`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/benchmarks`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/integrations`, lastModified, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/careers`, lastModified, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${SITE_URL}/privacy`, lastModified, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/terms`, lastModified, changeFrequency: "yearly", priority: 0.3 },
-  ];
+const STATIC_PAGES: { path: string; priority: number }[] = [
+  { path: "/", priority: 1 },
+  { path: "/agents", priority: 0.9 },
+  { path: "/how-we-work", priority: 0.8 },
+  { path: "/about", priority: 0.7 },
+  { path: "/contact", priority: 0.8 },
+  { path: "/security", priority: 0.6 },
+  { path: "/insights", priority: 0.6 },
+  { path: "/letter", priority: 0.6 },
+  { path: "/audits", priority: 0.6 },
+  { path: "/benchmarks", priority: 0.6 },
+  { path: "/integrations", priority: 0.6 },
+  { path: "/careers", priority: 0.5 },
+  { path: "/privacy", priority: 0.3 },
+  { path: "/terms", priority: 0.3 },
+];
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages: MetadataRoute.Sitemap = STATIC_PAGES.map(({ path, priority }) => ({
+    url: path === "/" ? `${SITE_URL}/` : `${SITE_URL}${path}`,
+    lastModified: STATIC_LAST_MODIFIED,
+    priority,
+  }));
 
   const agentPages: MetadataRoute.Sitemap = AGENTS.map((agent) => ({
     url: `${SITE_URL}/agents/${agent.slug}`,
-    lastModified,
-    changeFrequency: "monthly",
+    lastModified: STATIC_LAST_MODIFIED,
     priority: agent.status === "live" ? 0.8 : 0.6,
-  }));
-
-  const insightPages: MetadataRoute.Sitemap = INSIGHTS_SLUGS.map((slug) => ({
-    url: `${SITE_URL}/insights/${slug}`,
-    lastModified,
-    changeFrequency: "monthly",
-    priority: 0.5,
   }));
 
   // Sample pages are noindex, so they stay out of the sitemap.
   const auditPages: MetadataRoute.Sitemap = AUDITS.filter((a) => !a.sample).map((a) => ({
     url: `${SITE_URL}/audits/${a.slug}`,
-    lastModified,
-    changeFrequency: "monthly",
+    lastModified: STATIC_LAST_MODIFIED,
     priority: 0.5,
   }));
 
+  // Every published Insights post. If the database cannot be reached, still
+  // serve the static routes rather than failing the sitemap.
+  let insightPages: MetadataRoute.Sitemap = [];
+  try {
+    const insights = await listPublishedInsights({});
+    insightPages = insights.map((insight) => ({
+      url: `${SITE_URL}/insights/${insight.slug}`,
+      lastModified: insight.updatedAt,
+      priority: 0.5,
+    }));
+  } catch (error) {
+    console.warn("[sitemap] Could not load Insights; listing static routes only.", error);
+  }
+
   // TODO: add real /letter/[slug] issues here once ISSUES holds non-sample data.
-  return [...staticPages, ...agentPages, ...insightPages, ...auditPages];
+  return [...staticPages, ...agentPages, ...auditPages, ...insightPages];
 }
