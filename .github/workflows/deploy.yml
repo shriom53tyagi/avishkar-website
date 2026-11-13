@@ -109,6 +109,8 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_CALENDLY_URL: ${{ vars.NEXT_PUBLIC_CALENDLY_URL }}
+          # Optional: GA4 is added only when this variable is set.
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
         run: npm run build
 
       - name: Assemble the release

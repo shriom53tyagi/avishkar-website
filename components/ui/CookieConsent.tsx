@@ -5,6 +5,9 @@ import Link from "next/link";
 
 const STORAGE_KEY = "cookie_consent";
 
+/** Fired on window when the visitor accepts or declines, so scripts can react. */
+export const CONSENT_EVENT = "avishkar:consent-change";
+
 export function hasConsent(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(STORAGE_KEY) === "accepted";
@@ -20,6 +23,7 @@ export function CookieConsent() {
 
   function accept() {
     localStorage.setItem(STORAGE_KEY, "accepted");
+    window.dispatchEvent(new Event(CONSENT_EVENT));
     setVisible(false);
   }
 
