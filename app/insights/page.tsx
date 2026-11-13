@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { InsightsPage, type FeaturedPost, type Post } from "@/components/av/InsightsPage";
 import { listPublishedInsights, type Insight } from "@/lib/db";
 
@@ -7,12 +8,13 @@ import { listPublishedInsights, type Insight } from "@/lib/db";
 // just served from cache between revalidations.
 export const revalidate = 300;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Insights",
   description:
-    "Field notes on aesthetics, medspa operations, wellness, and the technology underneath — written by the people building it, for the people running the practice.",
-  alternates: { canonical: "/insights" },
-};
+    "Field notes from Avishkar, a technology partner for medspas, on aesthetics, medspa operations, wellness and the technology underneath the practice.",
+  path: "/insights",
+  alternateTypes: { "application/rss+xml": "/insights/feed.xml" },
+});
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });

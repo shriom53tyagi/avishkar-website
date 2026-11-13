@@ -107,7 +107,8 @@ function rowToInsight(row: InsightRow): Insight {
     contentEngineBundleId: row.content_engine_bundle_id,
     status: row.status,
     createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    // updated_at has no NOT NULL constraint; never hand back null.
+    updatedAt: row.updated_at ?? row.byline_published_at,
   };
 }
 

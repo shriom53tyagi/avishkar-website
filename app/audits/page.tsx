@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { AuditsPage } from "@/components/av/AuditsPage";
-import { SITE_URL } from "@/lib/site";
 
-const description =
-  "Teardowns of practices' stacks, graded on booking, follow-ups, phones, reviews and data flow, with exactly what we'd fix.";
-
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Practice Audits",
-  description,
-  alternates: { canonical: "/audits" },
-  openGraph: {
-    title: "Practice Audits · Avishkar",
-    description,
-    url: `${SITE_URL}/audits`,
-    type: "website",
-  },
-};
+  description:
+    "Practice audits from Avishkar, a technology partner for medspas: how booking, follow-ups, phones, reviews and data flow hold up, and what we would fix.",
+  path: "/audits",
+});
 
 export default function Page() {
   return <AuditsPage />;

@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticlePage, type Article, type RelatedPost } from "@/components/av/ArticlePage";
 import { getInsightBySlug, listPublishedInsights, type Insight } from "@/lib/db";
-import { SITE_URL } from "@/lib/site";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { blogPostingSchema, breadcrumbSchema } from "@/lib/schema";
+import { buildMetadata, clip, TITLE_SUFFIX } from "@/lib/seo";
 
 // Cached and revalidated in the background every 5 minutes instead of
 // querying the DB on every request — content is the same either way,
@@ -54,18 +56,21 @@ export async function generateMetadata({
   const insight = await getInsightBySlug(slug);
   if (!insight) return {};
 
-  return {
-    title: insight.title,
-    description: insight.dek,
-    alternates: { canonical: `/insights/${slug}` },
-    openGraph: {
-      title: insight.title,
-      description: insight.dek,
-      url: `${SITE_URL}/insights/${slug}`,
-      type: "article",
-      publishedTime: insight.bylinePublishedAt.toISOString(),
-    },
-  };
+  const title =
+    insight.title.length + TITLE_SUFFIX.length <= 60 ? insight.title : { absolute: insight.title };
+
+  return buildMetadata({
+    title,
+    description: clip(insight.dek),
+    path: `/insights/${slug}`,
+    type: "article",
+    publishedTime: insight.bylinePublishedAt.toISOString(),
+    modifiedTime: insight.updatedAt.toISOString(),
+    authors: [insight.bylineName],
+    image: insight.heroImageUrl
+      ? { url: insight.heroImageUrl, alt: insight.heroImageAlt || insight.title }
+      : undefined,
+  });
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -75,5 +80,27 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const relatedInsights = await listPublishedInsights({ limit: 3, excludeSlug: slug });
 
-  return <ArticlePage article={toArticle(insight)} related={relatedInsights.map(toRelated)} />;
+  return (
+    <>
+      <JsonLd
+        data={blogPostingSchema({
+          title: insight.title,
+          description: clip(insight.dek),
+          path: `/insights/${slug}`,
+          datePublished: insight.bylinePublishedAt.toISOString(),
+          dateModified: insight.updatedAt.toISOString(),
+          authorName: insight.bylineName,
+          imageUrl: insight.heroImageUrl || null,
+        })}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Insights", path: "/insights" },
+          { name: insight.title, path: `/insights/${slug}` },
+        ])}
+      />
+      <ArticlePage article={toArticle(insight)} related={relatedInsights.map(toRelated)} />
+    </>
+  );
 }

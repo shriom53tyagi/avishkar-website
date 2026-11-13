@@ -253,6 +253,7 @@ export const ABOUT = {
 
 export const SOCIAL_LINKS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/avishkarai/" },
+  { label: "Instagram", href: "https://www.instagram.com/avishkar.app/" },
 ] as const;
 
 export const OPEN_ROLES = [

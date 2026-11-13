@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { BenchmarksPage } from "@/components/av/BenchmarksPage";
-import { SITE_URL } from "@/lib/site";
 
-const description =
-  "Compare your no-show rate, rebooking rate and lead response time against industry averages.";
-
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Benchmarks",
-  description,
-  alternates: { canonical: "/benchmarks" },
-  openGraph: {
-    title: "Benchmarks · Avishkar",
-    description,
-    url: `${SITE_URL}/benchmarks`,
-    type: "website",
-  },
-};
+  description:
+    "Compare your no-show rate, rebooking rate and lead response time with industry averages, from Avishkar, a technology partner for medspas.",
+  path: "/benchmarks",
+});
 
 export default function Page() {
   return <BenchmarksPage />;

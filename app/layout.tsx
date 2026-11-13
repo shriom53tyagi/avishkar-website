@@ -4,7 +4,9 @@ import "./globals.css";
 import { AvNavbar } from "@/components/av/AvNavbar";
 import { AvPageShell } from "@/components/av/AvPageShell";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { organizationSchema } from "@/lib/schema";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
+import { GoogleAnalytics } from "@/components/ui/GoogleAnalytics";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME, TITLE_TEMPLATE } from "@/lib/seo";
 import { CookieConsentLoader } from "@/components/ui/CookieConsentLoader";
 import { SITE_URL } from "@/lib/site";
 import { listPublishedInsights } from "@/lib/db";
@@ -140,36 +142,35 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Avishkar — Technology built around how your practice works",
-    template: "%s · Avishkar",
+    default: DEFAULT_TITLE,
+    template: TITLE_TEMPLATE,
   },
-  description:
-    "Avishkar connects the systems your practice already uses and builds the technology around them — integrations, automation, internal tools, reporting and AI agents.",
+  description: DEFAULT_DESCRIPTION,
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo.webp",
+    apple: "/logo.webp",
   },
   keywords: [
-    "practice technology",
-    "custom healthcare software",
-    "practice management integrations",
+    "medspa technology partner",
+    "medspa software integrations",
     "practice operations automation",
     "aesthetic practice software",
     "AI agents for medspas",
   ],
+  // Fallback only. Every route builds its own openGraph/twitter through
+  // buildMetadata() in lib/seo.ts, because Next replaces (not merges) these
+  // per route. No `url` here: a root-level og:url would be inherited by
+  // routes that forget to set their own and point them at the homepage.
   openGraph: {
-    title: "Avishkar — Technology built around how your practice works",
-    description:
-      "Integrations, automation, internal tools, AI agents and custom software for medspas, aesthetic practices, clinics and healthcare teams.",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
     type: "website",
-    url: SITE_URL,
-    siteName: "Avishkar",
+    siteName: SITE_NAME,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Avishkar — Technology built around how your practice works",
-    description:
-      "Integrations, automation, internal tools, AI agents and custom software for modern practices.",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
   },
   verification: {
     other: {
@@ -199,7 +200,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
+        {/* Dev only: in production this ran a whole-document MutationObserver on every page. */}
+        {process.env.NODE_ENV !== "production" && (
+          <script dangerouslySetInnerHTML={{ __html: SUPPRESS_HYDRATION_NOISE }} />
+        )}
         {/* Without JS the reveal animation never runs, so force its end state. */}
         <noscript>
           <style>{".reveal{opacity:1 !important;transform:none !important}"}</style>
@@ -207,6 +211,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className="min-h-screen font-sans antialiased" suppressHydrationWarning>
         <JsonLd data={organizationSchema} />
+        <JsonLd data={websiteSchema} />
         {/*
           `overflow-x: clip` (not `hidden`) — `hidden` on one axis forces
           the other axis to `auto`, which turns this div into a new
@@ -221,6 +226,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <AvPageShell>{children}</AvPageShell>
         </div>
         <CookieConsentLoader />
+        <GoogleAnalytics />
       </body>
     </html>
   );

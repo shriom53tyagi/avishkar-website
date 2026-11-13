@@ -14,7 +14,7 @@ export function Logo({ className, priority = false }: { className?: string; prio
       aria-label="Avishkar — home"
     >
       <Image
-        src="/logo.png"
+        src="/logo.webp"
         alt=""
         width={96}
         height={52}

@@ -16,7 +16,7 @@ import { Roll } from "../Roll";
  * TODO: none — all hero copy/timing is real, ported as-is.
  *
  * The headline's mark (between "make" and "your") uses the real Avishkar
- * logo (public/logo.png) instead of the placeholder AvMark SVG — the only
+ * logo (public/logo.webp) instead of the placeholder AvMark SVG — the only
  * one of AvMark's 4 call sites swapped so far; the node pill, library
  * cards and CTA sidebar still use the animated placeholder. Because a
  * raster image can't do the SVG's stroke-drawing entrance, it gets a
@@ -393,7 +393,14 @@ export function AvHomeHero() {
           ))}
         </span>
         <span>
-          <Image src="/logo.png" alt="" width={96} height={52} className={styles.titleLogo} />
+          <Image
+            src="/logo.webp"
+            alt=""
+            width={96}
+            height={52}
+            priority
+            className={styles.titleLogo}
+          />
         </span>
         <span className={styles.side}>
           {TITLE_RIGHT.map((w, i) => (

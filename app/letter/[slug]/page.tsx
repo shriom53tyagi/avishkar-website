@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticlePage, type Article } from "@/components/av/ArticlePage";
 import { ISSUES, getIssue, type Issue } from "@/lib/letter-data";
-import { SITE_URL } from "@/lib/site";
+import { JsonLd } from "@/components/ui/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
+import { buildMetadata, clip } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -36,28 +38,32 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const issue = getIssue((await params).slug);
   if (!issue) return {};
-  return {
+  return buildMetadata({
     title: issue.title,
-    description: issue.teaser,
-    alternates: { canonical: `/letter/${issue.slug}` },
-    openGraph: {
-      title: `${issue.title} · Avishkar`,
-      description: issue.teaser,
-      url: `${SITE_URL}/letter/${issue.slug}`,
-      type: "article",
-    },
-  };
+    description: clip(issue.teaser),
+    path: `/letter/${issue.slug}`,
+    type: "article",
+  });
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const issue = getIssue((await params).slug);
   if (!issue) notFound();
   return (
-    <ArticlePage
-      article={toArticle(issue)}
-      related={[]}
-      basePath="/letter"
-      backLabel="All issues"
-    />
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "The Avishkar Letter", path: "/letter" },
+          { name: issue.title, path: `/letter/${issue.slug}` },
+        ])}
+      />
+      <ArticlePage
+        article={toArticle(issue)}
+        related={[]}
+        basePath="/letter"
+        backLabel="All issues"
+      />
+    </>
   );
 }

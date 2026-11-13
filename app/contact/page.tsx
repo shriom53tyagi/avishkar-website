@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { ContactPage } from "@/components/av/ContactPage";
 
-export const metadata: Metadata = {
-  title: "Talk to Avishkar",
+export const metadata: Metadata = buildMetadata({
+  title: "Book a Conversation",
   description:
-    "Book a 30-minute conversation with Avishkar. Tell us the workflow your practice is trying to improve and we'll work out where technology could help.",
-  alternates: { canonical: "/contact" },
-};
+    "Book a 30-minute conversation with Avishkar, a technology partner for medspas. Tell us which workflow to improve and we will find where technology helps.",
+  path: "/contact",
+});
 
 export default async function Page({
   searchParams,

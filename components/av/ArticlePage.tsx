@@ -285,7 +285,7 @@ export function ArticlePage({
         <div className={styles.cover} ref={coverImgWrapRef}>
           <Image
             src={article.heroImageUrl}
-            alt={article.heroImageAlt}
+            alt={article.heroImageAlt || article.title}
             fill
             sizes="(max-width: 900px) 100vw, 1176px"
             priority

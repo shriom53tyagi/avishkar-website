@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 import { IntegrationsPage } from "@/components/av/IntegrationsPage";
-import { SITE_URL } from "@/lib/site";
 
-const description =
-  "Avishkar connects the systems your practice already pays for: EMRs, CRMs, booking, phones, payments and marketing.";
-
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Integrations",
-  description,
-  alternates: { canonical: "/integrations" },
-  openGraph: {
-    title: "Integrations · Avishkar",
-    description,
-    url: `${SITE_URL}/integrations`,
-    type: "website",
-  },
-};
+  description:
+    "Avishkar, a technology partner for medspas, connects the systems your practice already pays for: EMRs, CRMs, booking, phones, payments and marketing.",
+  path: "/integrations",
+});
 
 export default function Page() {
   return <IntegrationsPage />;
