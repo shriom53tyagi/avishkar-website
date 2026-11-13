@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/resources", destination: "/insights", permanent: true },
+      // Legacy "Avishkar AI" healthcare pages, removed.
+      { source: "/results", destination: "/insights", permanent: true },
+      { source: "/what-we-do", destination: "/how-we-work", permanent: true },
+      // The logo file was a WebP misnamed .png; it now has the right extension.
+      { source: "/logo.png", destination: "/logo.webp", permanent: true },
       {
         source: "/resources/:slug",
         destination: "/insights/the-practice-operating-system-nobody-sold-you",

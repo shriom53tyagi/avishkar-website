@@ -49,7 +49,7 @@ export function AvSiteFooter() {
     <footer className={`${styles.foot} ${isDone ? styles.isDone : ""}`} data-foot ref={footRef}>
       <div className={styles.top}>
         <div>
-          <h4>Subscribe to The Avishkar Letter</h4>
+          <h2>Subscribe to The Avishkar Letter</h2>
           <form
             className={styles.nl}
             onSubmit={async (e) => {
@@ -107,11 +107,8 @@ export function AvSiteFooter() {
         <div>
           <div className={styles.cols}>
             <div>
-              <h5>Product</h5>
+              <h3>Product</h3>
               <ul>
-                <li>
-                  <Link href="/what-we-do">What we do</Link>
-                </li>
                 <li>
                   <Link href="/agents">Agents</Link>
                 </li>
@@ -127,10 +124,10 @@ export function AvSiteFooter() {
               </ul>
             </div>
             <div>
-              <h5>Insights</h5>
+              <h3>Insights</h3>
               <ul>
                 <li>
-                  <Link href="/insights">Articles</Link>
+                  <Link href="/insights">Insights</Link>
                 </li>
                 <li>
                   <Link href="/letter">The Avishkar Letter</Link>
@@ -144,13 +141,10 @@ export function AvSiteFooter() {
               </ul>
             </div>
             <div>
-              <h5>Company</h5>
+              <h3>Company</h3>
               <ul>
                 <li>
                   <Link href="/about">About us</Link>
-                </li>
-                <li>
-                  <Link href="/results">Case studies</Link>
                 </li>
                 <li>
                   <Link href="/contact">Contact</Link>

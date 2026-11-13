@@ -9,7 +9,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
 }
-.foot h4 {
+.foot h2 {
   font-size: 1.375rem;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -109,7 +109,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
 }
-.cols h5 {
+.cols h3 {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 400;

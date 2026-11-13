@@ -119,11 +119,6 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                   <p className={styles.label}>Our products</p>
                   <ul className={styles.links}>
                     <li>
-                      <Link href="/what-we-do">
-                        <Roll>What we do</Roll>
-                      </Link>
-                    </li>
-                    <li>
                       <Link href="/#why">
                         <Roll>Why Avishkar</Roll>
                       </Link>
@@ -207,7 +202,9 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     <span>Latest</span>
                     <span>Insight</span>
                   </p>
-                  <h3>{latestInsight ? latestInsight.title : "Read our latest thinking"}</h3>
+                  <p className={styles.featureTitle}>
+                    {latestInsight ? latestInsight.title : "Read our latest thinking"}
+                  </p>
                   <div className={styles.art} aria-hidden="true">
                     <i />
                     <i />
@@ -217,7 +214,7 @@ export function AvNavbar({ latestInsights = [] }: { latestInsights?: LatestInsig
                     href={latestInsight ? `/insights/${latestInsight.slug}` : "/insights"}
                     className={styles.more}
                   >
-                    <Roll>Read more</Roll>
+                    <Roll>Read the insight</Roll>
                   </Link>
                 </div>
               </nav>
